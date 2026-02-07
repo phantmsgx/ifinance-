@@ -54,8 +54,86 @@
     </main>
 
     <script>
-        // No próximo passo, vou te passar a lógica (JavaScript) 
-        // para fazer esses botões funcionarem de verdade!
+        const transactionList = document.getElementById('transaction-list');
+        const balanceDisplay = document.getElementById('balance');
+        const incomeDisplay = document.getElementById('incomes');
+        const expenseDisplay = document.getElementById('expenses');
+        const descInput = document.getElementById('desc');
+        const amountInput = document.getElementById('amount');
+
+        // Recupera os dados salvos ou começa uma lista vazia
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+
+        function updateTotals() {
+            const amounts = transactions.map(t => t.amount);
+            const total = amounts.reduce((acc, item) => (acc += item), 0).toFixed(2);
+            const income = amounts.filter(item => item > 0).reduce((acc, item) => (acc += item), 0).toFixed(2);
+            const expense = (amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1).toFixed(2);
+
+            balanceDisplay.innerHTML = `R$ ${total}`;
+            incomeDisplay.innerHTML = `R$ ${income}`;
+            expenseDisplay.innerHTML = `R$ ${expense}`;
+        }
+
+        function addTransaction() {
+            if (descInput.value.trim() === '' || amountInput.value.trim() === '') {
+                alert('Por favor, preencha a descrição e o valor!');
+                return;
+            }
+
+            const transaction = {
+                id: Math.floor(Math.random() * 1000000),
+                text: descInput.value,
+                amount: parseFloat(amountInput.value)
+            };
+
+            transactions.push(transaction);
+            init();
+            saveToLocalStorage();
+
+            descInput.value = '';
+            amountInput.value = '';
+        }
+
+        function removeTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            saveToLocalStorage();
+            init();
+        }
+
+        function renderTransaction(transaction) {
+            const sign = transaction.amount < 0 ? '-' : '+';
+            const colorClass = transaction.amount < 0 ? 'text-red-600' : 'text-green-600';
+            const item = document.createElement('li');
+
+            item.className = 'flex justify-between items-center py-4';
+            item.innerHTML = `
+                <span class="font-medium text-slate-700">${transaction.text}</span>
+                <div class="flex items-center gap-4">
+                    <span class="${colorClass} font-bold">${sign} R$ ${Math.abs(transaction.amount).toFixed(2)}</span>
+                    <button onclick="removeTransaction(${transaction.id})" class="text-slate-300 hover:text-red-500 transition">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `;
+            transactionList.appendChild(item);
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+        }
+
+        function init() {
+            transactionList.innerHTML = '';
+            if (transactions.length === 0) {
+                transactionList.innerHTML = '<p class="text-center text-slate-400 py-4">Nenhuma transação cadastrada.</p>';
+            } else {
+                transactions.forEach(renderTransaction);
+            }
+            updateTotals();
+        }
+
+        init();
     </script>
 </body>
 </html>
