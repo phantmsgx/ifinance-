@@ -95,66 +95,86 @@
         </section>
 
         <section id="tab-cambio" class="hidden p-6 max-w-2xl mx-auto">
-            <h2 class="text-2xl font-black mb-6 text-center">Conversor de Moedas</h2>
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6">
-                <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Valor na Moeda Estrangeira</label>
-                    <input type="number" id="calcValue" placeholder="Ex: 50.00" class="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 font-bold text-xl">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-black tracking-tight">Câmbio Realtime</h2>
+                <p class="text-slate-500 text-sm">Conversão automática via mercado financeiro</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2">De (Moeda)</label>
+                        <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl font-bold">
+                            <option value="USD">🇺🇸 USD</option>
+                            <option value="EUR">🇪🇺 EUR</option>
+                            <option value="BRL">🇧🇷 BRL</option>
+                            <option value="GBP">🇬🇧 GBP</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2">Para (Sua Moeda)</label>
+                        <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 border border-slate-200 p-4 rounded-2xl font-bold">
+                            <option value="BRL">🇧🇷 BRL</option>
+                            <option value="USD">🇺🇸 USD</option>
+                            <option value="EUR">🇪🇺 EUR</option>
+                        </select>
+                    </div>
                 </div>
-                <div>
-                    <label class="text-xs font-bold text-slate-400 uppercase">Cotação do Dia</label>
-                    <input type="number" id="calcRate" placeholder="Ex: 5.20" class="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 font-bold text-xl">
+
+                <div class="relative">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2">Valor Estrangeiro</label>
+                    <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-bold text-xl transition-all">
                 </div>
-                <div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 text-center">
-                    <p class="text-emerald-600 text-xs font-bold uppercase mb-1">Resultado Convertido</p>
-                    <h3 class="text-4xl font-black text-emerald-700" id="calcResult">0,00</h3>
+
+                <div class="text-center">
+                    <p id="infoCotacao" class="text-xs font-bold text-blue-500 italic">Buscando cotação...</p>
                 </div>
-                <button onclick="lancarCambio()" class="w-full bg-emerald-600 text-white font-bold p-5 rounded-2xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100">
+
+                <div class="bg-slate-900 p-8 rounded-3xl text-center shadow-xl relative overflow-hidden">
+                    <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">Total Convertido</p>
+                    <h3 class="text-4xl font-black text-white" id="calcResultDisplay">0,00</h3>
+                </div>
+
+                <button onclick="lancarCambio()" class="w-full bg-blue-600 text-white font-extrabold p-5 rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-check"></i>
                     Lançar no Histórico
                 </button>
             </div>
         </section>
 
         <section id="tab-viagem" class="hidden min-h-screen flex flex-col items-center justify-center p-6 text-center">
-            <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mb-4">
-                <i class="fa-solid fa-plane"></i>
-            </div>
+            <i class="fa-solid fa-plane text-5xl text-blue-600 mb-4"></i>
             <h2 class="text-2xl font-black">Viagem</h2>
-            <p class="text-slate-500">Próxima fase: Planejador de Viagem</p>
+            <p class="text-slate-500">Em breve: Planejador de Roteiro</p>
         </section>
 
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-4 px-6 flex justify-around items-center shadow-2xl z-50">
-            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 tab-active transition-all">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 tab-active">
                 <i class="fa-solid fa-house text-xl"></i>
                 <span class="text-[10px] font-bold uppercase tracking-tighter">Início</span>
             </button>
-            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center gap-1 text-slate-400 transition-all">
+            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center gap-1 text-slate-400">
                 <i class="fa-solid fa-coins text-xl"></i>
                 <span class="text-[10px] font-bold uppercase tracking-tighter">Câmbio</span>
             </button>
-            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center gap-1 text-slate-400 transition-all">
+            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center gap-1 text-slate-400">
                 <i class="fa-solid fa-map-location-dot text-xl"></i>
                 <span class="text-[10px] font-bold uppercase tracking-tighter">Viagem</span>
             </button>
         </nav>
-
-        <footer class="mt-10 mb-24 text-center">
-            <p class="text-slate-300 text-xs font-bold uppercase tracking-widest">
-                design by <a href="https://instagram.com/isaacz7u" target="_blank" class="text-slate-400 hover:text-blue-600 transition-all">isaacz7u</a>
-            </p>
-        </footer>
     </div>
 
     <script>
+        // --- LOGICA HOME ---
         const amountDisplay = document.getElementById('amountDisplay');
         const descInput = document.getElementById('desc');
         const typeSelect = document.getElementById('type');
         let rawValue = 0;
 
-        function formatValue(value) {
-            const currency = localStorage.getItem('iFinance_Currency') || 'BRL';
+        function formatValue(value, customCurrency) {
+            const currency = customCurrency || localStorage.getItem('iFinance_Currency') || 'BRL';
             const localeMap = { 'BRL': 'pt-BR', 'USD': 'en-US', 'EUR': 'de-DE', 'GBP': 'en-GB' };
-            return value.toLocaleString(localeMap[currency], { style: 'currency', currency: currency });
+            return value.toLocaleString(localeMap[currency] || 'pt-BR', { style: 'currency', currency: currency });
         }
 
         amountDisplay.addEventListener('input', (e) => {
@@ -180,6 +200,8 @@
                 document.getElementById('welcome-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
                 document.getElementById('displayUserName').innerText = `Olá, ${savedName}!`;
+                document.getElementById('toCurrency').value = localStorage.getItem('iFinance_Currency');
+                buscarCotacao();
                 saveAndInit();
             }
         }
@@ -195,7 +217,6 @@
             const total = amounts.reduce((acc, item) => acc + item, 0);
             const inc = amounts.filter(v => v > 0).reduce((acc, v) => acc + v, 0);
             const exp = amounts.filter(v => v < 0).reduce((acc, v) => acc + v, 0) * -1;
-
             document.getElementById('balance').innerText = formatValue(total);
             document.getElementById('incomes').innerText = formatValue(inc);
             document.getElementById('expenses').innerText = formatValue(exp);
@@ -218,7 +239,6 @@
             const list = document.getElementById('transaction-list');
             if (!list) return;
             list.innerHTML = transactions.length === 0 ? '<p class="text-slate-300 py-4 text-center">Nenhuma transação.</p>' : '';
-            
             transactions.forEach(t => {
                 const isExpense = t.amount < 0;
                 const li = document.createElement('li');
@@ -226,12 +246,8 @@
                 li.innerHTML = `
                     <span class="text-slate-700 font-medium ml-2">${t.text}</span>
                     <div class="flex items-center gap-4">
-                        <span class="${isExpense ? 'text-red-500' : 'text-green-600'} font-bold">
-                            ${formatValue(t.amount)}
-                        </span>
-                        <button onclick="removeTransaction(${t.id})" class="text-slate-300 hover:text-red-500 transition-colors">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
+                        <span class="${isExpense ? 'text-red-500' : 'text-green-600'} font-bold">${formatValue(t.amount)}</span>
+                        <button onclick="removeTransaction(${t.id})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
                     </div>`;
                 list.appendChild(li);
             });
@@ -240,7 +256,6 @@
         function sair() {
             if(confirm("Deseja realmente sair?")) {
                 localStorage.removeItem('iFinance_User');
-                localStorage.removeItem('iFinance_Currency');
                 location.reload();
             }
         }
@@ -264,37 +279,66 @@
             document.getElementById('nav-' + tab).classList.remove('text-slate-400');
         }
 
-        // --- ADICIONADO: LÓGICA DO CONVERSOR ---
-        const calcValue = document.getElementById('calcValue');
-        const calcRate = document.getElementById('calcRate');
-        const calcResult = document.getElementById('calcResult');
+        // --- LÓGICA CAMBIO AUTOMATICO ---
+        let currentRate = 1;
+        let rawCalcValue = 0;
+        const calcValueDisplay = document.getElementById('calcValueDisplay');
+        const calcResultDisplay = document.getElementById('calcResultDisplay');
 
-        function atualizarConversao() {
-            const v = parseFloat(calcValue.value) || 0;
-            const r = parseFloat(calcRate.value) || 0;
-            const res = v * r;
-            calcResult.innerText = formatValue(res);
+        // Máscara 0,00 para o Câmbio
+        calcValueDisplay.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            rawCalcValue = value / 100;
+            const fromMoeda = document.getElementById('fromCurrency').value;
+            e.target.value = formatValue(rawCalcValue, fromMoeda);
+            atualizarResultado();
+        });
+
+        async function buscarCotacao() {
+            const from = document.getElementById('fromCurrency').value;
+            const to = document.getElementById('toCurrency').value;
+            const info = document.getElementById('infoCotacao');
+            
+            if (from === to) {
+                currentRate = 1;
+                info.innerText = "Mesma moeda (1:1)";
+                atualizarResultado();
+                return;
+            }
+
+            info.innerText = "Buscando preço real...";
+            try {
+                const response = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
+                const data = await response.json();
+                currentRate = parseFloat(data[from + to].bid);
+                info.innerText = `Cotação Atual: 1 ${from} = ${currentRate.toFixed(2)} ${to}`;
+                atualizarResultado();
+            } catch (err) {
+                info.innerText = "Erro ao buscar cotação. Verifique a internet.";
+            }
         }
 
-        calcValue.addEventListener('input', atualizarConversao);
-        calcRate.addEventListener('input', atualizarConversao);
+        function atualizarResultado() {
+            const res = rawCalcValue * currentRate;
+            calcResultDisplay.innerText = formatValue(res, document.getElementById('toCurrency').value);
+        }
 
         function lancarCambio() {
-            const v = parseFloat(calcValue.value) || 0;
-            const r = parseFloat(calcRate.value) || 0;
-            const res = v * r;
-
-            if (res === 0) return alert("Calcule um valor primeiro!");
+            const res = rawCalcValue * currentRate;
+            if (res === 0) return alert("Digite um valor!");
+            const from = document.getElementById('fromCurrency').value;
             
-            if(confirm(`Deseja lançar ${formatValue(res)} no histórico de Saídas?`)) {
+            if(confirm(`Lançar gasto de ${formatValue(res)}?`)) {
                 transactions.push({ 
                     id: Date.now(), 
-                    text: `Câmbio: ${v.toFixed(2)} (Taxa: ${r.toFixed(2)})`, 
+                    text: `Gasto em ${from} (Cambio)`, 
                     amount: -res 
                 });
                 saveAndInit();
                 switchTab('home');
-                calcValue.value = ''; calcRate.value = ''; calcResult.innerText = formatValue(0);
+                rawCalcValue = 0;
+                calcValueDisplay.value = '';
+                atualizarResultado();
             }
         }
 
