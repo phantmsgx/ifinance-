@@ -20,10 +20,9 @@
         </div>
         <h1 class="text-5xl font-black tracking-tighter mb-4">i<span class="text-blue-600">Finance</span></h1>
         <p class="text-xl text-slate-500 mb-10">Para começar, como podemos te chamar?</p>
-        
         <div class="flex flex-col w-full max-w-sm gap-4">
             <input type="text" id="userNameInput" placeholder="Digite seu nome..." class="bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-center font-bold text-lg">
-            <button id="btnEntrar" class="bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95">
+            <button onclick="salvarNome()" class="bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95">
                 Acessar meu Painel
             </button>
         </div>
@@ -35,7 +34,7 @@
                 <h1 class="text-xl font-extrabold text-blue-600">iFinance</h1>
                 <div class="flex items-center gap-4">
                     <span id="displayUserName" class="text-slate-500 font-medium italic"></span>
-                    <button onclick="sair()" class="text-slate-400 hover:text-red-500 transition-colors title='Sair'">
+                    <button onclick="sairSistema()" class="text-slate-400 hover:text-red-500 transition-colors">
                         <i class="fa-solid fa-right-from-bracket"></i>
                     </button>
                 </div>
@@ -66,12 +65,15 @@
                         <option value="income">Entrada (+)</option>
                         <option value="expense">Saída (-)</option>
                     </select>
-                    <button id="btnSalvar" class="bg-blue-600 text-white font-bold p-4 rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">Salvar</button>
+                    <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold p-4 rounded-2xl hover:bg-blue-700 transition-all">Salvar</button>
                 </div>
             </section>
 
             <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-                <h3 class="text-lg font-bold mb-6">Histórico</h3>
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold">Histórico</h3>
+                    <button onclick="limparTudo()" class="text-xs font-bold text-red-400 hover:text-red-600 uppercase">Limpar Tudo</button>
+                </div>
                 <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
             </section>
         </main>
@@ -81,16 +83,102 @@
         let rawValue = 0;
         let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
+        // Controle de Telas
+        function mostrarTelas() {
+            const user = localStorage.getItem('iFinance_User');
+            if (user) {
+                document.getElementById('welcome-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById('displayUserName').innerText = "Olá, " + user;
+                render();
+            } else {
+                document.getElementById('welcome-screen').classList.remove('hidden');
+                document.getElementById('main-app').classList.add('hidden');
+            }
+        }
+
+        function salvarNome() {
+            const nome = document.getElementById('userNameInput').value.trim();
+            if (nome === "") return alert("Digite seu nome!");
+            localStorage.setItem('iFinance_User', nome);
+            mostrarTelas();
+        }
+
+        function sairSistema() {
+            if(confirm("Deseja sair?")) {
+                localStorage.removeItem('iFinance_User');
+                mostrarTelas();
+            }
+        }
+
+        // Sistema Financeiro
         function render() {
             const list = document.getElementById('transaction-list');
-            if (!list) return;
-            list.innerHTML = transactions.length === 0 ? '<p class="text-slate-300 py-4 text-center">Nenhuma transação.</p>' : '';
+            list.innerHTML = transactions.length === 0 ? '<p class="text-slate-300 py-4 text-center">Vazio.</p>' : '';
+            
+            let total = 0, inc = 0, exp = 0;
             
             transactions.forEach(t => {
-                const isExpense = t.amount < 0;
+                const isExp = t.amount < 0;
+                total += t.amount;
+                isExp ? exp += Math.abs(t.amount) : inc += t.amount;
+
                 const li = document.createElement('li');
-                li.className = `flex justify-between items-center py-4 px-2 border-l-4 ${isExpense ? 'border-red-400' : 'border-green-400'} mb-2 bg-slate-50 rounded-r-lg`;
+                li.className = `flex justify-between items-center py-4 px-2 border-l-4 ${isExp ? 'border-red-400' : 'border-green-400'} mb-2 bg-slate-50 rounded-r-lg`;
                 li.innerHTML = `
                     <span class="text-slate-700 font-medium ml-2">${t.text}</span>
                     <div class="flex items-center gap-4">
-                        <span class="${
+                        <span class="${isExp ? 'text-red-500' : 'text-green-600'} font-bold">
+                            ${t.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </span>
+                        <button onclick="removeTransaction(${t.id})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>`;
+                list.appendChild(li);
+            });
+
+            document.getElementById('balance').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('incomes').innerText = inc.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('expenses').innerText = exp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function addTransaction() {
+            const desc = document.getElementById('desc').value;
+            const type = document.getElementById('type').value;
+            if (!desc || rawValue === 0) return alert("Preencha os campos!");
+
+            const amount = type === 'expense' ? -rawValue : rawValue;
+            transactions.push({ id: Date.now(), text: desc, amount });
+            
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            document.getElementById('desc').value = '';
+            document.getElementById('amountDisplay').value = '';
+            rawValue = 0;
+            render();
+        }
+
+        function removeTransaction(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            render();
+        }
+
+        function limparTudo() {
+            if(confirm("Zerar histórico?")) {
+                transactions = [];
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                render();
+            }
+        }
+
+        // Máscara Dinheiro
+        document.getElementById('amountDisplay').addEventListener('input', (e) => {
+            let value = e.target.value.replace(/\D/g, '');
+            rawValue = value / 100;
+            e.target.value = rawValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        });
+
+        // Inicia
+        mostrarTelas();
+    </script>
+</body>
+</html>
