@@ -17,6 +17,7 @@
         input { user-select: auto; }
         .bg-auth { background: radial-gradient(circle at top right, #eff6ff, #ffffff); }
         ::-webkit-scrollbar { display: none; }
+        select { cursor: pointer; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -35,22 +36,24 @@
             <div id="register-fields" class="hidden flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4">
                 <input type="text" id="userNameInput" placeholder="Como quer ser chamado?" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
                 
+                <select id="userCurrencyInput" onchange="updateSalaryMask()" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
+                    <option value="BRL">🇧🇷 BRL - Real</option>
+                    <option value="USD">🇺🇸 USD - Dólar</option>
+                    <option value="EUR">🇪🇺 EUR - Euro</option>
+                    <option value="GBP">🇬🇧 GBP - Libra</option>
+                    <option value="JPY">🇯🇵 JPY - Iene</option>
+                    <option value="CHF">🇨🇭 CHF - Franco Suíço</option>
+                    <option value="CAD">🇨🇦 CAD - Dólar Canadense</option>
+                    <option value="AUD">🇦🇺 AUD - Dólar Australiano</option>
+                    <option value="CNY">🇨🇳 CNY - Yuan</option>
+                    <option value="ARS">🇦🇷 ARS - Peso Argentino</option>
+                    <option value="BTC">₿ BTC - Bitcoin</option>
+                </select>
+
                 <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100 text-left">
                     <p class="text-[10px] font-black text-blue-600 uppercase mb-2 tracking-widest">Configuração de Renda</p>
                     <input type="text" id="salaryInput" placeholder="0,00" class="w-full bg-transparent border-b border-blue-200 py-2 font-bold text-xl outline-none mb-2">
-                    <p class="text-[10px] text-blue-400 leading-tight">
-                        <i class="fa-solid fa-circle-info mr-1"></i> 
-                        O salário serve para o app lançar seu saldo automaticamente todo mês.
-                    </p>
                 </div>
-
-                <select id="userCurrencyInput" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
-                    <option value="">Moeda Principal</option>
-                    <option value="BRL">R$ - Real Brasileiro</option>
-                    <option value="USD">$ - Dólar Americano</option>
-                    <option value="EUR">€ - Euro</option>
-                    <option value="GBP">£ - Libra Esterlina</option>
-                </select>
             </div>
 
             <button onclick="handleAuth()" id="btn-main-auth" class="bg-blue-600 text-white py-5 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition">Entrar</button>
@@ -109,7 +112,7 @@
              <div class="max-w-md mx-auto bg-white p-8 rounded-[40px] border shadow-sm space-y-6 mt-4">
                 <div class="flex items-center justify-between gap-4">
                     <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-bold border-none outline-none">
-                        <option value="USD">🇺🇸 USD</option><option value="EUR">🇪🇺 EUR</option><option value="BRL">🇧🇷 BRL</option><option value="GBP">🇬🇧 GBP</option>
+                        <option value="USD">🇺🇸 USD</option><option value="EUR">🇪🇺 EUR</option><option value="BRL">🇧🇷 BRL</option><option value="GBP">🇬🇧 GBP</option><option value="JPY">🇯🇵 JPY</option><option value="BTC">₿ BTC</option>
                     </select>
                     <i class="fa-solid fa-repeat text-blue-500"></i>
                     <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-bold border-none outline-none">
@@ -152,10 +155,10 @@
 
     <script>
         const restaurantesDB = {
-            'BRL': [{nome:'A Casa do Porco', cidade:'SP', tipo:'Brasileira', preco:'$$$', icone:'🐷'}, {nome:'Marius Degustare', cidade:'RJ', tipo:'Churrasco', preco:'$$$$', icone:'🥩'}, {nome:'D.O.M', cidade:'SP', tipo:'Fina', preco:'$$$$$', icone:'🌿'}, {nome:'Maní', cidade:'SP', tipo:'Moderna', preco:'$$$$', icone:'🥣'}, {nome:'Glouton', cidade:'BH', tipo:'Mineira', preco:'$$$', icone:'🍷'}],
-            'USD': [{nome:'Joe\'s Pizza', cidade:'NY', tipo:'Pizza', preco:'$', icone:'🍕'}, {nome:'Katz\'s Deli', cidade:'NY', tipo:'Sanduíche', preco:'$$', icone:'🥪'}, {nome:'Le Bernardin', cidade:'NY', tipo:'Peixe', preco:'$$$$$', icone:'🐟'}, {nome:'Nobu Malibu', cidade:'LA', tipo:'Japonês', preco:'$$$$', icone:'🍣'}, {nome:'French Laundry', cidade:'Napa', tipo:'Francês', preco:'$$$$$', icone:'🏰'}],
-            'EUR': [{nome:'Le Meurice', cidade:'Paris', tipo:'Luxo', preco:'$$$$$', icone:'🥐'}, {nome:'Trattoria Baffetto', cidade:'Roma', tipo:'Pizza', preco:'$$', icone:'🇮🇹'}, {nome:'Osteria Francescana', cidade:'Modena', tipo:'Criativa', preco:'$$$$$', icone:'🎨'}, {nome:'Hofbräuhaus', cidade:'Munique', tipo:'Alemã', preco:'$$', icone:'🍺'}, {nome:'Botín', cidade:'Madrid', tipo:'Assados', preco:'$$$', icone:'🐖'}],
-            'GBP': [{nome:'Dishoom', cidade:'Londres', tipo:'Indiana', preco:'$$', icone:'🍛'}, {nome:'Sketch', cidade:'Londres', tipo:'Chá', preco:'$$$$', icone:'🫖'}, {nome:'Fat Duck', cidade:'Bray', tipo:'Molecular', preco:'$$$$$', icone:'🧪'}, {nome:'Rules', cidade:'Londres', tipo:'Britânica', preco:'$$$', icone:'💂'}, {nome:'St. John', cidade:'Londres', tipo:'Carnes', preco:'$$$', icone:'🍖'}]
+            'BRL': [{nome:'A Casa do Porco', cidade:'SP', tipo:'Brasileira', preco:'$$$', icone:'🐷'}, {nome:'Marius Degustare', cidade:'RJ', tipo:'Churrasco', preco:'$$$$', icone:'🥩'}],
+            'USD': [{nome:'Joe\'s Pizza', cidade:'NY', tipo:'Pizza', preco:'$', icone:'🍕'}, {nome:'Katz\'s Deli', cidade:'NY', tipo:'Sanduíche', preco:'$$', icone:'🥪'}],
+            'EUR': [{nome:'Le Meurice', cidade:'Paris', tipo:'Luxo', preco:'$$$$$', icone:'🥐'}, {nome:'Trattoria Baffetto', cidade:'Roma', tipo:'Pizza', preco:'$$', icone:'🇮🇹'}],
+            'GBP': [{nome:'Dishoom', cidade:'Londres', tipo:'Indiana', preco:'$$', icone:'🍛'}, {nome:'Sketch', cidade:'Londres', tipo:'Chá', preco:'$$$$', icone:'🫖'}]
         };
 
         let isRegisterMode = false, currentUser = null;
@@ -168,6 +171,12 @@
             document.getElementById('auth-title').innerText = isRegisterMode ? 'Nova Conta' : 'iFinance';
             document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Começar Agora' : 'Entrar';
             document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já sou membro' : 'Criar conta gratuita';
+            if(isRegisterMode) updateSalaryMask();
+        }
+
+        function updateSalaryMask() {
+            const cur = document.getElementById('userCurrencyInput').value;
+            document.getElementById('salaryInput').value = format(rawValues.salaryInput, cur);
         }
 
         function handleAuth() {
@@ -176,7 +185,7 @@
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
                 const currency = document.getElementById('userCurrencyInput').value;
-                if(!email || !pass || !name || !currency) return alert("Preencha todos os dados!");
+                if(!email || !pass || !name || !currency) return alert("Preencha tudo!");
                 const userData = { name, pass, currency, salary: rawValues.salaryInput, lastMonth: "", transactions: [] };
                 localStorage.setItem(`user_${email}`, JSON.stringify(userData));
                 alert("Conta criada!"); toggleAuthMode();
@@ -212,25 +221,25 @@
             render(); setGuide(currentUser.currency); buscarCotacao();
         }
 
-        function logout() { location.reload(); }
-        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
-
         function format(val, curr) {
             const c = curr || (currentUser ? currentUser.currency : 'BRL');
-            const loc = {'BRL':'pt-BR','USD':'en-US','EUR':'de-DE','GBP':'en-GB'};
-            return val.toLocaleString(loc[c] || 'pt-BR', { style:'currency', currency: c, minimumFractionDigits: 2 });
+            const loc = {'BRL':'pt-BR','USD':'en-US','EUR':'de-DE','GBP':'en-GB','JPY':'ja-JP','CHF':'de-CH','CAD':'en-CA','AUD':'en-AU','CNY':'zh-CN','ARS':'es-AR','BTC':'en-US'};
+            return val.toLocaleString(loc[c] || 'pt-BR', { style:'currency', currency: c, minimumFractionDigits: (c === 'BTC' ? 8 : 2) });
         }
 
         function applyMask(id) {
             document.getElementById(id).addEventListener('input', (e) => {
                 let v = e.target.value.replace(/\D/g, '');
-                let num = v ? parseFloat(v) / 100 : 0;
+                let factor = (id === 'calcValueDisplay' && document.getElementById('fromCurrency').value === 'BTC') ? 100000000 : 100;
+                let num = v ? parseFloat(v) / factor : 0;
                 rawValues[id] = num;
-                e.target.value = format(num, id === 'calcValueDisplay' ? document.getElementById('fromCurrency').value : null);
+                let currencyToUse = null;
+                if(id === 'salaryInput') currencyToUse = document.getElementById('userCurrencyInput').value;
+                if(id === 'calcValueDisplay') currencyToUse = document.getElementById('fromCurrency').value;
+                e.target.value = format(num, currencyToUse);
                 if (id === 'calcValueDisplay') atualizarResultado();
             });
-            // Valor inicial
-            document.getElementById(id).value = format(0, id === 'calcValueDisplay' ? document.getElementById('fromCurrency').value : null);
+            document.getElementById(id).value = format(0, id === 'salaryInput' ? 'BRL' : null);
         }
 
         ['amountDisplay', 'salaryInput', 'calcValueDisplay'].forEach(applyMask);
@@ -265,6 +274,8 @@
             });
         }
 
+        function logout() { location.reload(); }
+        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
         function del(id) { currentUser.transactions = currentUser.transactions.filter(t => t.id !== id); save(); render(); }
         function limparTudo() { if(confirm("Zerar histórico?")) { currentUser.transactions = []; save(); render(); } }
 
@@ -277,7 +288,7 @@
                 currentRate = parseFloat(d[f+t].bid);
                 document.getElementById('infoCotacao').innerText = `1 ${f} = ${currentRate.toFixed(2)} ${t}`;
                 atualizarResultado();
-            } catch(e) { document.getElementById('infoCotacao').innerText = "Erro cotação"; }
+            } catch(e) { document.getElementById('infoCotacao').innerText = "Sem conexão"; }
         }
 
         function atualizarResultado() {
@@ -288,7 +299,7 @@
         function lancarCambio() {
             const res = rawValues.calcValueDisplay * currentRate; if(res === 0) return;
             currentUser.transactions.push({ id: Date.now(), text: `Câmbio ${document.getElementById('fromCurrency').value}`, amount: -res, date: new Date().toLocaleDateString() });
-            save(); rawValues.calcValueDisplay = 0; document.getElementById('calcValueDisplay').value = format(0, document.getElementById('fromCurrency').value); render(); switchTab('home');
+            save(); render(); switchTab('home');
         }
 
         function setGuide(dest) {
