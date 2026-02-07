@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iFinance - Seu Controle Total</title>
+    <title>iFinance - Controle Total</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -23,7 +23,7 @@
         
         <div class="flex flex-col w-full max-w-sm gap-4">
             <input type="text" id="userNameInput" placeholder="Digite seu nome..." class="bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-center font-bold text-lg">
-            <button onclick="salvarNome()" class="bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-blue-200 hover:bg-blue-700 transition-all">
+            <button id="btnEntrar" class="bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95">
                 Acessar meu Painel
             </button>
         </div>
@@ -55,4 +55,116 @@
 
             <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 mb-10">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <input type="text" id="desc" placeholder="Ex
+                    <input type="text" id="desc" placeholder="Ex: Mercado" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="text" id="amountDisplay" placeholder="R$ 0,00" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-bold">
+                    <select id="type" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none font-semibold">
+                        <option value="income">Entrada (+)</option>
+                        <option value="expense">Saída (-)</option>
+                    </select>
+                    <button id="btnSalvar" class="bg-blue-600 text-white font-bold p-4 rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">Salvar</button>
+                </div>
+            </section>
+
+            <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                <h3 class="text-lg font-bold mb-6">Histórico</h3>
+                <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // --- MOTOR DO SITE ---
+        let rawValue = 0;
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+
+        function render() {
+            const list = document.getElementById('transaction-list');
+            if (!list) return;
+            list.innerHTML = transactions.length === 0 ? '<p class="text-slate-300 py-4 text-center">Nenhuma transação.</p>' : '';
+            
+            transactions.forEach(t => {
+                const isExpense = t.amount < 0;
+                const li = document.createElement('li');
+                li.className = `flex justify-between items-center py-4 px-2 border-l-4 ${isExpense ? 'border-red-400' : 'border-green-400'} mb-2 bg-slate-50 rounded-r-lg`;
+                li.innerHTML = `
+                    <span class="text-slate-700 font-medium ml-2">${t.text}</span>
+                    <div class="flex items-center gap-4">
+                        <span class="${isExpense ? 'text-red-500' : 'text-green-600'} font-bold">
+                            ${t.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </span>
+                        <button onclick="removeTransaction(${t.id})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>`;
+                list.appendChild(li);
+            });
+            updateTotals();
+        }
+
+        function updateTotals() {
+            const amounts = transactions.map(t => t.amount);
+            const total = amounts.reduce((acc, item) => acc + item, 0);
+            const inc = amounts.filter(v => v > 0).reduce((acc, v) => acc + v, 0);
+            const exp = Math.abs(amounts.filter(v => v < 0).reduce((acc, v) => acc + v, 0));
+
+            document.getElementById('balance').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('incomes').innerText = inc.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('expenses').innerText = exp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        window.removeTransaction = function(id) {
+            transactions = transactions.filter(t => t.id !== id);
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            render();
+        }
+
+        function checkUser() {
+            const savedName = localStorage.getItem('iFinance_User');
+            if (savedName) {
+                document.getElementById('welcome-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
+                document.getElementById('displayUserName').innerText = `Olá, ${savedName}!`;
+                render();
+            }
+        }
+
+        // --- INICIALIZAÇÃO ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Botão Entrar
+            document.getElementById('btnEntrar').onclick = () => {
+                const nome = document.getElementById('userNameInput').value.trim();
+                if (nome) {
+                    localStorage.setItem('iFinance_User', nome);
+                    checkUser();
+                } else {
+                    alert("Digite seu nome!");
+                }
+            };
+
+            // Máscara de Dinheiro
+            document.getElementById('amountDisplay').oninput = (e) => {
+                let value = e.target.value.replace(/\D/g, '');
+                rawValue = value / 100;
+                e.target.value = rawValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            };
+
+            // Botão Salvar
+            document.getElementById('btnSalvar').onclick = () => {
+                const desc = document.getElementById('desc').value;
+                const type = document.getElementById('type').value;
+                if (desc && rawValue !== 0) {
+                    const amount = type === 'expense' ? -rawValue : rawValue;
+                    transactions.push({ id: Date.now(), text: desc, amount });
+                    localStorage.setItem('transactions', JSON.stringify(transactions));
+                    document.getElementById('desc').value = '';
+                    document.getElementById('amountDisplay').value = '';
+                    rawValue = 0;
+                    render();
+                } else {
+                    alert("Preencha os campos!");
+                }
+            };
+
+            checkUser();
+        });
+    </script>
+</body>
+</html>
