@@ -94,12 +94,25 @@
             </main>
         </section>
 
-        <section id="tab-cambio" class="hidden min-h-screen flex flex-col items-center justify-center p-6 text-center">
-            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mb-4">
-                <i class="fa-solid fa-money-bill-transfer"></i>
+        <section id="tab-cambio" class="hidden p-6 max-w-2xl mx-auto">
+            <h2 class="text-2xl font-black mb-6 text-center">Conversor de Moedas</h2>
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 space-y-6">
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase">Valor na Moeda Estrangeira</label>
+                    <input type="number" id="calcValue" placeholder="Ex: 50.00" class="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 font-bold text-xl">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-slate-400 uppercase">Cotação do Dia</label>
+                    <input type="number" id="calcRate" placeholder="Ex: 5.20" class="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500 font-bold text-xl">
+                </div>
+                <div class="bg-emerald-50 p-6 rounded-2xl border border-emerald-100 text-center">
+                    <p class="text-emerald-600 text-xs font-bold uppercase mb-1">Resultado Convertido</p>
+                    <h3 class="text-4xl font-black text-emerald-700" id="calcResult">0,00</h3>
+                </div>
+                <button onclick="lancarCambio()" class="w-full bg-emerald-600 text-white font-bold p-5 rounded-2xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100">
+                    Lançar no Histórico
+                </button>
             </div>
-            <h2 class="text-2xl font-black">Conversor</h2>
-            <p class="text-slate-500">Pronto para a próxima fase: Câmbio</p>
         </section>
 
         <section id="tab-viagem" class="hidden min-h-screen flex flex-col items-center justify-center p-6 text-center">
@@ -107,7 +120,7 @@
                 <i class="fa-solid fa-plane"></i>
             </div>
             <h2 class="text-2xl font-black">Viagem</h2>
-            <p class="text-slate-500">Pronto para a próxima fase: Viagem</p>
+            <p class="text-slate-500">Próxima fase: Planejador de Viagem</p>
         </section>
 
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-4 px-6 flex justify-around items-center shadow-2xl z-50">
@@ -138,7 +151,6 @@
         const typeSelect = document.getElementById('type');
         let rawValue = 0;
 
-        // FUNÇÃO DE FORMATAÇÃO DINÂMICA
         function formatValue(value) {
             const currency = localStorage.getItem('iFinance_Currency') || 'BRL';
             const localeMap = { 'BRL': 'pt-BR', 'USD': 'en-US', 'EUR': 'de-DE', 'GBP': 'en-GB' };
@@ -250,6 +262,40 @@
             document.getElementById('tab-' + tab).classList.remove('hidden');
             document.getElementById('nav-' + tab).classList.add('tab-active');
             document.getElementById('nav-' + tab).classList.remove('text-slate-400');
+        }
+
+        // --- ADICIONADO: LÓGICA DO CONVERSOR ---
+        const calcValue = document.getElementById('calcValue');
+        const calcRate = document.getElementById('calcRate');
+        const calcResult = document.getElementById('calcResult');
+
+        function atualizarConversao() {
+            const v = parseFloat(calcValue.value) || 0;
+            const r = parseFloat(calcRate.value) || 0;
+            const res = v * r;
+            calcResult.innerText = formatValue(res);
+        }
+
+        calcValue.addEventListener('input', atualizarConversao);
+        calcRate.addEventListener('input', atualizarConversao);
+
+        function lancarCambio() {
+            const v = parseFloat(calcValue.value) || 0;
+            const r = parseFloat(calcRate.value) || 0;
+            const res = v * r;
+
+            if (res === 0) return alert("Calcule um valor primeiro!");
+            
+            if(confirm(`Deseja lançar ${formatValue(res)} no histórico de Saídas?`)) {
+                transactions.push({ 
+                    id: Date.now(), 
+                    text: `Câmbio: ${v.toFixed(2)} (Taxa: ${r.toFixed(2)})`, 
+                    amount: -res 
+                });
+                saveAndInit();
+                switchTab('home');
+                calcValue.value = ''; calcRate.value = ''; calcResult.innerText = formatValue(0);
+            }
         }
 
         checkUser();
