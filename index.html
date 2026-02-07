@@ -24,15 +24,15 @@
             <i class="fa-solid fa-wallet"></i>
         </div>
         <h1 id="auth-title" class="text-4xl font-black mb-2">i<span class="text-blue-600">Finance</span></h1>
-        <p id="auth-subtitle" class="text-slate-500 mb-8">Faça login para gerenciar suas finanças</p>
+        <p id="auth-subtitle" class="text-slate-500 mb-8">Gerencie suas finanças globais</p>
 
         <div class="flex flex-col w-full max-w-sm gap-4">
-            <input type="email" id="emailInput" placeholder="E-mail" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg">
-            <input type="password" id="passInput" placeholder="Senha" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg">
+            <input type="email" id="emailInput" placeholder="E-mail" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg outline-none">
+            <input type="password" id="passInput" placeholder="Senha" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg outline-none">
             
             <div id="register-fields" class="hidden flex flex-col gap-4">
-                <input type="text" id="userNameInput" placeholder="Seu nome" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg">
-                <select id="userCurrencyInput" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg">
+                <input type="text" id="userNameInput" placeholder="Seu nome" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg outline-none">
+                <select id="userCurrencyInput" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg outline-none">
                     <option value="">Selecione sua Moeda</option>
                     <option value="BRL">R$ - Real Brasileiro</option>
                     <option value="USD">$ - Dólar Americano</option>
@@ -42,12 +42,10 @@
                     <option value="CAD">C$ - Dólar Canadense</option>
                     <option value="CHF">Fr - Franco Suíço</option>
                     <option value="AUD">A$ - Dólar Australiano</option>
-                    <option value="CNY">¥ - Yuan Chinês</option>
-                    <option value="BTC">₿ - Bitcoin</option>
                 </select>
             </div>
 
-            <button onclick="handleAuth()" id="btn-main-auth" class="bg-blue-600 text-white py-5 rounded-2xl font-bold text-lg shadow-lg">Entrar</button>
+            <button onclick="handleAuth()" id="btn-main-auth" class="bg-blue-600 text-white py-5 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition">Entrar</button>
             <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-blue-600 font-bold mt-2">Criar nova conta</button>
         </div>
     </section>
@@ -65,15 +63,15 @@
             <main class="p-6 max-w-4xl mx-auto">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-center">
                     <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase">Saldo Total</p>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">Saldo Total</p>
                         <h2 class="text-3xl font-black" id="balance">0,00</h2>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                        <p class="text-xs font-bold text-green-500 uppercase">Entradas</p>
+                        <p class="text-xs font-bold text-green-500 uppercase tracking-tighter">Entradas</p>
                         <h2 class="text-3xl font-black text-green-600" id="incomes">0,00</h2>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                        <p class="text-xs font-bold text-red-500 uppercase">Saídas</p>
+                        <p class="text-xs font-bold text-red-500 uppercase tracking-tighter">Saídas</p>
                         <h2 class="text-3xl font-black text-red-600" id="expenses">0,00</h2>
                     </div>
                 </div>
@@ -91,7 +89,7 @@
                 <div class="bg-white p-6 rounded-3xl border shadow-sm">
                     <div class="flex justify-between mb-4 items-center">
                         <h3 class="font-bold">Histórico</h3>
-                        <button onclick="limparTudo()" class="text-[10px] text-red-400 font-bold border border-red-100 px-3 py-1 rounded-full">LIMPAR TUDO</button>
+                        <button onclick="limparTudo()" class="text-[10px] text-red-400 font-bold border border-red-100 px-3 py-1 rounded-full uppercase">Limpar</button>
                     </div>
                     <ul id="transaction-list"></ul>
                 </div>
@@ -102,19 +100,19 @@
             <div class="text-center mb-8"><h2 class="text-3xl font-black">Câmbio Realtime</h2></div>
             <div class="bg-white p-8 rounded-[32px] border space-y-6 shadow-sm">
                 <div class="grid grid-cols-2 gap-4">
-                    <select id="fromCurrency" onchange="buscarCotacao()" class="bg-slate-50 p-4 rounded-2xl font-bold border-none outline-none">
+                    <select id="fromCurrency" onchange="buscarCotacao()" class="bg-slate-50 p-4 rounded-2xl font-bold border-none">
                         <option value="USD">🇺🇸 USD</option>
                         <option value="EUR">🇪🇺 EUR</option>
                         <option value="BRL">🇧🇷 BRL</option>
                         <option value="GBP">🇬🇧 GBP</option>
                     </select>
-                    <select id="toCurrency" onchange="buscarCotacao()" class="bg-slate-50 p-4 rounded-2xl font-bold border-none outline-none">
+                    <select id="toCurrency" onchange="buscarCotacao()" class="bg-slate-50 p-4 rounded-2xl font-bold border-none">
                         <option value="BRL">🇧🇷 BRL</option>
                         <option value="USD">🇺🇸 USD</option>
                         <option value="EUR">🇪🇺 EUR</option>
                     </select>
                 </div>
-                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-5 rounded-2xl font-bold text-2xl border-none outline-none text-center">
+                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-5 rounded-2xl font-bold text-2xl border-none text-center">
                 <p id="infoCotacao" class="text-center text-blue-500 font-bold italic">Buscando cotação...</p>
                 <div class="bg-slate-900 p-8 rounded-3xl text-center shadow-lg">
                     <p class="text-slate-400 text-[10px] font-bold mb-2 uppercase tracking-widest">Total Convertido</p>
@@ -126,7 +124,7 @@
 
         <section id="tab-viagem" class="hidden p-6 max-w-2xl mx-auto text-center">
             <h2 class="text-3xl font-black mb-4">Guia Gastronômico</h2>
-            <select id="guideDestination" onchange="renderRestaurantes()" class="w-full p-4 rounded-2xl border-none bg-white shadow-sm font-bold mb-8 outline-none text-center">
+            <select id="guideDestination" onchange="renderRestaurantes()" class="w-full p-4 rounded-2xl border-none bg-white shadow-sm font-bold mb-8 text-center">
                 <option value="BRL">🇧🇷 Brasil</option>
                 <option value="USD">🇺🇸 EUA</option>
                 <option value="EUR">🇪🇺 Europa</option>
@@ -153,10 +151,34 @@
 
     <script>
         const restaurantesDB = {
-            'BRL': [{nome:'A Casa do Porco', cidade:'SP', endereco:'R. Araújo, 124', tipo:'Brasileira', preco:'$$$', icone:'🐷'}, {nome:'Marius Degustare', cidade:'RJ', endereco:'Av. Atlântica, 290', tipo:'Churrasco', preco:'$$$$', icone:'🥩'}],
-            'USD': [{nome:'Joe\'s Pizza', cidade:'NY', endereco:'7 Carmine St', tipo:'Pizzaria', preco:'$', icone:'🍕'}, {nome:'Katz\'s Deli', cidade:'NY', endereco:'205 E Houston St', tipo:'Sanduíche', preco:'$$', icone:'🥪'}],
-            'EUR': [{nome:'Le Meurice', cidade:'Paris', endereco:'228 Rue de Rivoli', tipo:'Luxo', preco:'$$$$$', icone:'🥐'}, {nome:'Trattoria Baffetto', cidade:'Roma', endereco:'Via Governo Vecchio 114', tipo:'Pizza', preco:'$$', icone:'🇮🇹'}],
-            'GBP': [{nome:'Dishoom', cidade:'Londres', endereco:'12 Upper St Martins', tipo:'Indiana', preco:'$$', icone:'🍛'}, {nome:'Sketch', cidade:'Londres', endereco:'9 Conduit St', tipo:'Chá', preco:'$$$$', icone:'🫖'}]
+            'BRL': [
+                {nome:'A Casa do Porco', cidade:'SP', endereco:'R. Araújo, 124', tipo:'Brasileira', preco:'$$$', icone:'🐷'},
+                {nome:'Marius Degustare', cidade:'RJ', endereco:'Av. Atlântica, 290', tipo:'Churrasco', preco:'$$$$', icone:'🥩'},
+                {nome:'D.O.M', cidade:'SP', endereco:'R. Barão de Capanema, 549', tipo:'Autoral', preco:'$$$$$', icone:'🌿'},
+                {nome:'Maní', cidade:'SP', endereco:'R. Joaquim Antunes, 210', tipo:'Contemporânea', preco:'$$$$', icone:'🥣'},
+                {nome:'Glouton', cidade:'BH', endereco:'R. Bárbara Heliodora, 59', tipo:'Mineira/Francesa', preco:'$$$', icone:'🍷'}
+            ],
+            'USD': [
+                {nome:'Joe\'s Pizza', cidade:'NY', endereco:'7 Carmine St', tipo:'Pizzaria', preco:'$', icone:'🍕'},
+                {nome:'Katz\'s Deli', cidade:'NY', endereco:'205 E Houston St', tipo:'Sanduíche', preco:'$$', icone:'🥪'},
+                {nome:'Le Bernardin', cidade:'NY', endereco:'155 W 51st St', tipo:'Frutos do Mar', preco:'$$$$$', icone:'🐟'},
+                {nome:'Nobu Malibu', cidade:'LA', endereco:'22706 Pacific Coast', tipo:'Japonês', preco:'$$$$', icone:'🍣'},
+                {nome:'The French Laundry', cidade:'Napa', endereco:'6640 Washington St', tipo:'Francesa', preco:'$$$$$', icone:'🏰'}
+            ],
+            'EUR': [
+                {nome:'Le Meurice', cidade:'Paris', endereco:'228 Rue de Rivoli', tipo:'Luxo', preco:'$$$$$', icone:'🥐'},
+                {nome:'Trattoria Baffetto', cidade:'Roma', endereco:'Via Governo Vecchio 114', tipo:'Pizza', preco:'$$', icone:'🇮🇹'},
+                {nome:'Osteria Francescana', cidade:'Modena', endereco:'Via Stella, 22', tipo:'Criativa', preco:'$$$$$', icone:'🎨'},
+                {nome:'Hofbräuhaus', cidade:'Munique', endereco:'Platzl 9', tipo:'Alemã', preco:'$$', icone:'🍺'},
+                {nome:'Botín', cidade:'Madrid', endereco:'Calle de Cuchilleros, 17', tipo:'Assados', preco:'$$$', icone:'🐖'}
+            ],
+            'GBP': [
+                {nome:'Dishoom', cidade:'Londres', endereco:'12 Upper St Martins', tipo:'Indiana', preco:'$$', icone:'🍛'},
+                {nome:'Sketch', cidade:'Londres', endereco:'9 Conduit St', tipo:'Chá/Artístico', preco:'$$$$', icone:'🫖'},
+                {nome:'The Fat Duck', cidade:'Bray', endereco:'High St', tipo:'Molecular', preco:'$$$$$', icone:'🧪'},
+                {nome:'Rules', cidade:'Londres', endereco:'35 Maiden Ln', tipo:'Tradicional Britânica', preco:'$$$', icone:'💂'},
+                {nome:'St. John', cidade:'Londres', endereco:'26 St John St', tipo:'Carnes', preco:'$$$', icone:'🍖'}
+            ]
         };
 
         let isRegisterMode = false;
@@ -165,7 +187,6 @@
         let rawCalcValue = 0;
         let currentRate = 1;
 
-        // AUTH FUNCTIONS
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             document.getElementById('register-fields').classList.toggle('hidden');
@@ -177,15 +198,13 @@
         function handleAuth() {
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value.trim();
-
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
                 const currency = document.getElementById('userCurrencyInput').value;
                 if(!email || !pass || !name || !currency) return alert("Preencha todos os campos!");
-                
                 const userData = { name, pass, currency, transactions: [] };
                 localStorage.setItem(`user_${email}`, JSON.stringify(userData));
-                alert("Conta criada com sucesso! Faça login.");
+                alert("Conta criada! Agora faça login.");
                 toggleAuthMode();
             } else {
                 const savedData = localStorage.getItem(`user_${email}`);
@@ -212,25 +231,33 @@
 
         function logout() { location.reload(); }
 
-        // FINANCE FUNCTIONS
         function formatValue(value, customCurrency) {
             const currency = customCurrency || currentUser.currency || 'BRL';
-            const locales = {'BRL':'pt-BR','USD':'en-US','EUR':'de-DE','GBP':'en-GB','JPY':'ja-JP','CAD':'en-CA','CHF':'fr-CH','AUD':'en-AU','CNY':'zh-CN','BTC':'en-US'};
+            const locales = {'BRL':'pt-BR','USD':'en-US','EUR':'de-DE','GBP':'en-GB','JPY':'ja-JP','CAD':'en-CA','CHF':'fr-CH','AUD':'en-AU'};
             return value.toLocaleString(locales[currency] || 'pt-BR', {style:'currency', currency: currency});
         }
 
-        document.getElementById('amountDisplay').addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if(!value) { rawValue = 0; e.target.value = ''; return; }
-            rawValue = parseFloat(value) / 100;
-            e.target.value = formatValue(rawValue);
-        });
+        function setupMask(inputId, callback) {
+            document.getElementById(inputId).addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, '');
+                if (!value || value === '0') {
+                    callback(0);
+                    e.target.value = '';
+                    return;
+                }
+                const num = parseFloat(value) / 100;
+                callback(num);
+                e.target.value = formatValue(num, (inputId === 'calcValueDisplay' ? document.getElementById('fromCurrency').value : null));
+            });
+        }
+
+        setupMask('amountDisplay', (v) => { rawValue = v; });
+        setupMask('calcValueDisplay', (v) => { rawCalcValue = v; atualizarResultado(); });
 
         function addTransaction() {
             const desc = document.getElementById('desc').value;
             if(!desc || rawValue === 0) return alert('Preencha os campos!');
             const amount = document.getElementById('type').value === 'expense' ? -rawValue : rawValue;
-            
             currentUser.transactions.push({id: Date.now(), text: desc, amount, date: new Date().toLocaleDateString()});
             saveAndRender();
             document.getElementById('desc').value = '';
@@ -249,16 +276,14 @@
             const total = amounts.reduce((acc, v) => acc + v, 0);
             const inc = amounts.filter(v => v > 0).reduce((acc, v) => acc + v, 0);
             const exp = amounts.filter(v => v < 0).reduce((acc, v) => acc + v, 0) * -1;
-
             document.getElementById('balance').innerText = formatValue(total);
             document.getElementById('incomes').innerText = formatValue(inc);
             document.getElementById('expenses').innerText = formatValue(exp);
-
-            list.innerHTML = currentUser.transactions.length === 0 ? '<p class="text-slate-300 py-4 text-center">Nenhum lançamento</p>' : '';
+            list.innerHTML = currentUser.transactions.length === 0 ? '<p class="text-slate-300 py-4 text-center">Vazio</p>' : '';
             [...currentUser.transactions].reverse().forEach(t => {
                 const li = document.createElement('li');
-                li.className = "flex justify-between items-center py-4 border-b animate-in fade-in";
-                li.innerHTML = `<div><p class="font-bold text-sm">${t.text}</p><p class="text-[10px] text-slate-400">${t.date}</p></div><div class="flex items-center gap-4"><span class="${t.amount < 0 ? 'text-red-500':'text-green-600'} font-black">${formatValue(t.amount)}</span><button onclick="removeTransaction(${t.id})"><i class="fa-solid fa-trash-can text-slate-200"></i></button></div>`;
+                li.className = "flex justify-between items-center py-4 border-b";
+                li.innerHTML = `<div><p class="font-bold text-sm text-slate-700">${t.text}</p><p class="text-[10px] text-slate-400">${t.date}</p></div><div class="flex items-center gap-4"><span class="${t.amount < 0 ? 'text-red-500':'text-green-600'} font-black">${formatValue(t.amount)}</span><button onclick="removeTransaction(${t.id})"><i class="fa-solid fa-trash-can text-slate-200"></i></button></div>`;
                 list.appendChild(li);
             });
         }
@@ -268,16 +293,7 @@
             saveAndRender();
         }
 
-        function limparTudo() { if(confirm("Deseja apagar todo o histórico?")) { currentUser.transactions = []; saveAndRender(); } }
-
-        // CAMBIO FUNCTIONS
-        document.getElementById('calcValueDisplay').addEventListener('input', (e) => {
-            let value = e.target.value.replace(/\D/g, '');
-            if(!value) { rawCalcValue = 0; e.target.value = ''; atualizarResultado(); return; }
-            rawCalcValue = parseFloat(value) / 100;
-            e.target.value = formatValue(rawCalcValue, document.getElementById('fromCurrency').value);
-            atualizarResultado();
-        });
+        function limparTudo() { if(confirm("Apagar tudo?")) { currentUser.transactions = []; saveAndRender(); } }
 
         async function buscarCotacao() {
             const from = document.getElementById('fromCurrency').value;
@@ -289,7 +305,7 @@
                 currentRate = parseFloat(d[from+to].bid);
                 document.getElementById('infoCotacao').innerText = `1 ${from} = ${currentRate.toFixed(2)} ${to}`;
                 atualizarResultado();
-            } catch(e) { document.getElementById('infoCotacao').innerText = "Cotação indisponível"; }
+            } catch(e) { document.getElementById('infoCotacao').innerText = "Cotação Offline"; }
         }
 
         function atualizarResultado() {
@@ -300,14 +316,12 @@
         function lancarCambio() {
             const res = rawCalcValue * currentRate;
             if(res === 0) return;
-            const from = document.getElementById('fromCurrency').value;
-            currentUser.transactions.push({id: Date.now(), text: `Câmbio ${from}`, amount: -res, date: new Date().toLocaleDateString()});
+            currentUser.transactions.push({id: Date.now(), text: `Câmbio ${document.getElementById('fromCurrency').value}`, amount: -res, date: new Date().toLocaleDateString()});
             saveAndRender();
             rawCalcValue = 0; document.getElementById('calcValueDisplay').value = ''; atualizarResultado();
             switchTab('home');
         }
 
-        // GUI FUNCTIONS
         function renderRestaurantes() {
             const dest = document.getElementById('guideDestination').value;
             const data = restaurantesDB[dest] || [];
@@ -318,7 +332,7 @@
                         <div class="flex-1"><h4 class="font-bold">${res.nome}</h4><p class="text-xs text-blue-600">${res.cidade}</p></div>
                         <span class="text-emerald-600 font-bold">${res.preco}</span>
                     </div>
-                    <button class="w-full bg-slate-50 py-3 rounded-xl text-[10px] font-black mt-4 uppercase tracking-tighter">Ver localização</button>
+                    <p class="text-[10px] text-slate-400 mt-2 font-medium"><i class="fa-solid fa-location-dot mr-1"></i> ${res.endereco} • ${res.tipo}</p>
                 </div>
             `).join('');
         }
