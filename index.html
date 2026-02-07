@@ -11,6 +11,7 @@
         body { font-family: 'Inter', sans-serif; padding-bottom: 90px; }
         .hidden { display: none !important; }
         .tab-active { color: #2563eb; transform: scale(1.1); }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -48,7 +49,7 @@
                 <div class="container mx-auto flex justify-between items-center px-4">
                     <h1 class="text-xl font-extrabold text-blue-600">iFinance</h1>
                     <div class="flex items-center gap-4">
-                        <a href="https://instagram.com/isaacz7u" target="_blank" id="displayUserName" class="text-slate-500 font-medium italic hover:text-blue-500 transition-colors"></a>
+                        <span id="displayUserName" class="text-slate-500 font-medium italic"></span>
                         <button onclick="sair()" class="text-slate-400 hover:text-red-500 transition-colors">
                             <i class="fa-solid fa-right-from-bracket"></i>
                         </button>
@@ -99,7 +100,6 @@
                 <h2 class="text-3xl font-black tracking-tight">Câmbio Realtime</h2>
                 <p class="text-slate-500 text-sm">Conversão automática via mercado financeiro</p>
             </div>
-
             <div class="bg-white p-8 rounded-[32px] shadow-sm border border-slate-100 space-y-6">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
@@ -120,32 +120,39 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="relative">
                     <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-2">Valor Estrangeiro</label>
                     <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-bold text-xl transition-all">
                 </div>
-
                 <div class="text-center">
                     <p id="infoCotacao" class="text-xs font-bold text-blue-500 italic">Buscando cotação...</p>
                 </div>
-
                 <div class="bg-slate-900 p-8 rounded-3xl text-center shadow-xl relative overflow-hidden">
                     <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-2">Total Convertido</p>
                     <h3 class="text-4xl font-black text-white" id="calcResultDisplay">0,00</h3>
                 </div>
-
-                <button onclick="lancarCambio()" class="w-full bg-blue-600 text-white font-extrabold p-5 rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-check"></i>
-                    Lançar no Histórico
-                </button>
+                <button onclick="lancarCambio()" class="w-full bg-blue-600 text-white font-extrabold p-5 rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-100">Lançar no Histórico</button>
             </div>
         </section>
 
-        <section id="tab-viagem" class="hidden min-h-screen flex flex-col items-center justify-center p-6 text-center">
-            <i class="fa-solid fa-plane text-5xl text-blue-600 mb-4"></i>
-            <h2 class="text-2xl font-black">Viagem</h2>
-            <p class="text-slate-500">Em breve: Planejador de Roteiro</p>
+        <section id="tab-viagem" class="hidden p-6 max-w-2xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-black tracking-tight">Guia Gastronômico</h2>
+                <p class="text-slate-500 text-sm">Os melhores lugares para comer no seu destino</p>
+            </div>
+
+            <div class="mb-8 bg-white p-4 rounded-2xl border border-slate-100 flex items-center gap-4">
+                <i class="fa-solid fa-map-location-dot text-blue-600 text-xl ml-2"></i>
+                <select id="guideDestination" onchange="renderRestaurantes()" class="w-full bg-transparent font-bold text-lg outline-none">
+                    <option value="BRL">🇧🇷 Brasil</option>
+                    <option value="USD">🇺🇸 Estados Unidos</option>
+                    <option value="EUR">🇪🇺 Europa (França/Itália)</option>
+                    <option value="GBP">🇬🇧 Reino Unido</option>
+                </select>
+            </div>
+
+            <div id="restaurant-list" class="grid grid-cols-1 gap-6">
+                </div>
         </section>
 
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-4 px-6 flex justify-around items-center shadow-2xl z-50">
@@ -158,14 +165,38 @@
                 <span class="text-[10px] font-bold uppercase tracking-tighter">Câmbio</span>
             </button>
             <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center gap-1 text-slate-400">
-                <i class="fa-solid fa-map-location-dot text-xl"></i>
-                <span class="text-[10px] font-bold uppercase tracking-tighter">Viagem</span>
+                <i class="fa-solid fa-utensils text-xl"></i>
+                <span class="text-[10px] font-bold uppercase tracking-tighter">Guia</span>
             </button>
         </nav>
     </div>
 
     <script>
-        // --- LOGICA GERAL ---
+        // --- BANCO DE DADOS DE RESTAURANTES ---
+        const restaurantesDB = {
+            'BRL': [
+                { nome: 'A Casa do Porco', cidade: 'São Paulo', tipo: 'Culinária Brasileira', preco: '$$$', icone: '🐷' },
+                { nome: 'Marius Degustare', cidade: 'Rio de Janeiro', tipo: 'Churrascaria/Frutos do Mar', preco: '$$$$', icone: '🥩' },
+                { nome: 'Glouton', cidade: 'Belo Horizonte', tipo: 'Contemporânea', preco: '$$$', icone: '🍷' }
+            ],
+            'USD': [
+                { nome: 'Joe\'s Pizza', cidade: 'New York', tipo: 'Pizzaria Clássica', preco: '$', icone: '🍕' },
+                { nome: 'The French Laundry', cidade: 'California', tipo: 'Alta Gastronomia', preco: '$$$$$', icone: '🍽️' },
+                { nome: 'Katz\'s Delicatessen', cidade: 'New York', tipo: 'Sanduíches de Pastrami', preco: '$$', icone: '🥪' }
+            ],
+            'EUR': [
+                { nome: 'Le Meurice', cidade: 'Paris', tipo: 'Francesa Clássica', preco: '$$$$$', icone: '🥐' },
+                { nome: 'Osteria Francescana', cidade: 'Modena', tipo: 'Italiana Moderna', preco: '$$$$$', icone: '🍝' },
+                { nome: 'Trattoria da Baffetto', cidade: 'Roma', tipo: 'Melhor Pizza de Roma', preco: '$$', icone: '🇮🇹' }
+            ],
+            'GBP': [
+                { nome: 'The Fat Duck', cidade: 'Bray', tipo: 'Gastronomia Molecular', preco: '$$$$$', icone: '🧪' },
+                { nome: 'Dishoom', cidade: 'Londres', tipo: 'Indiana Moderna', preco: '$$', icone: '🍛' },
+                { nome: 'Sketch', cidade: 'Londres', tipo: 'Chá da Tarde / Gastro-Bar', preco: '$$$$', icone: '🫖' }
+            ]
+        };
+
+        // --- LÓGICA GERAL ---
         const amountDisplay = document.getElementById('amountDisplay');
         const descInput = document.getElementById('desc');
         const typeSelect = document.getElementById('type');
@@ -177,12 +208,9 @@
             return value.toLocaleString(localeMap[currency] || 'pt-BR', { style: 'currency', currency: currency });
         }
 
-        // Ajuste Backspace na Home
         amountDisplay.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
-            if (value === '' || value === '0') {
-                rawValue = 0; e.target.value = ''; updateTotals(); return;
-            }
+            if (value === '' || value === '0') { rawValue = 0; e.target.value = ''; updateTotals(); return; }
             rawValue = value / 100;
             e.target.value = formatValue(rawValue);
         });
@@ -205,6 +233,8 @@
                 document.getElementById('main-app').classList.remove('hidden');
                 document.getElementById('displayUserName').innerText = `Olá, ${savedName}!`;
                 document.getElementById('toCurrency').value = localStorage.getItem('iFinance_Currency');
+                document.getElementById('guideDestination').value = localStorage.getItem('iFinance_Currency');
+                renderRestaurantes();
                 buscarCotacao();
                 saveAndInit();
             }
@@ -257,18 +287,26 @@
             });
         }
 
-        function sair() {
-            if(confirm("Deseja realmente sair?")) {
-                localStorage.removeItem('iFinance_User');
-                location.reload();
-            }
-        }
-
-        function limparTudo() {
-            if(confirm("Tem certeza que deseja apagar TODO o histórico?")) {
-                transactions = [];
-                saveAndInit();
-            }
+        function renderRestaurantes() {
+            const dest = document.getElementById('guideDestination').value;
+            const container = document.getElementById('restaurant-list');
+            const data = restaurantesDB[dest] || [];
+            
+            container.innerHTML = data.map(res => `
+                <div class="bg-white p-5 rounded-[24px] border border-slate-100 flex items-center gap-4 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-3xl shadow-inner">
+                        ${res.icone}
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="font-extrabold text-slate-800">${res.nome}</h4>
+                        <p class="text-xs font-bold text-blue-600 uppercase tracking-tighter">${res.cidade}</p>
+                        <p class="text-xs text-slate-400 font-medium">${res.tipo}</p>
+                    </div>
+                    <div class="text-right font-black text-emerald-500">
+                        ${res.preco}
+                    </div>
+                </div>
+            `).join('');
         }
 
         function switchTab(tab) {
@@ -283,18 +321,17 @@
             document.getElementById('nav-' + tab).classList.remove('text-slate-400');
         }
 
+        function sair() { if(confirm("Sair?")) { localStorage.removeItem('iFinance_User'); location.reload(); } }
+        function limparTudo() { if(confirm("Limpar?")) { transactions = []; saveAndInit(); } }
+
         // --- LÓGICA CAMBIO ---
-        let currentRate = 1;
-        let rawCalcValue = 0;
+        let currentRate = 1; let rawCalcValue = 0;
         const calcValueDisplay = document.getElementById('calcValueDisplay');
         const calcResultDisplay = document.getElementById('calcResultDisplay');
 
-        // Ajuste Backspace no Câmbio
         calcValueDisplay.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
-            if (value === '' || value === '0') {
-                rawCalcValue = 0; e.target.value = ''; atualizarResultado(); return;
-            }
+            if (value === '' || value === '0') { rawCalcValue = 0; e.target.value = ''; atualizarResultado(); return; }
             rawCalcValue = value / 100;
             const fromMoeda = document.getElementById('fromCurrency').value;
             e.target.value = formatValue(rawCalcValue, fromMoeda);
@@ -305,20 +342,14 @@
             const from = document.getElementById('fromCurrency').value;
             const to = document.getElementById('toCurrency').value;
             const info = document.getElementById('infoCotacao');
-            if (from === to) {
-                currentRate = 1; info.innerText = "Mesma moeda (1:1)";
-                atualizarResultado(); return;
-            }
-            info.innerText = "Buscando preço real...";
+            if (from === to) { currentRate = 1; info.innerText = "1:1"; atualizarResultado(); return; }
             try {
-                const response = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
-                const data = await response.json();
-                currentRate = parseFloat(data[from + to].bid);
-                info.innerText = `Cotação Atual: 1 ${from} = ${currentRate.toFixed(2)} ${to}`;
+                const r = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
+                const d = await r.json();
+                currentRate = parseFloat(d[from + to].bid);
+                info.innerText = `1 ${from} = ${currentRate.toFixed(2)} ${to}`;
                 atualizarResultado();
-            } catch (err) {
-                info.innerText = "Erro ao buscar cotação.";
-            }
+            } catch (e) { info.innerText = "Erro cotação"; }
         }
 
         function atualizarResultado() {
@@ -328,22 +359,10 @@
 
         function lancarCambio() {
             const res = rawCalcValue * currentRate;
-            if (res === 0) return alert("Digite um valor!");
-            const from = document.getElementById('fromCurrency').value;
-            
-            // LANÇAMENTO DIRETO SEM CONFIRMAÇÃO
-            transactions.push({ 
-                id: Date.now(), 
-                text: `Gasto em ${from} (Câmbio)`, 
-                amount: -res 
-            });
+            if (res === 0) return;
+            transactions.push({ id: Date.now(), text: `Gasto em ${document.getElementById('fromCurrency').value}`, amount: -res });
             saveAndInit();
-            
-            // Limpa campos
-            rawCalcValue = 0;
-            calcValueDisplay.value = '';
-            atualizarResultado();
-            
+            rawCalcValue = 0; calcValueDisplay.value = ''; atualizarResultado();
             switchTab('home');
         }
 
