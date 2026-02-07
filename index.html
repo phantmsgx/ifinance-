@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .hidden { display: none; }
+        body { font-family: 'Inter', sans-serif; padding-bottom: 90px; }
+        .hidden { display: none !important; }
+        .tab-active { color: #2563eb; transform: scale(1.1); }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -21,7 +22,7 @@
         <h1 class="text-5xl font-black tracking-tighter mb-4">i<span class="text-blue-600">Finance</span></h1>
         <p class="text-xl text-slate-500 mb-10">Para começar, como podemos te chamar?</p>
         
-        <div class="flex flex-col w-full max-w-sm gap-4">
+        <div class="flex flex-col w-full max-sm gap-4">
             <input type="text" id="userNameInput" placeholder="Digite seu nome..." class="bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-center font-bold text-lg">
             <button onclick="salvarNome()" class="bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-blue-200 hover:bg-blue-700 transition-all">
                 Acessar meu Painel
@@ -33,65 +34,98 @@
     </section>
 
     <div id="main-app" class="hidden">
-        <header class="bg-white border-b border-slate-200 p-4">
-            <div class="container mx-auto flex justify-between items-center px-4">
-                <h1 class="text-xl font-extrabold text-blue-600">iFinance</h1>
-                <div class="flex items-center gap-4">
-                    <a href="https://instagram.com/isaacz7u" target="_blank" id="displayUserName" class="text-slate-500 font-medium italic hover:text-blue-500 transition-colors"></a>
-                    <button onclick="sair()" class="text-slate-400 hover:text-red-500 transition-colors" title="Sair">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                    </button>
+        
+        <section id="tab-home">
+            <header class="bg-white border-b border-slate-200 p-4">
+                <div class="container mx-auto flex justify-between items-center px-4">
+                    <h1 class="text-xl font-extrabold text-blue-600">iFinance</h1>
+                    <div class="flex items-center gap-4">
+                        <a href="https://instagram.com/isaacz7u" target="_blank" id="displayUserName" class="text-slate-500 font-medium italic hover:text-blue-500 transition-colors"></a>
+                        <button onclick="sair()" class="text-slate-400 hover:text-red-500 transition-colors">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                    </div>
                 </div>
+            </header>
+
+            <main class="container mx-auto p-6 max-w-4xl">
+                <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <p class="text-slate-400 text-xs font-bold uppercase mb-1">Saldo Atual</p>
+                        <h2 class="text-3xl font-black" id="balance">R$ 0,00</h2>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <p class="text-green-500 text-xs font-bold uppercase mb-1">Entradas</p>
+                        <h2 class="text-3xl font-black text-green-600" id="incomes">R$ 0,00</h2>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <p class="text-red-500 text-xs font-bold uppercase mb-1">Saídas</p>
+                        <h2 class="text-3xl font-black text-red-600" id="expenses">R$ 0,00</h2>
+                    </div>
+                </section>
+
+                <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 mb-10">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input type="text" id="desc" placeholder="Ex: Mercado" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" id="amountDisplay" placeholder="R$ 0,00" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-bold">
+                        <select id="type" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none font-semibold text-slate-600">
+                            <option value="income">Entrada (+)</option>
+                            <option value="expense">Saída (-)</option>
+                        </select>
+                        <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold p-4 rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">Salvar</button>
+                    </div>
+                </section>
+
+                <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg font-bold">Histórico</h3>
+                        <button onclick="limparTudo()" class="text-xs font-bold text-red-400 hover:text-red-600 uppercase">Limpar Tudo</button>
+                    </div>
+                    <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
+                </section>
+            </main>
+        </section>
+
+        <section id="tab-cambio" class="hidden min-h-screen flex flex-col items-center justify-center p-6 text-center">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-3xl mb-4">
+                <i class="fa-solid fa-money-bill-transfer"></i>
             </div>
-        </header>
+            <h2 class="text-2xl font-black">Conversor</h2>
+            <p class="text-slate-500">Em breve: conversão automática de moedas.</p>
+        </section>
 
-        <main class="container mx-auto p-6 max-w-4xl">
-            <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Saldo Atual</p>
-                    <h2 class="text-3xl font-black" id="balance">R$ 0,00</h2>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <p class="text-green-500 text-xs font-bold uppercase mb-1">Entradas</p>
-                    <h2 class="text-3xl font-black text-green-600" id="incomes">R$ 0,00</h2>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <p class="text-red-500 text-xs font-bold uppercase mb-1">Saídas</p>
-                    <h2 class="text-3xl font-black text-red-600" id="expenses">R$ 0,00</h2>
-                </div>
-            </section>
+        <section id="tab-viagem" class="hidden min-h-screen flex flex-col items-center justify-center p-6 text-center">
+            <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mb-4">
+                <i class="fa-solid fa-plane"></i>
+            </div>
+            <h2 class="text-2xl font-black">Viagem</h2>
+            <p class="text-slate-500">Em breve: planeje seu orçamento de viagem.</p>
+        </section>
 
-            <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 mb-10">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <input type="text" id="desc" placeholder="Ex: Mercado" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="text" id="amountDisplay" placeholder="R$ 0,00" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-bold">
-                    <select id="type" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none font-semibold text-slate-600">
-                        <option value="income">Entrada (+)</option>
-                        <option value="expense">Saída (-)</option>
-                    </select>
-                    <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold p-4 rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">Salvar</button>
-                </div>
-            </section>
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-4 px-6 flex justify-around items-center shadow-2xl z-50">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 tab-active transition-all">
+                <i class="fa-solid fa-house text-xl"></i>
+                <span class="text-[10px] font-bold uppercase tracking-tighter">Início</span>
+            </button>
+            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center gap-1 text-slate-400 transition-all">
+                <i class="fa-solid fa-coins text-xl"></i>
+                <span class="text-[10px] font-bold uppercase tracking-tighter">Câmbio</span>
+            </button>
+            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center gap-1 text-slate-400 transition-all">
+                <i class="fa-solid fa-map-location-dot text-xl"></i>
+                <span class="text-[10px] font-bold uppercase tracking-tighter">Viagem</span>
+            </button>
+        </nav>
 
-            <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-bold">Histórico</h3>
-                    <button onclick="limparTudo()" class="text-xs font-bold text-red-400 hover:text-red-600 uppercase">
-                        Limpar Tudo
-                    </button>
-                </div>
-                <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
-            </section>
-
-            <footer class="mt-10 mb-6 text-center">
-                <p class="text-slate-300 text-xs font-bold uppercase tracking-widest">
-                    design by <a href="https://instagram.com/isaacz7u" target="_blank" class="text-slate-400 hover:text-blue-600 transition-all">isaacz7u</a>
-                </p>
-            </footer>
-        </main>
+        <footer class="mt-10 mb-24 text-center">
+            <p class="text-slate-300 text-xs font-bold uppercase tracking-widest">
+                design by <a href="https://instagram.com/isaacz7u" target="_blank" class="text-slate-400 hover:text-blue-600 transition-all">isaacz7u</a>
+            </p>
+        </footer>
     </div>
 
     <script>
+        // --- CÓDIGO ANTIGO MANTIDO 100% ---
         const amountDisplay = document.getElementById('amountDisplay');
         const descInput = document.getElementById('desc');
         const typeSelect = document.getElementById('type');
@@ -117,7 +151,6 @@
             if (savedName) {
                 document.getElementById('welcome-screen').classList.add('hidden');
                 document.getElementById('main-app').classList.remove('hidden');
-                // Alterado de .innerText para .innerHTML para manter o ícone se quiser ou apenas o texto
                 document.getElementById('displayUserName').innerText = `Olá, ${savedName}!`;
                 saveAndInit();
             }
@@ -162,7 +195,6 @@
                 const isExpense = t.amount < 0;
                 const li = document.createElement('li');
                 li.className = `flex justify-between items-center py-4 px-2 border-l-4 ${isExpense ? 'border-red-400' : 'border-green-400'} mb-2 bg-slate-50 rounded-r-lg`;
-                
                 li.innerHTML = `
                     <span class="text-slate-700 font-medium ml-2">${t.text}</span>
                     <div class="flex items-center gap-4">
@@ -189,6 +221,27 @@
                 transactions = [];
                 saveAndInit();
             }
+        }
+
+        // --- ADICIONADO: LÓGICA DE TROCA DE ABAS ---
+        function switchTab(tab) {
+            // Esconde todas as abas
+            document.getElementById('tab-home').classList.add('hidden');
+            document.getElementById('tab-cambio').classList.add('hidden');
+            document.getElementById('tab-viagem').classList.add('hidden');
+
+            // Reseta cores do menu
+            document.getElementById('nav-home').classList.remove('tab-active');
+            document.getElementById('nav-home').classList.add('text-slate-400');
+            document.getElementById('nav-cambio').classList.remove('tab-active');
+            document.getElementById('nav-cambio').classList.add('text-slate-400');
+            document.getElementById('nav-viagem').classList.remove('tab-active');
+            document.getElementById('nav-viagem').classList.add('text-slate-400');
+
+            // Mostra a aba atual e ativa ícone
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+            document.getElementById('nav-' + tab).classList.add('tab-active');
+            document.getElementById('nav-' + tab).classList.remove('text-slate-400');
         }
 
         checkUser();
