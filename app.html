@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iFinance - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 font-sans text-slate-900">
+
+    <header class="bg-white border-b border-slate-200 p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-blue-600">iFinance</h1>
+            <a href="index.html" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-house"></i></a>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-6 max-w-4xl">
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Saldo Atual</p>
+                <h2 class="text-2xl font-black text-slate-800" id="balance">R$ 0,00</h2>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-green-500 text-xs font-bold uppercase tracking-wider">Entradas</p>
+                <h2 class="text-2xl font-black text-green-600" id="incomes">R$ 0,00</h2>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <p class="text-red-500 text-xs font-bold uppercase tracking-wider">Saídas</p>
+                <h2 class="text-2xl font-black text-red-600" id="expenses">R$ 0,00</h2>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 md:gap-8">
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mb-8">
+                <h3 class="text-lg font-bold mb-6">Adicionar Transação</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input type="text" id="desc" placeholder="Ex: Salário, Aluguel" class="bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <input type="number" id="amount" placeholder="Valor (Ex: 150.00)" class="bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold p-3 rounded-xl hover:bg-blue-700 transition-all">
+                        Adicionar
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                <h3 class="text-lg font-bold mb-6">Histórico</h3>
+                <ul id="transaction-list" class="divide-y divide-slate-100">
+                    <p class="text-center text-slate-400 py-4">Nenhuma transação cadastrada.</p>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // No próximo passo, vou te passar a lógica (JavaScript) 
+        // para fazer esses botões funcionarem de verdade!
+    </script>
+</body>
+</html>
