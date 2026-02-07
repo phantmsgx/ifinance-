@@ -137,12 +137,12 @@
         <section id="tab-viagem" class="hidden p-6 max-w-2xl mx-auto">
             <div class="text-center mb-8">
                 <h2 class="text-3xl font-black tracking-tight">Guia Gastronômico</h2>
-                <p class="text-slate-500 text-sm">Exploração e custos dos lugares mais icônicos</p>
+                <p class="text-slate-500 text-sm">Os 5 melhores de cada país para o seu bolso</p>
             </div>
 
-            <div class="mb-8 bg-white p-4 rounded-2xl border border-slate-100 flex items-center gap-4">
+            <div class="mb-8 bg-white p-4 rounded-2xl border border-slate-100 flex items-center gap-4 shadow-sm">
                 <i class="fa-solid fa-map-location-dot text-blue-600 text-xl ml-2"></i>
-                <select id="guideDestination" onchange="renderRestaurantes()" class="w-full bg-transparent font-bold text-lg outline-none">
+                <select id="guideDestination" onchange="renderRestaurantes()" class="w-full bg-transparent font-bold text-lg outline-none cursor-pointer">
                     <option value="BRL">🇧🇷 Brasil</option>
                     <option value="USD">🇺🇸 Estados Unidos</option>
                     <option value="EUR">🇪🇺 Europa</option>
@@ -150,7 +150,7 @@
                 </select>
             </div>
 
-            <div id="restaurant-list" class="grid grid-cols-1 gap-6 pb-10">
+            <div id="restaurant-list" class="grid grid-cols-1 gap-6 pb-20">
                 </div>
         </section>
 
@@ -171,23 +171,35 @@
     </div>
 
     <script>
-        // --- BANCO DE DADOS ATUALIZADO ---
+        // --- BANCO DE DADOS COMPLETO (5 POR PAÍS) ---
         const restaurantesDB = {
             'BRL': [
                 { nome: 'A Casa do Porco', cidade: 'São Paulo', endereco: 'R. Araújo, 124 - República', tipo: 'Brasileira Contemporânea', precoEstimado: 'R$ 150 - R$ 250', preco: '$$$', icone: '🐷' },
-                { nome: 'Marius Degustare', cidade: 'Rio de Janeiro', endereco: 'Av. Atlântica, 290 - Leme', tipo: 'Churrascaria Gourmet', precoEstimado: 'R$ 280 - R$ 400', preco: '$$$$', icone: '🥩' }
+                { nome: 'Marius Degustare', cidade: 'Rio de Janeiro', endereco: 'Av. Atlântica, 290 - Leme', tipo: 'Churrascaria Gourmet', precoEstimado: 'R$ 280 - R$ 400', preco: '$$$$', icone: '🥩' },
+                { nome: 'Mocotó', cidade: 'São Paulo', endereco: 'Av. Nossa Sra. do Loreto, 1100', tipo: 'Sertaneja Tradicional', precoEstimado: 'R$ 80 - R$ 130', preco: '$$', icone: '🥘' },
+                { nome: 'Aprazível', cidade: 'Rio de Janeiro', endereco: 'R. Aprazível, 62 - Santa Teresa', tipo: 'Cozinha Brasileira', precoEstimado: 'R$ 180 - R$ 300', preco: '$$$', icone: '🌴' },
+                { nome: 'Figueira Rubaiyat', cidade: 'São Paulo', endereco: 'R. Haddock Lobo, 1738', tipo: 'Cortes Especiais', precoEstimado: 'R$ 250 - R$ 450', preco: '$$$$', icone: '🌳' }
             ],
             'USD': [
                 { nome: 'Joe\'s Pizza', cidade: 'New York', endereco: '7 Carmine St, NY 10014', tipo: 'Pizzaria Clássica', precoEstimado: '$5 - $20', preco: '$', icone: '🍕' },
-                { nome: 'Katz\'s Delicatessen', cidade: 'New York', endereco: '205 E Houston St, NY 10002', tipo: 'Sanduíches Icônicos', precoEstimado: '$25 - $45', preco: '$$', icone: '🥪' }
+                { nome: 'Katz\'s Delicatessen', cidade: 'New York', endereco: '205 E Houston St, NY 10002', tipo: 'Sanduíches Icônicos', precoEstimado: '$25 - $45', preco: '$$', icone: '🥪' },
+                { nome: 'The French Laundry', cidade: 'California', endereco: '6640 Washington St, Yountville', tipo: 'Alta Gastronomia', precoEstimado: '$350+', preco: '$$$$$', icone: '🍽️' },
+                { nome: 'Grand Central Oyster Bar', cidade: 'New York', endereco: '89 E 42nd St', tipo: 'Frutos do Mar', precoEstimado: '$40 - $80', preco: '$$$', icone: '🦪' },
+                { nome: 'Pink\'s Hot Dogs', cidade: 'Los Angeles', endereco: '709 N La Brea Ave', tipo: 'Hot Dog Famoso', precoEstimado: '$10 - $20', preco: '$', icone: '🌭' }
             ],
             'EUR': [
                 { nome: 'Le Meurice', cidade: 'Paris', endereco: '228 Rue de Rivoli, 75001', tipo: 'Francesa de Luxo', precoEstimado: '€150 - €400', preco: '$$$$$', icone: '🥐' },
-                { nome: 'Trattoria da Baffetto', cidade: 'Roma', endereco: 'Via del Governo Vecchio, 114', tipo: 'Pizza Tradicional', precoEstimado: '€15 - €30', preco: '$$', icone: '🇮🇹' }
+                { nome: 'Trattoria da Baffetto', cidade: 'Roma', endereco: 'Via del Governo Vecchio, 114', tipo: 'Pizza Tradicional', precoEstimado: '€15 - €30', preco: '$$', icone: '🇮🇹' },
+                { nome: 'Cervecería Catalana', cidade: 'Barcelona', endereco: 'C/ de Mallorca, 236', tipo: 'Tapas Espanholas', precoEstimado: '€25 - €50', preco: '$$', icone: '🍤' },
+                { nome: 'Hofbräuhaus München', cidade: 'Munique', endereco: 'Platzl 9, 80331', tipo: 'Alemã Tradicional', precoEstimado: '€20 - €40', preco: '$$', icone: '🥨' },
+                { nome: 'Café de Flore', cidade: 'Paris', endereco: '172 Bd Saint-Germain', tipo: 'Cafeteria Histórica', precoEstimado: '€20 - €50', preco: '$$$', icone: '☕' }
             ],
             'GBP': [
-                { nome: 'Dishoom', cidade: 'Londres', endereco: '12 Upper St. Martins Lane', tipo: 'Indiana de Londres', precoEstimado: '£20 - £40', preco: '$$', icone: '🍛' },
-                { nome: 'Sketch', cidade: 'Londres', endereco: '9 Conduit St, Mayfair', tipo: 'Chá da Tarde Famoso', precoEstimado: '£50 - £90', preco: '$$$$', icone: '🫖' }
+                { nome: 'Dishoom', cidade: 'Londres', endereco: '12 Upper St. Martins Lane', tipo: 'Indiana Moderna', precoEstimado: '£20 - £40', preco: '$$', icone: '🍛' },
+                { nome: 'Sketch', cidade: 'Londres', endereco: '9 Conduit St, Mayfair', tipo: 'Chá da Tarde Famoso', precoEstimado: '£50 - £90', preco: '$$$$', icone: '🫖' },
+                { nome: 'The Ledbury', cidade: 'Londres', endereco: '127 Ledbury Rd', tipo: 'Moderna Britânica', precoEstimado: '£150 - £250', preco: '$$$$$', icone: '🍷' },
+                { nome: 'Rules Restaurant', cidade: 'Londres', endereco: '35 Maiden Ln', tipo: 'Restaurante mais antigo', precoEstimado: '£40 - £80', preco: '$$$', icone: '🍗' },
+                { nome: 'Poppies Fish & Chips', cidade: 'Londres', endereco: '6-8 Hanbury St', tipo: 'Clássico Fish & Chips', precoEstimado: '£15 - £25', preco: '$$', icone: '🐟' }
             ]
         };
 
@@ -203,7 +215,7 @@
             return value.toLocaleString(localeMap[currency] || 'pt-BR', { style: 'currency', currency: currency });
         }
 
-        // Correção Backspace Home
+        // Correção de apagar na Home
         amountDisplay.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
             if (value === '' || value === '0') { rawValue = 0; e.target.value = ''; updateTotals(); return; }
@@ -338,7 +350,7 @@
         const calcValueDisplay = document.getElementById('calcValueDisplay');
         const calcResultDisplay = document.getElementById('calcResultDisplay');
 
-        // Correção Backspace Câmbio
+        // Correção de apagar no Câmbio
         calcValueDisplay.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
             if (value === '' || value === '0') { rawCalcValue = 0; e.target.value = ''; atualizarResultado(); return; }
