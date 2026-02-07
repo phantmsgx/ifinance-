@@ -15,38 +15,46 @@
         .tab-active { color: #2563eb; transform: scale(1.1); }
         * { user-select: none; }
         input { user-select: auto; }
+        .bg-auth { background: radial-gradient(circle at top right, #eff6ff, #ffffff); }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
 
-    <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 bg-white text-center">
+    <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 bg-auth text-center">
         <div class="mb-6 w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center shadow-xl text-white text-4xl">
             <i class="fa-solid fa-wallet"></i>
         </div>
         <h1 id="auth-title" class="text-4xl font-black mb-2">i<span class="text-blue-600">Finance</span></h1>
-        <p id="auth-subtitle" class="text-slate-500 mb-8">Gerencie suas finanças globais</p>
+        <p id="auth-subtitle" class="text-slate-500 mb-8 font-medium">Sua jornada financeira começa aqui.</p>
 
         <div class="flex flex-col w-full max-w-sm gap-4">
-            <input type="email" id="emailInput" placeholder="E-mail" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg outline-none">
-            <input type="password" id="passInput" placeholder="Senha" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg outline-none">
+            <input type="email" id="emailInput" placeholder="E-mail" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
+            <input type="password" id="passInput" placeholder="Senha" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
             
-            <div id="register-fields" class="hidden flex flex-col gap-4">
-                <input type="text" id="userNameInput" placeholder="Seu nome" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg outline-none">
-                <select id="userCurrencyInput" class="bg-slate-50 border p-5 rounded-2xl font-bold text-lg outline-none">
-                    <option value="">Selecione sua Moeda</option>
+            <div id="register-fields" class="hidden flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4">
+                <input type="text" id="userNameInput" placeholder="Como quer ser chamado?" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
+                
+                <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100 text-left">
+                    <p class="text-[10px] font-black text-blue-600 uppercase mb-2 tracking-widest">Configuração de Renda</p>
+                    <input type="text" id="salaryInput" placeholder="Seu salário mensal" class="w-full bg-transparent border-b border-blue-200 py-2 font-bold text-xl outline-none mb-2">
+                    <p class="text-[10px] text-blue-400 leading-tight">
+                        <i class="fa-solid fa-circle-info mr-1"></i> 
+                        O salário serve para o app lançar seu saldo automaticamente todo mês e calcular quanto do seu ganho ainda está disponível.
+                    </p>
+                </div>
+
+                <select id="userCurrencyInput" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
+                    <option value="">Moeda Principal</option>
                     <option value="BRL">R$ - Real Brasileiro</option>
                     <option value="USD">$ - Dólar Americano</option>
                     <option value="EUR">€ - Euro</option>
                     <option value="GBP">£ - Libra Esterlina</option>
                     <option value="JPY">¥ - Iene Japonês</option>
-                    <option value="CAD">C$ - Dólar Canadense</option>
-                    <option value="CHF">Fr - Franco Suíço</option>
-                    <option value="AUD">A$ - Dólar Australiano</option>
                 </select>
             </div>
 
             <button onclick="handleAuth()" id="btn-main-auth" class="bg-blue-600 text-white py-5 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition">Entrar</button>
-            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-blue-600 font-bold mt-2">Criar nova conta</button>
+            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-blue-600 font-bold mt-2">Criar conta gratuita</button>
         </div>
     </section>
 
@@ -62,9 +70,13 @@
             
             <main class="p-6 max-w-4xl mx-auto">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-center">
-                    <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">Saldo Total</p>
+                    <div class="bg-white p-6 rounded-2xl border-2 border-blue-50 shadow-sm relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-2 opacity-10 text-4xl"><i class="fa-solid fa-piggy-bank"></i></div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">Saldo Disponível</p>
                         <h2 class="text-3xl font-black" id="balance">0,00</h2>
+                        <div class="mt-2 inline-flex items-center px-3 py-1 bg-blue-100 rounded-full">
+                            <span class="text-[9px] font-black text-blue-600">RENDA: <span id="displaySalary">0,00</span></span>
+                        </div>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border shadow-sm">
                         <p class="text-xs font-bold text-green-500 uppercase tracking-tighter">Entradas</p>
@@ -77,74 +89,67 @@
                 </div>
 
                 <div class="bg-white p-6 rounded-3xl border mb-10 grid grid-cols-1 md:grid-cols-4 gap-4 shadow-sm">
-                    <input type="text" id="desc" placeholder="Descrição" class="bg-slate-50 p-4 rounded-2xl border-none outline-blue-500">
-                    <input type="text" id="amountDisplay" placeholder="0,00" class="bg-slate-50 p-4 rounded-2xl border-none font-bold text-lg outline-blue-500">
+                    <input type="text" id="desc" placeholder="O que você comprou?" class="bg-slate-50 p-4 rounded-2xl border-none outline-blue-500">
+                    <input type="text" id="amountDisplay" placeholder="0,00" class="bg-slate-50 p-4 rounded-2xl border-none font-bold text-lg outline-blue-500 text-center">
                     <select id="type" class="bg-slate-50 p-4 rounded-2xl border-none font-bold">
-                        <option value="income">Entrada</option>
-                        <option value="expense">Saída</option>
+                        <option value="expense">Gastei (Saída)</option>
+                        <option value="income">Recebi (Entrada)</option>
                     </select>
-                    <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold rounded-2xl py-4">Salvar</button>
+                    <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold rounded-2xl py-4 shadow-lg hover:bg-blue-700 transition">Salvar</button>
                 </div>
 
                 <div class="bg-white p-6 rounded-3xl border shadow-sm">
-                    <div class="flex justify-between mb-4 items-center">
-                        <h3 class="font-bold">Histórico</h3>
-                        <button onclick="limparTudo()" class="text-[10px] text-red-400 font-bold border border-red-100 px-3 py-1 rounded-full uppercase">Limpar</button>
+                    <div class="flex justify-between mb-4 items-center px-2">
+                        <h3 class="font-black text-slate-400 text-xs uppercase tracking-widest">Histórico Mensal</h3>
+                        <button onclick="limparTudo()" class="text-[10px] text-red-300 font-bold hover:text-red-500 transition">LIMPAR TUDO</button>
                     </div>
-                    <ul id="transaction-list"></ul>
+                    <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
                 </div>
             </main>
         </section>
 
-        <section id="tab-cambio" class="hidden p-6 max-w-2xl mx-auto">
-            <div class="text-center mb-8"><h2 class="text-3xl font-black">Câmbio Realtime</h2></div>
-            <div class="bg-white p-8 rounded-[32px] border space-y-6 shadow-sm">
-                <div class="grid grid-cols-2 gap-4">
-                    <select id="fromCurrency" onchange="buscarCotacao()" class="bg-slate-50 p-4 rounded-2xl font-bold border-none">
-                        <option value="USD">🇺🇸 USD</option>
-                        <option value="EUR">🇪🇺 EUR</option>
-                        <option value="BRL">🇧🇷 BRL</option>
-                        <option value="GBP">🇬🇧 GBP</option>
+        <section id="tab-cambio" class="hidden p-6 animate-in fade-in">
+             <div class="text-center mb-8 mt-4"><h2 class="text-3xl font-black">Conversor Global</h2></div>
+             <div class="max-w-md mx-auto bg-white p-8 rounded-[40px] border shadow-sm space-y-6">
+                <div class="flex items-center justify-between gap-4">
+                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-bold border-none">
+                        <option value="USD">🇺🇸 USD</option><option value="EUR">🇪🇺 EUR</option><option value="BRL">🇧🇷 BRL</option><option value="GBP">🇬🇧 GBP</option>
                     </select>
-                    <select id="toCurrency" onchange="buscarCotacao()" class="bg-slate-50 p-4 rounded-2xl font-bold border-none">
-                        <option value="BRL">🇧🇷 BRL</option>
-                        <option value="USD">🇺🇸 USD</option>
-                        <option value="EUR">🇪🇺 EUR</option>
+                    <i class="fa-solid fa-arrow-right text-slate-300"></i>
+                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-bold border-none">
+                        <option value="BRL">🇧🇷 BRL</option><option value="USD">🇺🇸 USD</option><option value="EUR">🇪🇺 EUR</option>
                     </select>
                 </div>
-                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-5 rounded-2xl font-bold text-2xl border-none text-center">
-                <p id="infoCotacao" class="text-center text-blue-500 font-bold italic">Buscando cotação...</p>
-                <div class="bg-slate-900 p-8 rounded-3xl text-center shadow-lg">
-                    <p class="text-slate-400 text-[10px] font-bold mb-2 uppercase tracking-widest">Total Convertido</p>
+                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-6 rounded-2xl font-bold text-3xl border-none text-center outline-none">
+                <div class="text-center py-2"><span id="infoCotacao" class="text-blue-500 font-bold bg-blue-50 px-4 py-2 rounded-full text-xs italic italic">Carregando...</span></div>
+                <div class="bg-blue-600 p-8 rounded-[32px] text-center shadow-xl">
+                    <p class="text-blue-200 text-[10px] font-black mb-1 uppercase tracking-widest">Valor Convertido</p>
                     <h3 class="text-4xl font-black text-white" id="calcResultDisplay">0,00</h3>
                 </div>
-                <button onclick="lancarCambio()" class="w-full bg-blue-600 text-white font-extrabold p-5 rounded-2xl shadow-lg">Lançar no Histórico</button>
+                <button onclick="lancarCambio()" class="w-full bg-slate-900 text-white font-black p-5 rounded-2xl shadow-lg active:scale-95 transition uppercase tracking-widest text-xs">Lançar no Saldo</button>
+             </div>
+        </section>
+
+        <section id="tab-viagem" class="hidden p-6 animate-in fade-in text-center">
+            <h2 class="text-3xl font-black mb-8 mt-4 italic">Guia Gourmet</h2>
+            <div class="flex gap-2 overflow-x-auto pb-4 mb-4 no-scrollbar">
+                <button onclick="setGuide('BRL')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm whitespace-nowrap">🇧🇷 Brasil</button>
+                <button onclick="setGuide('USD')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm whitespace-nowrap">🇺🇸 EUA</button>
+                <button onclick="setGuide('EUR')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm whitespace-nowrap">🇪🇺 Europa</button>
+                <button onclick="setGuide('GBP')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm whitespace-nowrap">🇬🇧 UK</button>
             </div>
+            <div id="restaurant-list" class="space-y-4 pb-24"></div>
         </section>
 
-        <section id="tab-viagem" class="hidden p-6 max-w-2xl mx-auto text-center">
-            <h2 class="text-3xl font-black mb-4">Guia Gastronômico</h2>
-            <select id="guideDestination" onchange="renderRestaurantes()" class="w-full p-4 rounded-2xl border-none bg-white shadow-sm font-bold mb-8 text-center">
-                <option value="BRL">🇧🇷 Brasil</option>
-                <option value="USD">🇺🇸 EUA</option>
-                <option value="EUR">🇪🇺 Europa</option>
-                <option value="GBP">🇬🇧 Reino Unido</option>
-            </select>
-            <div id="restaurant-list" class="space-y-6 pb-20"></div>
-        </section>
-
-        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t py-4 flex justify-around shadow-2xl z-50">
+        <nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t py-4 flex justify-around shadow-2xl z-50">
             <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center tab-active">
-                <i class="fa-solid fa-house"></i>
-                <span class="text-[10px] font-bold mt-1">INÍCIO</span>
+                <i class="fa-solid fa-chart-pie text-xl"></i><span class="text-[9px] font-black mt-1">HOME</span>
             </button>
             <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-slate-400">
-                <i class="fa-solid fa-coins"></i>
-                <span class="text-[10px] font-bold mt-1">CÂMBIO</span>
+                <i class="fa-solid fa-globe text-xl"></i><span class="text-[9px] font-black mt-1">CÂMBIO</span>
             </button>
             <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-slate-400">
-                <i class="fa-solid fa-utensils"></i>
-                <span class="text-[10px] font-bold mt-1">GUIA</span>
+                <i class="fa-solid fa-star text-xl"></i><span class="text-[9px] font-black mt-1">GUIA</span>
             </button>
         </nav>
     </div>
@@ -152,47 +157,45 @@
     <script>
         const restaurantesDB = {
             'BRL': [
-                {nome:'A Casa do Porco', cidade:'SP', endereco:'R. Araújo, 124', tipo:'Brasileira', preco:'$$$', icone:'🐷'},
-                {nome:'Marius Degustare', cidade:'RJ', endereco:'Av. Atlântica, 290', tipo:'Churrasco', preco:'$$$$', icone:'🥩'},
-                {nome:'D.O.M', cidade:'SP', endereco:'R. Barão de Capanema, 549', tipo:'Autoral', preco:'$$$$$', icone:'🌿'},
-                {nome:'Maní', cidade:'SP', endereco:'R. Joaquim Antunes, 210', tipo:'Contemporânea', preco:'$$$$', icone:'🥣'},
-                {nome:'Glouton', cidade:'BH', endereco:'R. Bárbara Heliodora, 59', tipo:'Mineira/Francesa', preco:'$$$', icone:'🍷'}
+                {nome:'A Casa do Porco', cidade:'SP', tipo:'Brasileira', preco:'$$$', icone:'🐷'},
+                {nome:'Marius Degustare', cidade:'RJ', tipo:'Churrasco', preco:'$$$$', icone:'🥩'},
+                {nome:'D.O.M', cidade:'SP', tipo:'Fina', preco:'$$$$$', icone:'🌿'},
+                {nome:'Maní', cidade:'SP', tipo:'Moderna', preco:'$$$$', icone:'🥣'},
+                {nome:'Glouton', cidade:'BH', tipo:'Mineira', preco:'$$$', icone:'🍷'}
             ],
             'USD': [
-                {nome:'Joe\'s Pizza', cidade:'NY', endereco:'7 Carmine St', tipo:'Pizzaria', preco:'$', icone:'🍕'},
-                {nome:'Katz\'s Deli', cidade:'NY', endereco:'205 E Houston St', tipo:'Sanduíche', preco:'$$', icone:'🥪'},
-                {nome:'Le Bernardin', cidade:'NY', endereco:'155 W 51st St', tipo:'Frutos do Mar', preco:'$$$$$', icone:'🐟'},
-                {nome:'Nobu Malibu', cidade:'LA', endereco:'22706 Pacific Coast', tipo:'Japonês', preco:'$$$$', icone:'🍣'},
-                {nome:'The French Laundry', cidade:'Napa', endereco:'6640 Washington St', tipo:'Francesa', preco:'$$$$$', icone:'🏰'}
+                {nome:'Joe\'s Pizza', cidade:'NY', tipo:'Pizza', preco:'$', icone:'🍕'},
+                {nome:'Katz\'s Deli', cidade:'NY', tipo:'Sanduíche', preco:'$$', icone:'🥪'},
+                {nome:'Le Bernardin', cidade:'NY', tipo:'Peixe', preco:'$$$$$', icone:'🐟'},
+                {nome:'Nobu Malibu', cidade:'LA', tipo:'Japonês', preco:'$$$$', icone:'🍣'},
+                {nome:'French Laundry', cidade:'Napa', tipo:'Francês', preco:'$$$$$', icone:'🏰'}
             ],
             'EUR': [
-                {nome:'Le Meurice', cidade:'Paris', endereco:'228 Rue de Rivoli', tipo:'Luxo', preco:'$$$$$', icone:'🥐'},
-                {nome:'Trattoria Baffetto', cidade:'Roma', endereco:'Via Governo Vecchio 114', tipo:'Pizza', preco:'$$', icone:'🇮🇹'},
-                {nome:'Osteria Francescana', cidade:'Modena', endereco:'Via Stella, 22', tipo:'Criativa', preco:'$$$$$', icone:'🎨'},
-                {nome:'Hofbräuhaus', cidade:'Munique', endereco:'Platzl 9', tipo:'Alemã', preco:'$$', icone:'🍺'},
-                {nome:'Botín', cidade:'Madrid', endereco:'Calle de Cuchilleros, 17', tipo:'Assados', preco:'$$$', icone:'🐖'}
+                {nome:'Le Meurice', cidade:'Paris', tipo:'Luxo', preco:'$$$$$', icone:'🥐'},
+                {nome:'Trattoria Baffetto', cidade:'Roma', tipo:'Pizza', preco:'$$', icone:'🇮🇹'},
+                {nome:'Osteria Francescana', cidade:'Modena', tipo:'Criativa', preco:'$$$$$', icone:'🎨'},
+                {nome:'Hofbräuhaus', cidade:'Munique', tipo:'Alemã', preco:'$$', icone:'🍺'},
+                {nome:'Botín', cidade:'Madrid', tipo:'Assados', preco:'$$$', icone:'🐖'}
             ],
             'GBP': [
-                {nome:'Dishoom', cidade:'Londres', endereco:'12 Upper St Martins', tipo:'Indiana', preco:'$$', icone:'🍛'},
-                {nome:'Sketch', cidade:'Londres', endereco:'9 Conduit St', tipo:'Chá/Artístico', preco:'$$$$', icone:'🫖'},
-                {nome:'The Fat Duck', cidade:'Bray', endereco:'High St', tipo:'Molecular', preco:'$$$$$', icone:'🧪'},
-                {nome:'Rules', cidade:'Londres', endereco:'35 Maiden Ln', tipo:'Tradicional Britânica', preco:'$$$', icone:'💂'},
-                {nome:'St. John', cidade:'Londres', endereco:'26 St John St', tipo:'Carnes', preco:'$$$', icone:'🍖'}
+                {nome:'Dishoom', cidade:'Londres', tipo:'Indiana', preco:'$$', icone:'🍛'},
+                {nome:'Sketch', cidade:'Londres', tipo:'Chá', preco:'$$$$', icone:'🫖'},
+                {nome:'Fat Duck', cidade:'Bray', tipo:'Molecular', preco:'$$$$$', icone:'🧪'},
+                {nome:'Rules', cidade:'Londres', tipo:'Britânica', preco:'$$$', icone:'💂'},
+                {nome:'St. John', cidade:'Londres', tipo:'Carnes', preco:'$$$', icone:'🍖'}
             ]
         };
 
         let isRegisterMode = false;
         let currentUser = null;
-        let rawValue = 0;
-        let rawCalcValue = 0;
-        let currentRate = 1;
+        let rawValue = 0, rawSalaryValue = 0, rawCalcValue = 0, currentRate = 1;
 
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('auth-title').innerText = isRegisterMode ? 'Criar Conta' : 'iFinance';
-            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Cadastrar' : 'Entrar';
-            document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já tenho login' : 'Criar nova conta';
+            document.getElementById('auth-title').innerText = isRegisterMode ? 'Nova Conta' : 'iFinance';
+            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Começar Agora' : 'Entrar';
+            document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já sou membro' : 'Criar conta gratuita';
         }
 
         function handleAuth() {
@@ -201,150 +204,147 @@
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
                 const currency = document.getElementById('userCurrencyInput').value;
-                if(!email || !pass || !name || !currency) return alert("Preencha todos os campos!");
-                const userData = { name, pass, currency, transactions: [] };
+                if(!email || !pass || !name || !currency) return alert("Preencha todos os dados!");
+                const userData = { name, pass, currency, salary: rawSalaryValue, lastMonth: "", transactions: [] };
                 localStorage.setItem(`user_${email}`, JSON.stringify(userData));
-                alert("Conta criada! Agora faça login.");
-                toggleAuthMode();
+                alert("Sucesso! Faça seu primeiro login."); toggleAuthMode();
             } else {
-                const savedData = localStorage.getItem(`user_${email}`);
-                if (savedData) {
-                    const user = JSON.parse(savedData);
+                const saved = localStorage.getItem(`user_${email}`);
+                if (saved) {
+                    const user = JSON.parse(saved);
                     if (user.pass === pass) {
                         currentUser = { ...user, email };
+                        verificarSalario();
                         startApp();
-                    } else { alert("Senha incorreta!"); }
-                } else { alert("Usuário não encontrado!"); }
+                    } else { alert("Senha incorreta."); }
+                } else { alert("Usuário não encontrado."); }
+            }
+        }
+
+        function verificarSalario() {
+            const agora = new Date();
+            const mesRef = `${agora.getMonth() + 1}/${agora.getFullYear()}`;
+            if (currentUser.salary > 0 && currentUser.lastMonth !== mesRef) {
+                currentUser.transactions.push({
+                    id: Date.now(),
+                    text: "Salário Mensal 💰",
+                    amount: currentUser.salary,
+                    date: agora.toLocaleDateString()
+                });
+                currentUser.lastMonth = mesRef;
+                save();
             }
         }
 
         function startApp() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('displayUserName').innerText = `Olá, ${currentUser.name}!`;
+            document.getElementById('displayUserName').innerText = `Olá, ${currentUser.name}`;
+            document.getElementById('displaySalary').innerText = format(currentUser.salary);
             document.getElementById('toCurrency').value = currentUser.currency;
-            document.getElementById('guideDestination').value = ['BRL','USD','EUR','GBP'].includes(currentUser.currency) ? currentUser.currency : 'USD';
             render();
-            renderRestaurantes();
+            setGuide(currentUser.currency);
             buscarCotacao();
         }
 
         function logout() { location.reload(); }
+        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
 
-        function formatValue(value, customCurrency) {
-            const currency = customCurrency || currentUser.currency || 'BRL';
-            const locales = {'BRL':'pt-BR','USD':'en-US','EUR':'de-DE','GBP':'en-GB','JPY':'ja-JP','CAD':'en-CA','CHF':'fr-CH','AUD':'en-AU'};
-            return value.toLocaleString(locales[currency] || 'pt-BR', {style:'currency', currency: currency});
+        function format(val, curr) {
+            const c = curr || currentUser.currency || 'BRL';
+            const loc = {'BRL':'pt-BR','USD':'en-US','EUR':'de-DE','GBP':'en-GB'};
+            return val.toLocaleString(loc[c] || 'pt-BR', {style:'currency', currency: c});
         }
 
-        function setupMask(inputId, callback) {
-            document.getElementById(inputId).addEventListener('input', (e) => {
-                let value = e.target.value.replace(/\D/g, '');
-                if (!value || value === '0') {
-                    callback(0);
-                    e.target.value = '';
-                    return;
-                }
-                const num = parseFloat(value) / 100;
-                callback(num);
-                e.target.value = formatValue(num, (inputId === 'calcValueDisplay' ? document.getElementById('fromCurrency').value : null));
+        function mask(id, cb) {
+            document.getElementById(id).addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '');
+                if (!v || v === '0') { cb(0); e.target.value = ''; return; }
+                const n = parseFloat(v) / 100;
+                cb(n);
+                e.target.value = format(n, (id === 'calcValueDisplay' ? document.getElementById('fromCurrency').value : null));
             });
         }
 
-        setupMask('amountDisplay', (v) => { rawValue = v; });
-        setupMask('calcValueDisplay', (v) => { rawCalcValue = v; atualizarResultado(); });
+        mask('amountDisplay', (v) => { rawValue = v; });
+        mask('calcValueDisplay', (v) => { rawCalcValue = v; atualizarResultado(); });
+        mask('salaryInput', (v) => { rawSalaryValue = v; });
 
         function addTransaction() {
             const desc = document.getElementById('desc').value;
-            if(!desc || rawValue === 0) return alert('Preencha os campos!');
-            const amount = document.getElementById('type').value === 'expense' ? -rawValue : rawValue;
-            currentUser.transactions.push({id: Date.now(), text: desc, amount, date: new Date().toLocaleDateString()});
-            saveAndRender();
+            if(!desc || rawValue === 0) return;
+            const amt = document.getElementById('type').value === 'expense' ? -rawValue : rawValue;
+            currentUser.transactions.push({id: Date.now(), text: desc, amount: amt, date: new Date().toLocaleDateString()});
+            save(); render();
             document.getElementById('desc').value = '';
             document.getElementById('amountDisplay').value = '';
             rawValue = 0;
         }
 
-        function saveAndRender() {
-            localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser));
-            render();
-        }
-
         function render() {
             const list = document.getElementById('transaction-list');
-            const amounts = currentUser.transactions.map(t => t.amount);
-            const total = amounts.reduce((acc, v) => acc + v, 0);
-            const inc = amounts.filter(v => v > 0).reduce((acc, v) => acc + v, 0);
-            const exp = amounts.filter(v => v < 0).reduce((acc, v) => acc + v, 0) * -1;
-            document.getElementById('balance').innerText = formatValue(total);
-            document.getElementById('incomes').innerText = formatValue(inc);
-            document.getElementById('expenses').innerText = formatValue(exp);
-            list.innerHTML = currentUser.transactions.length === 0 ? '<p class="text-slate-300 py-4 text-center">Vazio</p>' : '';
+            const amts = currentUser.transactions.map(t => t.amount);
+            const total = amts.reduce((a, b) => a + b, 0);
+            const inc = amts.filter(v => v > 0).reduce((a, b) => a + b, 0);
+            const exp = amts.filter(v => v < 0).reduce((a, b) => a + b, 0);
+            document.getElementById('balance').innerText = format(total);
+            document.getElementById('incomes').innerText = format(inc);
+            document.getElementById('expenses').innerText = format(Math.abs(exp));
+            list.innerHTML = '';
             [...currentUser.transactions].reverse().forEach(t => {
                 const li = document.createElement('li');
-                li.className = "flex justify-between items-center py-4 border-b";
-                li.innerHTML = `<div><p class="font-bold text-sm text-slate-700">${t.text}</p><p class="text-[10px] text-slate-400">${t.date}</p></div><div class="flex items-center gap-4"><span class="${t.amount < 0 ? 'text-red-500':'text-green-600'} font-black">${formatValue(t.amount)}</span><button onclick="removeTransaction(${t.id})"><i class="fa-solid fa-trash-can text-slate-200"></i></button></div>`;
+                li.className = "flex justify-between items-center py-5";
+                li.innerHTML = `<div><p class="font-bold text-sm text-slate-700">${t.text}</p><p class="text-[10px] text-slate-400 font-medium uppercase">${t.date}</p></div><div class="flex items-center gap-4"><span class="${t.amount < 0 ? 'text-red-500':'text-emerald-600'} font-black">${format(t.amount)}</span><button onclick="del(${t.id})" class="text-slate-200 hover:text-red-300 transition"><i class="fa-solid fa-circle-xmark"></i></button></div>`;
                 list.appendChild(li);
             });
         }
 
-        function removeTransaction(id) {
-            currentUser.transactions = currentUser.transactions.filter(t => t.id !== id);
-            saveAndRender();
-        }
-
-        function limparTudo() { if(confirm("Apagar tudo?")) { currentUser.transactions = []; saveAndRender(); } }
+        function del(id) { currentUser.transactions = currentUser.transactions.filter(t => t.id !== id); save(); render(); }
+        function limparTudo() { if(confirm("Deseja zerar seu histórico?")) { currentUser.transactions = []; save(); render(); } }
 
         async function buscarCotacao() {
-            const from = document.getElementById('fromCurrency').value;
-            const to = document.getElementById('toCurrency').value;
-            if(from === to) { currentRate = 1; document.getElementById('infoCotacao').innerText = "1:1"; atualizarResultado(); return; }
+            const f = document.getElementById('fromCurrency').value;
+            const t = document.getElementById('toCurrency').value;
+            if(f === t) { currentRate = 1; document.getElementById('infoCotacao').innerText = "Câmbio Local 1:1"; atualizarResultado(); return; }
             try {
-                const r = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
+                const r = await fetch(`https://economia.awesomeapi.com.br/last/${f}-${t}`);
                 const d = await r.json();
-                currentRate = parseFloat(d[from+to].bid);
-                document.getElementById('infoCotacao').innerText = `1 ${from} = ${currentRate.toFixed(2)} ${to}`;
+                currentRate = parseFloat(d[f+t].bid);
+                document.getElementById('infoCotacao').innerText = `1 ${f} = ${currentRate.toFixed(2)} ${t}`;
                 atualizarResultado();
             } catch(e) { document.getElementById('infoCotacao').innerText = "Cotação Offline"; }
         }
 
         function atualizarResultado() {
             const res = rawCalcValue * currentRate;
-            document.getElementById('calcResultDisplay').innerText = formatValue(res, document.getElementById('toCurrency').value);
+            document.getElementById('calcResultDisplay').innerText = format(res, document.getElementById('toCurrency').value);
         }
 
         function lancarCambio() {
-            const res = rawCalcValue * currentRate;
-            if(res === 0) return;
+            const res = rawCalcValue * currentRate; if(res === 0) return;
             currentUser.transactions.push({id: Date.now(), text: `Câmbio ${document.getElementById('fromCurrency').value}`, amount: -res, date: new Date().toLocaleDateString()});
-            saveAndRender();
-            rawCalcValue = 0; document.getElementById('calcValueDisplay').value = ''; atualizarResultado();
-            switchTab('home');
+            save(); rawCalcValue = 0; document.getElementById('calcValueDisplay').value = ''; render(); switchTab('home');
         }
 
-        function renderRestaurantes() {
-            const dest = document.getElementById('guideDestination').value;
-            const data = restaurantesDB[dest] || [];
+        function setGuide(dest) {
+            const data = restaurantesDB[dest] || restaurantesDB['USD'];
             document.getElementById('restaurant-list').innerHTML = data.map(res => `
-                <div class="bg-white p-6 rounded-3xl border shadow-sm text-left">
-                    <div class="flex items-center gap-4">
-                        <div class="text-3xl">${res.icone}</div>
-                        <div class="flex-1"><h4 class="font-bold">${res.nome}</h4><p class="text-xs text-blue-600">${res.cidade}</p></div>
-                        <span class="text-emerald-600 font-bold">${res.preco}</span>
-                    </div>
-                    <p class="text-[10px] text-slate-400 mt-2 font-medium"><i class="fa-solid fa-location-dot mr-1"></i> ${res.endereco} • ${res.tipo}</p>
+                <div class="bg-white p-6 rounded-3xl border shadow-sm text-left flex items-center gap-4">
+                    <div class="text-3xl">${res.icone}</div>
+                    <div class="flex-1"><h4 class="font-bold text-slate-800">${res.nome}</h4><p class="text-[10px] text-blue-500 font-bold uppercase tracking-tight">${res.cidade} • ${res.tipo}</p></div>
+                    <span class="text-emerald-500 font-black text-xs">${res.preco}</span>
                 </div>
             `).join('');
         }
 
-        function switchTab(tab) {
-            ['home', 'cambio', 'viagem'].forEach(t => {
-                document.getElementById('tab-' + t).classList.add('hidden');
-                document.getElementById('nav-' + t).classList.replace('tab-active', 'text-slate-400');
+        function switchTab(t) {
+            ['home', 'cambio', 'viagem'].forEach(tab => {
+                document.getElementById('tab-' + tab).classList.add('hidden');
+                document.getElementById('nav-' + tab).classList.replace('tab-active', 'text-slate-400');
             });
-            document.getElementById('tab-' + tab).classList.remove('hidden');
-            document.getElementById('nav-' + tab).classList.add('tab-active');
-            document.getElementById('nav-' + tab).classList.remove('text-slate-400');
+            document.getElementById('tab-' + t).classList.remove('hidden');
+            document.getElementById('nav-' + t).classList.add('tab-active');
+            document.getElementById('nav-' + t).classList.remove('text-slate-400');
         }
     </script>
 </body>
