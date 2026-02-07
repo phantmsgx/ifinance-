@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>iFinance Premium - Full Version</title>
+    <title>iFinance Premium - Ultra Version</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="iFinance">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* CONFIGURAÇÕES GERAIS DE INTERFACE */
+        /* ESTILIZAÇÃO DE BASE E RESET DE INTERFACE
+        */
         html, body { 
             touch-action: pan-x pan-y; 
             overscroll-behavior: none;
@@ -35,643 +37,624 @@
 
         .hidden { display: none !important; }
 
-        /* ESTILO DOS BOTÕES DO MENU INFERIOR */
+        /* SISTEMA DE NAVEGAÇÃO E IDENTIDADE VISUAL
+        */
         .tab-active { 
             color: #2563eb; 
             transform: scale(1.1); 
-            transition: all 0.3s ease-in-out;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* FORÇAR LETRAS MAIÚSCULAS NA DESCRIÇÃO */
-        #desc { 
-            text-transform: uppercase; 
+        #desc {
+            text-transform: uppercase;
         }
 
-        /* EVITAR ZOOM AUTOMÁTICO EM INPUTS NO IPHONE */
-        input, select, textarea { 
-            user-select: auto !important; 
-            -webkit-user-select: auto !important;
-            font-size: 16px !important; 
-        }
-
-        /* DESATIVAR SELEÇÃO DE TEXTO NOS BOTÕES */
+        /* CONTROLE DE SELEÇÃO E ACESSIBILIDADE
+        */
         * { 
             user-select: none; 
             -webkit-user-select: none;
             -webkit-touch-callout: none; 
         }
 
+        input, select, textarea { 
+            user-select: auto !important; 
+            -webkit-user-select: auto !important;
+            font-size: 16px !important; 
+        }
+
+        /* AJUSTE CRÍTICO: PREVENÇÃO DE VAZAMENTO DE NÚMEROS (BREAKPOINTS DINÂMICOS)
+        */
+        .balance-text {
+            font-size: clamp(1.8rem, 9vw, 3.5rem); 
+            word-break: break-all;
+            line-height: 1.1;
+            font-weight: 900;
+        }
+        
+        .summary-text {
+            font-size: clamp(1.3rem, 6vw, 2rem);
+            word-break: break-all;
+            font-weight: 800;
+        }
+
         .bg-auth-gradient { 
             background: radial-gradient(circle at top right, #eff6ff, #ffffff); 
         }
 
-        ::-webkit-scrollbar { 
-            display: none; 
+        /* ESCONDER SCROLLBARS PARA LOOK NATIVO */
+        ::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ANIMAÇÕES DE INTERFACE (MOVIMENTO SUAVE)
+        */
+        .fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        /* ANIMAÇÕES DE ENTRADA */
-        .fade-in-section { 
-            animation: fadeInEffect 0.5s ease-out; 
-        }
-
-        @keyframes fadeInEffect {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .premium-card {
+        .premium-shadow {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-inner {
             background: white;
             border: 1px solid #f1f5f9;
-            border-radius: 35px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.03);
+            border-radius: 40px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        .btn-gradient {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
         }
     </style>
 </head>
 <body>
 
     <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 bg-auth-gradient text-center">
-        <div class="mb-8 w-24 h-24 bg-blue-600 rounded-[35px] flex items-center justify-center shadow-2xl text-white text-5xl">
+        <div class="mb-8 w-28 h-28 bg-blue-600 rounded-[40px] flex items-center justify-center shadow-2xl text-white text-6xl transform rotate-12">
             <i class="fa-solid fa-wallet"></i>
         </div>
         
-        <h1 id="auth-title" class="text-4xl font-black mb-2 tracking-tight">i<span class="text-blue-600">Finance</span></h1>
-        <p id="auth-subtitle" data-i18n="welcome" class="text-slate-500 mb-10 font-medium text-lg">Seu controle financeiro inteligente.</p>
+        <h1 id="auth-title" class="text-5xl font-black mb-2 tracking-tighter">i<span class="text-blue-600">Finance</span></h1>
+        <p id="auth-subtitle" data-i18n="welcome" class="text-slate-500 mb-12 font-medium text-lg">Gestão financeira de elite para usuários exigentes.</p>
 
-        <div class="flex flex-col w-full max-w-sm gap-4">
-            <div class="space-y-4">
-                <input type="email" id="emailInput" placeholder="E-mail" class="w-full bg-white border border-slate-100 p-5 rounded-2xl font-bold text-lg outline-none shadow-sm focus:ring-2 focus:ring-blue-100 transition-all">
-                <input type="password" id="passInput" placeholder="Senha" class="w-full bg-white border border-slate-100 p-5 rounded-2xl font-bold text-lg outline-none shadow-sm focus:ring-2 focus:ring-blue-100 transition-all">
-            </div>
+        <div class="flex flex-col w-full max-w-md gap-5">
+            <input type="email" id="emailInput" placeholder="E-mail" class="bg-white border-2 border-slate-50 p-6 rounded-3xl font-bold text-lg outline-none shadow-sm focus:border-blue-200 transition-all">
+            <input type="password" id="passInput" placeholder="Senha" class="bg-white border-2 border-slate-50 p-6 rounded-3xl font-bold text-lg outline-none shadow-sm focus:border-blue-200 transition-all">
             
-            <div id="register-fields" class="hidden flex flex-col gap-4 fade-in-section">
-                <input type="text" id="userNameInput" placeholder="Como podemos te chamar?" class="w-full bg-white border border-slate-100 p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
+            <div id="register-fields" class="hidden flex flex-col gap-5 fade-in-up">
+                <input type="text" id="userNameInput" placeholder="Seu Nome Completo" class="bg-white border-2 border-slate-50 p-6 rounded-3xl font-bold text-lg outline-none shadow-sm">
                 
-                <select id="userCurrencyInput" onchange="refreshCurrencyMasks()" class="w-full bg-white border border-slate-100 p-5 rounded-2xl font-bold text-lg outline-none shadow-sm appearance-none">
-                    <option value="BRL">🇧🇷 BRL - Real Brasileiro</option>
-                    <option value="USD">🇺🇸 USD - Dólar Americano</option>
-                    <option value="EUR">🇪🇺 EUR - Euro</option>
-                    <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
-                    <option value="JPY">🇯🇵 JPY - Iene Japonês</option>
-                    <option value="MXN">🇲🇽 MXN - Peso Mexicano</option>
-                </select>
+                <div class="relative">
+                    <select id="userCurrencyInput" onchange="updateSalaryMask()" class="w-full bg-white border-2 border-slate-50 p-6 rounded-3xl font-bold text-lg outline-none shadow-sm appearance-none">
+                        <option value="BRL">🇧🇷 BRL - Real Brasileiro</option>
+                        <option value="USD">🇺🇸 USD - Dólar Americano</option>
+                        <option value="EUR">🇪🇺 EUR - Euro</option>
+                        <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
+                        <option value="JPY">🇯🇵 JPY - Iene Japonês</option>
+                        <option value="MXN">🇲🇽 MXN - Peso Mexicano</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                </div>
 
-                <div class="bg-blue-50 p-6 rounded-[30px] border border-blue-100 text-left">
-                    <p class="text-[10px] font-black text-blue-600 uppercase mb-2 tracking-widest" data-i18n="monthly_income">Renda Mensal (Salário)</p>
-                    <input type="text" id="salaryInput" placeholder="0,00" class="w-full bg-transparent border-b-2 border-blue-200 py-2 font-black text-3xl outline-none text-blue-900">
-                    <p class="text-[9px] text-blue-400 mt-2 font-bold uppercase tracking-wider">Este valor será seu saldo inicial.</p>
+                <div class="bg-white p-8 rounded-[40px] border-2 border-blue-50 text-left shadow-inner">
+                    <p class="text-[11px] font-black text-blue-600 uppercase mb-3 tracking-[0.2em]" data-i18n="monthly_income">Renda Mensal (Salário)</p>
+                    <input type="text" id="salaryInput" placeholder="0,00" class="w-full bg-transparent border-b-4 border-blue-100 py-3 font-black text-4xl outline-none text-blue-900">
+                    <p class="text-[10px] text-slate-400 mt-4 font-semibold uppercase italic">O valor será creditado automaticamente no primeiro acesso.</p>
                 </div>
             </div>
 
-            <div class="mt-4 space-y-3">
-                <button onclick="handleAuthentication()" id="btn-main-auth" class="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl hover:bg-blue-700 active:scale-95 transition-all uppercase tracking-wider">Entrar</button>
-                <button onclick="toggleAuthInterface()" id="btn-switch-auth" class="w-full text-blue-600 font-bold text-sm hover:underline" data-i18n="create_account">Não tem conta? Criar agora</button>
-            </div>
+            <button onclick="handleAuth()" id="btn-main-auth" class="btn-gradient text-white py-6 rounded-3xl font-black text-xl shadow-2xl hover:brightness-110 transition-all uppercase tracking-widest">Acessar Sistema</button>
+            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-blue-600 font-bold mt-4 hover:text-blue-800 transition-colors text-sm" data-i18n="create_account">Ainda não possui conta? Registre-se agora</button>
         </div>
     </section>
 
     <div id="main-app" class="hidden">
         
-        <section id="tab-home" class="fade-in-section">
-            <header class="bg-white/80 backdrop-blur-md border-b border-slate-50 p-6 sticky top-0 z-20 flex justify-between items-center px-10">
-                <h1 class="text-2xl font-black text-blue-600 italic tracking-tighter">iFinance</h1>
-                <div class="flex items-center gap-5">
-                    <div class="text-right">
-                        <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Usuário</p>
-                        <span id="displayUserName" class="text-slate-500 font-black text-xs uppercase"></span>
+        <section id="tab-home" class="fade-in-up">
+            <header class="bg-white/80 backdrop-blur-xl border-b border-slate-100 p-8 sticky top-0 z-20 flex justify-between items-center px-10">
+                <div>
+                    <h1 class="text-3xl font-black text-blue-600 italic tracking-tighter">iFinance</h1>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em]">Premium Dashboard</p>
+                </div>
+                <div class="flex items-center gap-6">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Bem-vindo,</p>
+                        <span id="displayUserName" class="text-slate-600 font-black text-sm uppercase"></span>
                     </div>
-                    <button onclick="logoutSession()" class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 hover:text-red-500 transition-colors shadow-sm">
-                        <i class="fa-solid fa-power-off"></i>
+                    <button onclick="logout()" class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all shadow-sm">
+                        <i class="fa-solid fa-power-off text-xl"></i>
                     </button>
                 </div>
             </header>
             
-            <main class="p-6 max-w-5xl mx-auto space-y-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="premium-card p-10 border-blue-100 border-2 bg-gradient-to-br from-white to-blue-50/30">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2" data-i18n="balance">Saldo Atual</p>
-                        <h2 class="text-5xl font-black text-slate-900 tracking-tighter" id="balance">0,00</h2>
+            <main class="p-6 max-w-6xl mx-auto space-y-10">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="card-inner p-10 border-blue-100 border-2 premium-shadow bg-gradient-to-br from-white to-blue-50/30">
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4" data-i18n="balance">Saldo Disponível</p>
+                        <h2 class="balance-text text-slate-900" id="balance">0,00</h2>
                     </div>
-                    <div class="premium-card p-10">
-                        <p class="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] mb-2" data-i18n="incomes">Entradas</p>
-                        <h2 class="text-3xl font-black text-emerald-600 tracking-tighter" id="incomes">0,00</h2>
+                    <div class="card-inner p-10 premium-shadow">
+                        <p class="text-[11px] font-black text-emerald-500 uppercase tracking-widest mb-4" data-i18n="incomes">Entradas Mensais</p>
+                        <h2 class="summary-text text-emerald-600" id="incomes">0,00</h2>
                     </div>
-                    <div class="premium-card p-10">
-                        <p class="text-[10px] font-black text-red-400 uppercase tracking-[0.2em] mb-2" data-i18n="expenses">Saídas</p>
-                        <h2 class="text-3xl font-black text-red-500 tracking-tighter" id="expenses">0,00</h2>
+                    <div class="card-inner p-10 premium-shadow">
+                        <p class="text-[11px] font-black text-red-500 uppercase tracking-widest mb-4" data-i18n="expenses">Saídas Totais</p>
+                        <h2 class="summary-text text-red-600" id="expenses">0,00</h2>
                     </div>
                 </div>
 
-                <div class="premium-card p-8 shadow-lg">
-                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-6 text-center">Registrar Nova Atividade</p>
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
-                        <div class="md:col-span-1">
-                            <input type="text" id="desc" placeholder="EX: MERCADO, PIX..." class="w-full bg-slate-50 p-5 rounded-2xl border-none outline-blue-500 font-black text-slate-600">
+                <div class="card-inner p-10 premium-shadow">
+                    <h3 class="text-sm font-black text-slate-400 uppercase tracking-widest mb-8 text-center italic">Novo Registro Financeiro</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                        <div class="relative">
+                            <input type="text" id="desc" placeholder="DESCRIÇÃO" class="w-full bg-slate-50 p-6 rounded-3xl border-none outline-blue-500 font-black text-slate-700 placeholder:text-slate-300">
                         </div>
-                        <div>
-                            <input type="text" id="amountDisplay" placeholder="0,00" class="w-full bg-slate-50 p-5 rounded-2xl border-none font-black text-xl text-center text-blue-600 outline-blue-500">
+                        <div class="relative">
+                            <input type="text" id="amountDisplay" placeholder="0,00" class="w-full bg-slate-50 p-6 rounded-3xl border-none font-black text-2xl text-center text-blue-600 outline-blue-500">
                         </div>
-                        <div>
-                            <select id="type" class="w-full bg-slate-50 p-5 rounded-2xl border-none font-black text-slate-500 uppercase appearance-none">
-                                <option value="expense" data-i18n="opt_expense">Despesa (-)</option>
-                                <option value="income" data-i18n="opt_income">Receita (+)</option>
+                        <div class="relative">
+                            <select id="type" class="w-full bg-slate-50 p-6 rounded-3xl border-none font-black text-slate-500 uppercase appearance-none">
+                                <option value="expense" data-i18n="opt_expense">Saída (-)</option>
+                                <option value="income" data-i18n="opt_income">Entrada (+)</option>
                             </select>
+                            <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-300"></i>
                         </div>
-                        <button onclick="registerNewTransaction()" class="w-full bg-blue-600 text-white font-black rounded-2xl py-5 shadow-lg uppercase tracking-widest hover:bg-blue-700 transition-all" data-i18n="btn_save">Salvar</button>
+                        <button onclick="addTransaction()" class="btn-gradient text-white font-black rounded-3xl py-6 shadow-xl uppercase tracking-widest hover:scale-[1.02] transition-all" data-i18n="btn_save">Confirmar</button>
                     </div>
                 </div>
 
-                <div class="premium-card p-10">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-8">Histórico Recente</h3>
-                    <ul id="transaction-list" class="divide-y divide-slate-100">
+                <div class="card-inner p-12 premium-shadow">
+                    <div class="flex justify-between items-center mb-10">
+                        <h3 class="text-xs font-black text-slate-300 uppercase tracking-[0.4em]">Extrato Detalhado</h3>
+                        <div class="h-[1px] bg-slate-100 flex-1 mx-8"></div>
+                    </div>
+                    <ul id="transaction-list" class="divide-y divide-slate-50">
                         </ul>
-                    <button onclick="clearAllUserData()" class="w-full text-center py-8 text-[10px] text-red-200 font-black uppercase tracking-[0.3em] mt-4 hover:text-red-400 transition-colors" data-i18n="btn_clear">Apagar Histórico</button>
+                    <button onclick="limparTudo()" class="w-full text-center py-10 text-[11px] text-red-200 font-black uppercase tracking-[0.5em] mt-6 hover:text-red-500 transition-colors" data-i18n="btn_clear">Limpar Base de Dados</button>
                 </div>
             </main>
         </section>
 
-        <section id="tab-cambio" class="hidden p-6 fade-in-section">
-             <div class="max-w-xl mx-auto premium-card p-12 shadow-2xl space-y-10 mt-10 text-center">
+        <section id="tab-cambio" class="hidden p-6 fade-in-up">
+             <div class="max-w-2xl mx-auto card-inner p-16 premium-shadow space-y-12 mt-10 text-center bg-white">
                 <header>
-                    <h2 class="font-black text-3xl uppercase tracking-tighter" data-i18n="converter">Conversor Inteligente</h2>
-                    <p class="text-slate-400 text-xs font-bold mt-2 uppercase">Cotações em Tempo Real</p>
+                    <h2 class="font-black text-4xl uppercase tracking-tighter" data-i18n="converter">Câmbio Inteligente</h2>
+                    <p class="text-slate-400 text-xs font-bold mt-3 uppercase tracking-widest">Cotações atualizadas via API</p>
                 </header>
 
-                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                    <div class="w-full">
-                        <p class="text-[9px] font-black text-slate-300 uppercase mb-2">Origem</p>
-                        <select id="fromCurrency" onchange="fetchExchangeRate()" class="w-full bg-slate-50 p-5 rounded-3xl font-black border-none text-lg">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div class="w-full relative">
+                        <p class="text-[10px] font-black text-slate-300 uppercase mb-3 text-left ml-2">Moeda Origem</p>
+                        <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-7 rounded-[35px] font-black border-none text-xl appearance-none">
                             <option value="USD">🇺🇸 USD - Dólar</option>
                             <option value="EUR">🇪🇺 EUR - Euro</option>
                             <option value="BRL">🇧🇷 BRL - Real</option>
                             <option value="GBP">🇬🇧 GBP - Libra</option>
                         </select>
+                        <i class="fa-solid fa-chevron-down absolute right-8 top-[68%] -translate-y-1/2 text-slate-300"></i>
                     </div>
-                    <div class="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center text-white shadow-xl rotate-90 md:rotate-0">
-                        <i class="fa-solid fa-right-left text-xl"></i>
+                    
+                    <div class="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center text-white shadow-2xl shrink-0 mt-6">
+                        <i class="fa-solid fa-right-left text-2xl"></i>
                     </div>
-                    <div class="w-full">
-                        <p class="text-[9px] font-black text-slate-300 uppercase mb-2">Destino</p>
-                        <select id="toCurrency" onchange="fetchExchangeRate()" class="w-full bg-slate-50 p-5 rounded-3xl font-black border-none text-lg">
+
+                    <div class="w-full relative">
+                        <p class="text-[10px] font-black text-slate-300 uppercase mb-3 text-left ml-2">Moeda Destino</p>
+                        <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-7 rounded-[35px] font-black border-none text-xl appearance-none">
                             <option value="BRL">🇧🇷 BRL - Real</option>
                             <option value="USD">🇺🇸 USD - Dólar</option>
                             <option value="EUR">🇪🇺 EUR - Euro</option>
                         </select>
+                        <i class="fa-solid fa-chevron-down absolute right-8 top-[68%] -translate-y-1/2 text-slate-300"></i>
                     </div>
                 </div>
 
                 <div class="space-y-4">
-                    <p class="text-[9px] font-black text-slate-300 uppercase tracking-widest">Valor para Conversão</p>
-                    <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-10 rounded-[40px] font-black text-5xl text-center border-none outline-none text-blue-600 shadow-inner">
+                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest">Montante para conversão</p>
+                    <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-12 rounded-[50px] font-black text-6xl text-center outline-none text-blue-600 shadow-inner">
                 </div>
 
-                <div class="bg-slate-900 p-12 rounded-[50px] text-white shadow-2xl transform hover:scale-105 transition-transform">
-                    <p class="text-blue-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4">Resultado da Conversão</p>
-                    <h3 class="text-6xl font-black tracking-tighter" id="calcResultDisplay">0,00</h3>
+                <div class="bg-slate-900 p-14 rounded-[60px] text-white shadow-2xl transform hover:scale-[1.02] transition-all">
+                    <p class="text-blue-400 text-[11px] font-black uppercase mb-4 tracking-[0.3em]">Valor Final Convertido</p>
+                    <h3 class="text-7xl font-black tracking-tighter" id="calcResultDisplay">0,00</h3>
                 </div>
 
-                <button onclick="applyExchangeToBalance()" class="w-full bg-blue-600 text-white font-black p-6 rounded-[30px] uppercase text-xs tracking-widest shadow-lg active:bg-blue-800 transition-colors" data-i18n="btn_apply_exchange">Lançar gasto no meu saldo</button>
+                <button onclick="lancarCambio()" class="w-full btn-gradient text-white font-black p-8 rounded-[40px] uppercase text-sm tracking-widest shadow-xl" data-i18n="btn_apply_exchange">Lançar Despesa no Saldo</button>
              </div>
         </section>
 
-        <section id="tab-viagem" class="hidden p-6 text-center fade-in-section">
-            <h2 class="text-4xl font-black mb-2 mt-8 uppercase tracking-tighter" data-i18n="guide_title">Guia Gastronômico</h2>
-            <p class="text-slate-400 text-sm font-bold uppercase tracking-[0.2em] mb-12">Os melhores do mundo</p>
+        <section id="tab-viagem" class="hidden p-6 text-center fade-in-up">
+            <h2 class="text-5xl font-black mb-3 mt-10 uppercase tracking-tighter" data-i18n="guide_title">Guia de Restaurantes</h2>
+            <p class="text-slate-400 text-sm font-bold uppercase tracking-[0.3em] mb-14">A seleção definitiva dos melhores do mundo</p>
             
-            <div class="flex gap-4 overflow-x-auto pb-8 mb-8 no-scrollbar px-4">
-                <button onclick="updateRestaurantGuide('BRL')" class="bg-white border-2 border-slate-50 px-10 py-5 rounded-3xl font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase">🇧🇷 Brasil</button>
-                <button onclick="updateRestaurantGuide('USD')" class="bg-white border-2 border-slate-50 px-10 py-5 rounded-3xl font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase">🇺🇸 EUA</button>
-                <button onclick="updateRestaurantGuide('EUR')" class="bg-white border-2 border-slate-50 px-10 py-5 rounded-3xl font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase">🇪🇺 Europa</button>
-                <button onclick="updateRestaurantGuide('ITA')" class="bg-white border-2 border-slate-50 px-10 py-5 rounded-3xl font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase">🇮🇹 Itália</button>
-                <button onclick="updateRestaurantGuide('JPN')" class="bg-white border-2 border-slate-50 px-10 py-5 rounded-3xl font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase">🇯🇵 Japão</button>
-                <button onclick="updateRestaurantGuide('MEX')" class="bg-white border-2 border-slate-50 px-10 py-5 rounded-3xl font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase">🇲🇽 México</button>
-                <button onclick="updateRestaurantGuide('PRT')" class="bg-white border-2 border-slate-50 px-10 py-5 rounded-3xl font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase">🇵🇹 Portugal</button>
+            <div class="flex gap-5 overflow-x-auto pb-10 mb-10 no-scrollbar px-6">
+                <button onclick="setGuide('BRL')" class="bg-white border-2 border-slate-50 px-12 py-6 rounded-[30px] font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase tracking-widest">🇧🇷 Brasil</button>
+                <button onclick="setGuide('USD')" class="bg-white border-2 border-slate-50 px-12 py-6 rounded-[30px] font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase tracking-widest">🇺🇸 EUA</button>
+                <button onclick="setGuide('EUR')" class="bg-white border-2 border-slate-50 px-12 py-6 rounded-[30px] font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase tracking-widest">🇪🇺 Europa</button>
+                <button onclick="setGuide('ITA')" class="bg-white border-2 border-slate-50 px-12 py-6 rounded-[30px] font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase tracking-widest">🇮🇹 Itália</button>
+                <button onclick="setGuide('JPN')" class="bg-white border-2 border-slate-50 px-12 py-6 rounded-[30px] font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase tracking-widest">🇯🇵 Japão</button>
+                <button onclick="setGuide('MEX')" class="bg-white border-2 border-slate-50 px-12 py-6 rounded-[30px] font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase tracking-widest">🇲🇽 México</button>
+                <button onclick="setGuide('PRT')" class="bg-white border-2 border-slate-50 px-12 py-6 rounded-[30px] font-black shrink-0 shadow-sm hover:border-blue-200 transition-all uppercase tracking-widest">🇵🇹 Portugal</button>
             </div>
 
-            <div id="restaurant-list" class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-40 max-w-6xl mx-auto px-4">
+            <div id="restaurant-list" class="grid grid-cols-1 md:grid-cols-2 gap-8 pb-40 max-w-7xl mx-auto px-6">
                 </div>
         </section>
 
-        <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t border-slate-100 py-6 flex justify-around shadow-[0_-20px_50px_rgba(0,0,0,0.05)] z-50">
-            <button onclick="navigateTab('home')" id="nav-home" class="flex flex-col items-center tab-active">
-                <i class="fa-solid fa-wallet text-2xl"></i>
-                <span class="text-[10px] font-black mt-2 uppercase tracking-widest" data-i18n="nav_wallet">Carteira</span>
+        <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 py-8 flex justify-around shadow-[0_-25px_60px_rgba(0,0,0,0.08)] z-50">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center tab-active">
+                <i class="fa-solid fa-wallet text-3xl"></i>
+                <span class="text-[11px] font-black mt-3 uppercase tracking-[0.2em]" data-i18n="nav_wallet">Carteira</span>
             </button>
-            <button onclick="navigateTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-slate-300">
-                <i class="fa-solid fa-money-bill-transfer text-2xl"></i>
-                <span class="text-[10px] font-black mt-2 uppercase tracking-widest" data-i18n="nav_exchange">Câmbio</span>
+            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-slate-300 hover:text-blue-400 transition-colors">
+                <i class="fa-solid fa-money-bill-transfer text-3xl"></i>
+                <span class="text-[11px] font-black mt-3 uppercase tracking-[0.2em]" data-i18n="nav_exchange">Câmbio</span>
             </button>
-            <button onclick="navigateTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-slate-300">
-                <i class="fa-solid fa-utensils text-2xl"></i>
-                <span class="text-[10px] font-black mt-2 uppercase tracking-widest" data-i18n="nav_guide">Guia</span>
+            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-slate-300 hover:text-blue-400 transition-colors">
+                <i class="fa-solid fa-utensils text-3xl"></i>
+                <span class="text-[11px] font-black mt-3 uppercase tracking-[0.2em]" data-i18n="nav_guide">Guia</span>
             </button>
         </nav>
     </div>
 
     <script>
-        // BANCO DE TRADUÇÃO (SISTEMA DE IDIOMAS)
-        const appTranslations = {
+        /**
+         * 1. SISTEMA DE TRADUÇÃO MULTI-IDIOMA
+         */
+        const translations = {
             pt: {
-                welcome: "Seu controle financeiro inteligente.",
-                balance: "Saldo Atual",
-                incomes: "Entradas",
-                expenses: "Saídas",
-                opt_expense: "Despesa (-)",
-                opt_income: "Receita (+)",
-                btn_save: "Salvar Lançamento",
-                btn_clear: "Apagar Histórico",
-                converter: "Conversor Inteligente",
-                btn_apply_exchange: "Lançar gasto no meu saldo",
-                guide_title: "Guia Gastronômico",
+                welcome: "Gestão financeira de elite para usuários exigentes.",
+                balance: "Saldo Disponível",
+                incomes: "Entradas Mensais",
+                expenses: "Saídas Totais",
+                opt_expense: "Saída (-)",
+                opt_income: "Entrada (+)",
+                btn_save: "Confirmar Registro",
+                btn_clear: "Limpar Base de Dados",
+                converter: "Câmbio Inteligente",
+                btn_apply_exchange: "Lançar Despesa no Saldo",
+                guide_title: "Guia de Restaurantes",
                 nav_wallet: "Carteira",
                 nav_exchange: "Câmbio",
                 nav_guide: "Guia",
                 monthly_income: "Renda Mensal (Salário)",
-                create_account: "Não tem conta? Criar agora"
+                create_account: "Ainda não possui conta? Registre-se agora"
             },
             en: {
-                welcome: "Your smart financial control.",
-                balance: "Current Balance",
-                incomes: "Incomes",
-                expenses: "Expenses",
-                opt_expense: "Expense (-)",
+                welcome: "Elite financial management for demanding users.",
+                balance: "Available Balance",
+                incomes: "Monthly Incomes",
+                expenses: "Total Expenses",
+                opt_expense: "Outcome (-)",
                 opt_income: "Income (+)",
-                btn_save: "Save Entry",
-                btn_clear: "Clear History",
-                converter: "Smart Converter",
-                btn_apply_exchange: "Post to my balance",
-                guide_title: "Foodie Guide",
+                btn_save: "Confirm Entry",
+                btn_clear: "Clear Database",
+                converter: "Smart Exchange",
+                btn_apply_exchange: "Post to Balance",
+                guide_title: "Restaurant Guide",
                 nav_wallet: "Wallet",
                 nav_exchange: "Exchange",
                 nav_guide: "Guide",
                 monthly_income: "Monthly Income (Salary)",
-                create_account: "No account? Create one"
+                create_account: "No account? Register now"
             }
         };
 
-        // BANCO DE DADOS DE RESTAURANTES (35 ITENS)
-        const globalRestaurants = {
+        /**
+         * 2. BANCO DE DADOS GASTRONÔMICO (EXPANDIDO PARA MANTER VOLUME)
+         */
+        const restaurantesDB = {
             'BRL': [
-                {nome:'A CASA DO PORCO', cidade:'SÃO PAULO', tipo:'COZINHA CAIPIRA', preco:'$$$', icone:'🐷'},
-                {nome:'MARIUS DEGUSTARE', cidade:'RIO DE JANEIRO', tipo:'CHURRASCO/MAR', preco:'$$$$', icone:'🥩'},
-                {nome:'D.O.M', cidade:'SÃO PAULO', tipo:'ALTA GASTRONOMIA', preco:'$$$$$', icone:'🌿'},
-                {nome:'MANÍ', cidade:'SÃO PAULO', tipo:'CONTEMPORÂNEA', preco:'$$$$', icone:'🥣'},
-                {nome:'GLOUTON', cidade:'BELO HORIZONTE', tipo:'COZINHA MINEIRA', preco:'$$$', icone:'🍷'}
+                {nome:'A CASA DO PORCO', cidade:'SÃO PAULO', tipo:'COZINHA CONCEITUAL', preco:'$$$', icone:'🐷', desc:'Eleito um dos melhores do mundo, focado na carne suína.'},
+                {nome:'MARIUS DEGUSTARE', cidade:'RIO DE JANEIRO', tipo:'CHURRASCO NOBRE', preco:'$$$$', icone:'🥩', desc:'Experiência épica em frente à praia de Copacabana.'},
+                {nome:'D.O.M', cidade:'SÃO PAULO', tipo:'ALTA GASTRONOMIA', preco:'$$$$$', icone:'🌿', desc:'Chef Alex Atala explorando ingredientes da Amazônia.'},
+                {nome:'MANÍ', cidade:'SÃO PAULO', tipo:'CONTEMPORÂNEA', preco:'$$$$', icone:'🥣', desc:'Cozinha artística e delicada em um ambiente minimalista.'},
+                {nome:'GLOUTON', cidade:'BELO HORIZONTE', tipo:'COZINHA MINEIRA', preco:'$$$', icone:'🍷', desc:'O melhor da tradição mineira com técnicas francesas.'}
             ],
             'USD': [
-                {nome:'JOE\'S PIZZA', cidade:'NEW YORK', tipo:'PIZZARIA CLASSICA', preco:'$', icone:'🍕'},
-                {nome:'KATZ\'S DELI', cidade:'NEW YORK', tipo:'SANDUÍCHES', preco:'$$', icone:'🥪'},
-                {nome:'LE BERNARDIN', cidade:'NEW YORK', tipo:'FINE DINING SEAFOOD', preco:'$$$$$', icone:'🐟'},
-                {nome:'NOBU MALIBU', cidade:'LOS ANGELES', tipo:'JAPANESE FUSION', preco:'$$$$', icone:'🍣'},
-                {nome:'FRENCH LAUNDRY', cidade:'NAPA VALLEY', tipo:'FRENCH GASTRONOMY', preco:'$$$$$', icone:'🏰'}
+                {nome:'JOE\'S PIZZA', cidade:'NEW YORK', tipo:'PIZZA CLÁSSICA', preco:'$', icone:'🍕', desc:'A fatia mais icônica de NY desde 1975.'},
+                {nome:'KATZ\'S DELI', cidade:'NEW YORK', tipo:'DELICATESSEN', preco:'$$', icone:'🥪', desc:'Onde o sanduíche de Pastrami é uma instituição religiosa.'},
+                {nome:'LE BERNARDIN', cidade:'NEW YORK', tipo:'FRUTOS DO MAR', preco:'$$$$$', icone:'🐟', desc:'Detentor de 3 estrelas Michelin e perfeição técnica.'},
+                {nome:'NOBU MALIBU', cidade:'LOS ANGELES', tipo:'JAPONÊS FUSION', preco:'$$$$', icone:'🍣', desc:'Ponto de encontro de celebridades com vista para o mar.'},
+                {nome:'FRENCH LAUNDRY', cidade:'NAPA VALLEY', tipo:'GASTRONOMIA FRANCESA', preco:'$$$$$', icone:'🏰', desc:'O ápice da culinária nos Estados Unidos.'}
             ],
             'EUR': [
-                {nome:'LE MEURICE', cidade:'PARIS', tipo:'ALAIN DUCASSE LUXE', preco:'$$$$$', icone:'🥐'},
-                {nome:'SEPTIME', cidade:'PARIS', tipo:'NEO-BISTRO', preco:'$$$$', icone:'🍷'},
-                {nome:'HOFBRÄUHAUS', cidade:'MUNICH', tipo:'CERVEJARIA ALEMÃ', preco:'$$', icone:'🍺'},
-                {nome:'STEIRERECK', cidade:'VIENNA', tipo:'MODERN AUSTRIAN', preco:'$$$$$', icone:'🇦🇹'},
-                {nome:'CIEL DE PARIS', cidade:'PARIS', tipo:'VISTA PANORÂMICA', preco:'$$$$', icone:'🗼'}
+                {nome:'LE MEURICE', cidade:'PARIS', tipo:'LUXO FRANCÊS', preco:'$$$$$', icone:'🥐', desc:'Palácio gastronômico assinado por Alain Ducasse.'},
+                {nome:'SEPTIME', cidade:'PARIS', tipo:'NEO-BISTRO', preco:'$$$$', icone:'🍷', desc:'O restaurante mais concorrido e moderno da França.'},
+                {nome:'HOFBRÄUHAUS', cidade:'MUNICH', tipo:'TABERNA ALEMÃ', preco:'$$', icone:'🍺', desc:'Cervejaria histórica datada do ano de 1589.'},
+                {nome:'STEIRERECK', cidade:'VIENA', tipo:'MODERNA AUSTRÍACA', preco:'$$$$$', icone:'🇦🇹', desc:'Inovação em meio ao Stadtpark de Viena.'},
+                {nome:'CIEL DE PARIS', cidade:'PARIS', tipo:'VISTA PANORÂMICA', preco:'$$$$', icone:'🗼', desc:'Localizado no topo da Torre Montparnasse.'}
             ],
             'ITA': [
-                {nome:'OSTERIA FRANCESCANA', cidade:'MODENA', tipo:'CREATIVE ITALIAN', preco:'$$$$$', icone:'🎨'},
-                {nome:'TRATTORIA BAFFETTO', cidade:'ROMA', tipo:'MELHOR PIZZA', preco:'$$', icone:'🇮🇹'},
-                {nome:'LA PERGOLA', cidade:'ROMA', tipo:'3 ESTRELAS MICHELIN', preco:'$$$$$', icone:'🏛️'},
-                {nome:'DA VITTORIO', cidade:'BERGAMO', tipo:'TRADIÇÃO LOMBARDA', preco:'$$$$', icone:'🍝'},
-                {nome:'ANTICA PESA', cidade:'ROMA', tipo:'CLÁSSICO ROMANO', preco:'$$$', icone:'🍷'}
+                {nome:'OSTERIA FRANCESCANA', cidade:'MODENA', tipo:'ARTE ITALIANA', preco:'$$$$$', icone:'🎨', desc:'Massimo Bottura reinventando a tradição da Itália.'},
+                {nome:'TRATTORIA BAFFETTO', cidade:'ROMA', tipo:'PIZZARIA REAL', preco:'$$', icone:'🇮🇹', desc:'A pizza de massa fina mais famosa da capital romana.'},
+                {nome:'LA PERGOLA', cidade:'ROMA', tipo:'VISTA ETERNA', preco:'$$$$$', icone:'🏛️', desc:'O único 3 estrelas Michelin de Roma.'},
+                {nome:'DA VITTORIO', cidade:'BÉRGAMO', tipo:'TRADIÇÃO FAMILIAR', preco:'$$$$', icone:'🍝', desc:'Lugar sagrado para amantes de massas e frutos do mar.'},
+                {nome:'ANTICA PESA', cidade:'ROMA', tipo:'HISTÓRICO ROMANO', preco:'$$$', icone:'🍷', desc:'Cozinha romana clássica frequentada por Hollywood.'}
             ],
             'JPN': [
-                {nome:'SUKIYABASHI JIRO', cidade:'TOKYO', tipo:'LENDA DO SUSHI', preco:'$$$$$', icone:'🍣'},
-                {nome:'ICHIRAN RAMEN', cidade:'TOKYO', tipo:'TONKOTSU RAMEN', preco:'$', icone:'🍜'},
-                {nome:'NARISAWA', cidade:'TOKYO', tipo:'SATAYOMA SCENERY', preco:'$$$$$', icone:'🌲'},
-                {nome:'KOBE BEEF KAISEKI', cidade:'KOBE', tipo:'CARNE DE KOBE', preco:'$$$$', icone:'🐂'},
-                {nome:'GION NANBA', cidade:'KYOTO', tipo:'KYOTO KAISEKI', preco:'$$$$', icone:'🍵'}
+                {nome:'SUKIYABASHI JIRO', cidade:'TOKYO', tipo:'LENDA DO SUSHI', preco:'$$$$$', icone:'🍣', desc:'Onde o mestre Jiro Ono prepara cada peça com perfeição.'},
+                {nome:'ICHIRAN RAMEN', cidade:'TOKYO', tipo:'RAMEN ESPECIALISTA', preco:'$', icone:'🍜', desc:'Cabines individuais para foco total no sabor do caldo.'},
+                {nome:'NARISAWA', cidade:'TOKYO', tipo:'ECO-GASTRONOMIA', preco:'$$$$$', icone:'🌲', desc:'Pratos que parecem paisagens naturais do Japão.'},
+                {nome:'KOBE BEEF KAISEKI', cidade:'KOBE', tipo:'CARNE WAGYU', preco:'$$$$', icone:'🐂', desc:'A melhor carne bovina do planeta servida com técnica.'},
+                {nome:'GION NANBA', cidade:'KYOTO', tipo:'KYOTO KAISEKI', preco:'$$$$', icone:'🍵', desc:'O refinamento da antiga capital japonesa.'}
             ],
             'MEX': [
-                {nome:'PUJOL', cidade:'CDMX', tipo:'MEXICANA MODERNA', preco:'$$$$$', icone:'🌮'},
-                {nome:'QUINTONIL', cidade:'CDMX', tipo:'INGREDIENTES LOCAIS', preco:'$$$$$', icone:'🥑'},
-                {nome:'EL FAROLITO', cidade:'CDMX', tipo:'TACOS AL PASTOR', preco:'$', icone:'🌮'},
-                {nome:'ROSETTA', cidade:'CDMX', tipo:'ITALO-MEXICANA', preco:'$$$', icone:'🍝'},
-                {nome:'CONTRAMAR', cidade:'CDMX', tipo:'PEIXES E FRUTOS', preco:'$$$', icone:'🐟'}
+                {nome:'PUJOL', cidade:'CDMX', tipo:'MEXICANA MODERNA', preco:'$$$$$', icone:'🌮', desc:'Enrique Olvera e o famoso Mole Madre de mil dias.'},
+                {nome:'QUINTONIL', cidade:'CDMX', tipo:'CONTEMPORÂNEO', preco:'$$$$$', icone:'🥑', desc:'Foco total em ervas e vegetais nativos do México.'},
+                {nome:'EL FAROLITO', cidade:'CDMX', tipo:'TACOS AUTÊNTICOS', preco:'$', icone:'🌮', desc:'Onde o Taco al Pastor é elevado à perfeição.'},
+                {nome:'ROSETTA', cidade:'CDMX', tipo:'MANSÃO GASTRONÔMICA', preco:'$$$', icone:'🍝', desc:'Chef Elena Reygadas unindo Itália e México.'},
+                {nome:'CONTRAMAR', cidade:'CDMX', tipo:'MARISCOS LENTAIS', preco:'$$$', icone:'🐟', desc:'O destino obrigatório para almoços de frutos do mar.'}
             ],
             'PRT': [
-                {nome:'BELCANTO', cidade:'LISBOA', tipo:'JOSÉ AVILLEZ', preco:'$$$$$', icone:'🇵🇹'},
-                {nome:'SOLAR DOS PRESUNTOS', cidade:'LISBOA', tipo:'TRADICIONAL', preco:'$$$', icone:'🐷'},
-                {nome:'RAMIRO', cidade:'LISBOA', tipo:'MARISQUEIRA LENDÁRIA', preco:'$$$$', icone:'🦞'},
-                {nome:'THE YEATMAN', cidade:'PORTO', tipo:'GASTRONOMIA E VINHOS', preco:'$$$$$', icone:'🍷'},
-                {nome:'PASTÉIS DE BELÉM', cidade:'LISBOA', tipo:'HISTÓRICO DOCE', preco:'$', icone:'🧁'}
+                {nome:'BELCANTO', cidade:'LISBOA', tipo:'VANGUARDA PORTUGUESA', preco:'$$$$$', icone:'🇵🇹', desc:'José Avillez elevando a cozinha lusa ao topo.'},
+                {nome:'SOLAR DOS PRESUNTOS', cidade:'LISBOA', tipo:'TRADIÇÃO LUSA', preco:'$$$', icone:'🐷', desc:'Onde o sabor de Portugal é servido com fartura.'},
+                {nome:'RAMIRO', cidade:'LISBOA', tipo:'MARISQUEIRA', preco:'$$$$', icone:'🦞', desc:'Cervejaria lendária onde o foco é o marisco fresco.'},
+                {nome:'THE YEATMAN', cidade:'PORTO', tipo:'CULTURA DO VINHO', preco:'$$$$$', icone:'🍷', desc:'Vista deslumbrante sobre o Rio Douro.'},
+                {nome:'PASTÉIS DE BELÉM', cidade:'LISBOA', tipo:'HISTÓRIA DOCE', preco:'$', icone:'🧁', desc:'A receita secreta que o mundo inteiro tenta copiar.'}
             ]
         };
 
-        // VARIÁVEIS DE ESTADO DO APLICATIVO
-        let registrationStatus = false;
-        let activeUser = null;
-        let exchangeBid = 1;
-        let storedCurrencyValues = { amountDisplay: 0, salaryInput: 0, calcValueDisplay: 0 };
+        /**
+         * 3. VARIÁVEIS DE ESTADO DO SISTEMA
+         */
+        let isRegisterMode = false;
+        let currentUser = null;
+        let currentRate = 1;
+        let rawValues = { amountDisplay: 0, salaryInput: 0, calcValueDisplay: 0 };
 
-        // 1. FUNÇÃO DE MÁSCARA (CORREÇÃO DE APAGAR)
-        function initializeMask(elementId) {
-            const inputField = document.getElementById(elementId);
-            
-            inputField.addEventListener('input', (event) => {
-                let numericValue = event.target.value.replace(/\D/g, '');
-                
-                // Se apagar tudo, reseta para zero sem quebrar o código
-                if (numericValue === "" || numericValue === "0") {
-                    storedCurrencyValues[elementId] = 0;
-                    inputField.value = formatByCurrency(0, getTargetCurrency(elementId));
-                    if (elementId === 'calcValueDisplay') computeExchange();
-                    return;
+        /**
+         * 4. MOTOR DE MÁSCARA MONETÁRIA (ANTI-GLITCH)
+         */
+        function applyMask(id) {
+            const el = document.getElementById(id);
+            el.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '');
+                if (v === "" || v === "0") { 
+                    rawValues[id] = 0; 
+                    el.value = formatCurrency(0, getContextCurrency(id)); 
+                } else {
+                    let num = parseFloat(v) / 100;
+                    rawValues[id] = num;
+                    el.value = formatCurrency(num, getContextCurrency(id));
                 }
-
-                let decimalValue = parseFloat(numericValue) / 100;
-                storedCurrencyValues[elementId] = decimalValue;
-                inputField.value = formatByCurrency(decimalValue, getTargetCurrency(elementId));
-                
-                if (elementId === 'calcValueDisplay') computeExchange();
+                if (id === 'calcValueDisplay') buscarCotacao();
             });
-
-            inputField.value = formatByCurrency(0, getTargetCurrency(elementId));
+            el.value = formatCurrency(0, getContextCurrency(id));
         }
 
-        function getTargetCurrency(id) {
+        function getContextCurrency(id) {
             if(id === 'salaryInput') return document.getElementById('userCurrencyInput').value;
             if(id === 'calcValueDisplay') return document.getElementById('fromCurrency').value;
-            return activeUser ? activeUser.currency : 'BRL';
+            return currentUser ? currentUser.currency : 'BRL';
         }
 
-        function formatByCurrency(val, currencyCode) {
-            const target = currencyCode || (activeUser ? activeUser.currency : 'BRL');
-            return val.toLocaleString('pt-BR', { style: 'currency', currency: target });
+        function formatCurrency(val, curr) {
+            const c = curr || (currentUser ? currentUser.currency : 'BRL');
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: c });
         }
 
-        // 2. SISTEMA DE AUTENTICAÇÃO
-        function toggleAuthInterface() {
-            registrationStatus = !registrationStatus;
-            const regSection = document.getElementById('register-fields');
-            const mainTitle = document.getElementById('auth-title');
-            const mainBtn = document.getElementById('btn-main-auth');
-            const switchBtn = document.getElementById('btn-switch-auth');
-
-            if (registrationStatus) {
-                regSection.classList.remove('hidden');
-                mainTitle.innerText = 'Crie sua Conta';
-                mainBtn.innerText = 'CADASTRAR E ENTRAR';
-                switchBtn.innerText = 'Já tenho conta? Entrar';
-            } else {
-                regSection.classList.add('hidden');
-                mainTitle.innerHTML = 'i<span class="text-blue-600">Finance</span>';
-                mainBtn.innerText = 'ENTRAR';
-                switchBtn.innerText = 'Não tem conta? Criar agora';
-            }
+        /**
+         * 5. GERENCIAMENTO DE SESSÃO E LOGIN
+         */
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('register-fields').classList.toggle('hidden');
+            document.getElementById('auth-title').innerHTML = isRegisterMode ? 'Nova Conta' : 'i<span class="text-blue-600">Finance</span>';
+            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'CRIAR MINHA CONTA' : 'ACESSAR SISTEMA';
+            document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já sou cadastrado' : 'Não tem conta? Registre-se agora';
         }
 
-        function handleAuthentication() {
+        function handleAuth() {
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value.trim();
-
-            if (!email || !pass) { alert("Por favor, preencha E-mail e Senha."); return; }
-
-            if (registrationStatus) {
+            
+            if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
-                const currency = document.getElementById('userCurrencyInput').value;
-                const initialSalary = storedCurrencyValues.salaryInput;
-
-                if(!name) { alert("Como devemos te chamar?"); return; }
-
-                const newUser = {
-                    name: name.toUpperCase(),
-                    pass: pass,
-                    currency: currency,
-                    salary: initialSalary,
-                    transactions: [] // Começa vazio
+                if(!name || !email || !pass) { alert("Preencha todos os campos."); return; }
+                
+                const newUser = { 
+                    name: name.toUpperCase(), 
+                    pass, 
+                    currency: document.getElementById('userCurrencyInput').value, 
+                    salary: rawValues.salaryInput, 
+                    transactions: [] 
                 };
-
                 localStorage.setItem(`user_${email}`, JSON.stringify(newUser));
-                alert("Conta criada com sucesso! Por favor, faça o login.");
-                toggleAuthInterface();
+                alert("Conta criada com sucesso! Faça seu primeiro acesso."); 
+                toggleAuthMode();
             } else {
-                const savedData = localStorage.getItem(`user_${email}`);
-                if (savedData) {
-                    const user = JSON.parse(savedData);
-                    if (user.pass === pass) {
-                        activeUser = { ...user, email: email };
-                        
-                        // CORREÇÃO DO SALÁRIO: Se histórico vazio e tem salário, lança o saldo inicial.
-                        if (activeUser.transactions.length === 0 && activeUser.salary > 0) {
-                            activeUser.transactions.push({
-                                id: Date.now(),
-                                text: "SALDO INICIAL (SALÁRIO)",
-                                amount: activeUser.salary,
-                                date: new Date().toLocaleDateString('pt-BR')
-                            });
-                            syncData();
-                        }
-                        
-                        launchDashboard();
-                    } else { alert("Senha incorreta."); }
-                } else { alert("Usuário não encontrado."); }
+                const saved = localStorage.getItem(`user_${email}`);
+                if (saved && JSON.parse(saved).pass === pass) {
+                    currentUser = { ...JSON.parse(saved), email };
+                    
+                    // CRÉDITO DO SALÁRIO NO PRIMEIRO LOGIN
+                    if (currentUser.transactions.length === 0 && currentUser.salary > 0) {
+                        currentUser.transactions.push({ 
+                            id: Date.now(), 
+                            text: "CRÉDITO INICIAL (SALÁRIO)", 
+                            amount: currentUser.salary, 
+                            date: new Date().toLocaleDateString('pt-BR') 
+                        });
+                        save();
+                    }
+                    entrarApp();
+                } else { alert("Usuário ou senha inválidos."); }
             }
         }
 
-        function launchDashboard() {
+        function entrarApp() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('displayUserName').innerText = activeUser.name;
-            document.getElementById('toCurrency').value = activeUser.currency;
-            
-            refreshDashboardUI();
-            updateRestaurantGuide('BRL');
-            fetchExchangeRate();
+            document.getElementById('displayUserName').innerText = currentUser.name;
+            renderTransactions();
+            setGuide('BRL');
+            buscarCotacao();
         }
 
-        // 3. LÓGICA DA CARTEIRA
-        function registerNewTransaction() {
-            const description = document.getElementById('desc').value.toUpperCase();
-            const typeValue = document.getElementById('type').value;
-            const amount = storedCurrencyValues.amountDisplay;
-
-            if (!description || amount === 0) { alert("Informe descrição e valor."); return; }
-
-            const finalAmount = (typeValue === 'expense') ? -amount : amount;
-
-            const entry = {
-                id: Date.now(),
-                text: description,
-                amount: finalAmount,
-                date: new Date().toLocaleDateString('pt-BR')
-            };
-
-            activeUser.transactions.push(entry);
-            syncData();
-            refreshDashboardUI();
-
-            // Limpeza
+        /**
+         * 6. LÓGICA DA CARTEIRA E TRANSAÇÕES
+         */
+        function addTransaction() {
+            const desc = document.getElementById('desc').value.toUpperCase();
+            const val = rawValues.amountDisplay;
+            if (!desc || val === 0) { alert("Descrição e valor são obrigatórios."); return; }
+            
+            const finalVal = (document.getElementById('type').value === 'expense') ? -val : val;
+            
+            currentUser.transactions.push({ 
+                id: Date.now(), 
+                text: desc, 
+                amount: finalVal, 
+                date: new Date().toLocaleDateString('pt-BR') 
+            });
+            
+            save(); 
+            renderTransactions();
+            
+            // Reset de campos
             document.getElementById('desc').value = '';
-            document.getElementById('amountDisplay').value = formatByCurrency(0);
-            storedCurrencyValues.amountDisplay = 0;
+            document.getElementById('amountDisplay').value = formatCurrency(0);
+            rawValues.amountDisplay = 0;
         }
 
-        function refreshDashboardUI() {
-            const listContainer = document.getElementById('transaction-list');
-            listContainer.innerHTML = '';
+        function renderTransactions() {
+            const list = document.getElementById('transaction-list');
+            list.innerHTML = ''; 
+            let bal = 0, inc = 0, exp = 0;
             
-            let totalBalance = 0;
-            let totalIncome = 0;
-            let totalExpense = 0;
-
-            // Inverte a ordem para mostrar os mais novos primeiro
-            const sortedEntries = [...activeUser.transactions].reverse();
-
-            sortedEntries.forEach(item => {
-                totalBalance += item.amount;
-                if(item.amount > 0) totalIncome += item.amount;
-                else totalExpense += Math.abs(item.amount);
-
+            [...currentUser.transactions].reverse().forEach(t => {
+                bal += t.amount; 
+                if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
+                
                 const li = document.createElement('li');
-                li.className = "flex justify-between items-center py-6 fade-in-section";
+                li.className = "flex justify-between items-center py-8 fade-in-up";
                 li.innerHTML = `
                     <div class="text-left">
-                        <p class="font-black text-sm text-slate-700 tracking-tight">${item.text}</p>
-                        <p class="text-[9px] text-slate-300 font-bold uppercase tracking-widest">${item.date}</p>
+                        <p class="font-black text-base text-slate-800 tracking-tight">${t.text}</p>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">${t.date}</p>
                     </div>
-                    <span class="${item.amount < 0 ? 'text-red-500' : 'text-emerald-600'} font-black text-sm">
-                        ${formatByCurrency(item.amount)}
+                    <span class="${t.amount < 0 ? 'text-red-500' : 'text-emerald-600'} font-black text-lg">
+                        ${formatCurrency(t.amount)}
                     </span>
                 `;
-                listContainer.appendChild(li);
+                list.appendChild(li);
             });
-
-            document.getElementById('balance').innerText = formatByCurrency(totalBalance);
-            document.getElementById('incomes').innerText = formatByCurrency(totalIncome);
-            document.getElementById('expenses').innerText = formatByCurrency(totalExpense);
+            
+            document.getElementById('balance').innerText = formatCurrency(bal);
+            document.getElementById('incomes').innerText = formatCurrency(inc);
+            document.getElementById('expenses').innerText = formatCurrency(exp);
         }
 
-        // 4. LÓGICA DE CÂMBIO
-        async function fetchExchangeRate() {
+        /**
+         * 7. LÓGICA DE CÂMBIO (API EXTERNA)
+         */
+        async function buscarCotacao() {
             const from = document.getElementById('fromCurrency').value;
             const to = document.getElementById('toCurrency').value;
-
-            if (from === to) { 
-                exchangeBid = 1; 
-                computeExchange(); 
-                return; 
-            }
-
+            if (from === to) { currentRate = 1; updateExchangeUI(); return; }
             try {
-                const response = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
-                const data = await response.json();
-                const pair = from + to;
-                exchangeBid = parseFloat(data[pair].bid);
-                computeExchange();
-            } catch (error) { 
-                console.error("Erro ao buscar cotação."); 
+                const res = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
+                const data = await res.json();
+                currentRate = parseFloat(data[from + to].bid);
+                updateExchangeUI();
+            } catch (e) { 
+                console.error("Falha na conexão com a API de moedas."); 
             }
         }
 
-        function computeExchange() {
-            const inputVal = storedCurrencyValues.calcValueDisplay;
-            const result = inputVal * exchangeBid;
-            const toSymbol = document.getElementById('toCurrency').value;
-            document.getElementById('calcResultDisplay').innerText = formatByCurrency(result, toSymbol);
+        function updateExchangeUI() {
+            const res = rawValues.calcValueDisplay * currentRate;
+            document.getElementById('calcResultDisplay').innerText = formatCurrency(res, document.getElementById('toCurrency').value);
         }
 
-        function applyExchangeToBalance() {
-            const convertedValue = storedCurrencyValues.calcValueDisplay * exchangeBid;
-            if(convertedValue === 0) return;
-
-            const origin = document.getElementById('fromCurrency').value;
+        function lancarCambio() {
+            const res = rawValues.calcValueDisplay * currentRate;
+            if(res <= 0) return;
             
-            activeUser.transactions.push({
-                id: Date.now(),
-                text: `GASTO NO EXTERIOR (${origin})`,
-                amount: -convertedValue,
-                date: new Date().toLocaleDateString('pt-BR')
+            const moedas = `${document.getElementById('fromCurrency').value} PARA ${document.getElementById('toCurrency').value}`;
+            
+            currentUser.transactions.push({ 
+                id: Date.now(), 
+                text: `CÂMBIO: ${moedas}`, 
+                amount: -res, 
+                date: new Date().toLocaleDateString('pt-BR') 
             });
-
-            syncData();
-            refreshDashboardUI();
-            navigateTab('home');
-            alert("Gasto registrado com sucesso!");
+            
+            save(); 
+            renderTransactions(); 
+            switchTab('home');
+            alert("Operação de câmbio registrada como saída.");
         }
 
-        // 5. GUIA DE RESTAURANTES
-        function updateRestaurantGuide(countryCode) {
-            const guideContainer = document.getElementById('restaurant-list');
-            guideContainer.innerHTML = '';
+        /**
+         * 8. GUIA MUNDIAL DE RESTAURANTES (RENDERIZAÇÃO)
+         */
+        function setGuide(pais) {
+            const container = document.getElementById('restaurant-list');
+            container.innerHTML = '';
             
-            const list = globalRestaurants[countryCode] || globalRestaurants['BRL'];
-
-            list.forEach(res => {
-                const card = document.createElement('div');
-                card.className = "premium-card p-8 flex items-center gap-6 text-left fade-in-section hover:scale-[1.02] transition-transform cursor-pointer";
-                card.innerHTML = `
-                    <div class="text-4xl bg-slate-50 w-20 h-20 flex items-center justify-center rounded-3xl shadow-inner">${res.icone}</div>
+            (restaurantesDB[pais] || restaurantesDB['BRL']).forEach(r => {
+                const div = document.createElement('div');
+                div.className = "card-inner p-10 flex flex-col sm:flex-row items-center gap-8 text-center sm:text-left fade-in-up premium-shadow bg-white hover:scale-[1.01] transition-all";
+                div.innerHTML = `
+                    <div class="text-5xl bg-slate-50 w-24 h-24 flex items-center justify-center rounded-[35px] shadow-inner shrink-0">${r.icone}</div>
                     <div class="flex-1">
-                        <h4 class="font-black text-slate-800 text-lg tracking-tighter">${res.nome}</h4>
-                        <p class="text-[10px] text-blue-500 font-extrabold uppercase tracking-[0.15em] mt-1">${res.cidade} • ${res.tipo}</p>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-emerald-500 font-black text-sm">${res.preco}</span>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <h4 class="font-black text-slate-800 text-xl tracking-tighter">${r.nome}</h4>
+                            <span class="text-emerald-500 font-black text-sm bg-emerald-50 px-3 py-1 rounded-full w-max mx-auto sm:mx-0">${r.preco}</span>
+                        </div>
+                        <p class="text-[11px] text-blue-600 font-black uppercase tracking-[0.2em] mt-2">${r.cidade} • ${r.tipo}</p>
+                        <p class="text-xs text-slate-400 font-medium mt-3 leading-relaxed">${r.desc}</p>
                     </div>
                 `;
-                guideContainer.appendChild(card);
+                container.appendChild(div);
             });
         }
 
-        // 6. UTILITÁRIOS E NAVEGAÇÃO
-        function navigateTab(tabName) {
-            const tabs = ['home', 'cambio', 'viagem'];
-            tabs.forEach(t => {
+        /**
+         * 9. UTILITÁRIOS E CONTROLE DE UI
+         */
+        function switchTab(tab) {
+            ['home', 'cambio', 'viagem'].forEach(t => {
                 document.getElementById('tab-' + t).classList.add('hidden');
-                document.getElementById('nav-' + t).classList.remove('tab-active');
-                document.getElementById('nav-' + t).classList.add('text-slate-300');
+                document.getElementById('nav-' + t).classList.replace('tab-active', 'text-slate-300');
             });
-            
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            document.getElementById('nav-' + tabName).classList.add('tab-active');
-            document.getElementById('nav-' + tabName).classList.remove('text-slate-300');
-            
-            window.scrollTo(0, 0);
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+            document.getElementById('nav-' + tab).classList.replace('text-slate-300', 'tab-active');
+            window.scrollTo(0,0);
         }
 
-        function syncData() {
-            localStorage.setItem(`user_${activeUser.email}`, JSON.stringify(activeUser));
-        }
+        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
+        function logout() { if(confirm("Deseja encerrar a sessão?")) location.reload(); }
+        function limparTudo() { if(confirm("Deseja apagar permanentemente todo o histórico?")) { currentUser.transactions = []; save(); renderTransactions(); } }
+        function updateSalaryMask() { applyMask('salaryInput'); }
 
-        function logoutSession() {
-            if(confirm("Deseja sair da sua conta?")) {
-                location.reload();
-            }
-        }
-
-        function clearAllUserData() {
-            if(confirm("ATENÇÃO: Isso apagará todo o seu histórico. Continuar?")) {
-                activeUser.transactions = [];
-                syncData();
-                refreshDashboardUI();
-            }
-        }
-
-        function refreshCurrencyMasks() {
-            initializeMask('salaryInput');
-        }
-
-        // INICIALIZAÇÃO AO CARREGAR
+        /**
+         * INICIALIZAÇÃO DO APP
+         */
         window.onload = () => {
-            // Aplica máscaras nos campos de dinheiro
-            initializeMask('amountDisplay');
-            initializeMask('salaryInput');
-            initializeMask('calcValueDisplay');
-
-            // Detecta idioma e aplica tradução
-            const browserLang = navigator.language.startsWith('pt') ? 'pt' : 'en';
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                if (appTranslations[browserLang][key]) {
-                    element.innerText = appTranslations[browserLang][key];
-                }
+            applyMask('amountDisplay'); 
+            applyMask('salaryInput'); 
+            applyMask('calcValueDisplay');
+            
+            const userLang = navigator.language.startsWith('pt') ? 'pt' : 'en';
+            document.querySelectorAll('[data-i18n]').forEach(el => { 
+                const key = el.getAttribute('data-i18n');
+                if(translations[userLang][key]) el.innerText = translations[userLang][key]; 
             });
         };
-
     </script>
 </body>
 </html>
