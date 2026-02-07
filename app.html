@@ -3,86 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iFinance - Simples e Transparente</title>
+    <title>iFinance - Bem-vindo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; transition: opacity 0.4s; }
-        .fade-out { opacity: 0; }
-    </style>
 </head>
-<body class="bg-white text-slate-900">
+<body class="bg-white text-slate-900 font-sans flex flex-col items-center justify-center min-h-screen p-6 text-center">
 
-    <header class="container mx-auto p-8 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <i class="fa-solid fa-chart-simple text-white"></i>
-            </div>
-            <h1 class="text-2xl font-extrabold tracking-tight">iFinance</h1>
-        </div>
-        <nav>
-            <button onclick="irParaApp()" class="border-2 border-slate-900 px-6 py-2 rounded-full font-semibold hover:bg-slate-900 hover:text-white transition-all">
-                Entrar
-            </button>
-        </nav>
-    </header>
+    <div class="mb-6 w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center shadow-xl shadow-blue-100">
+        <i class="fa-solid fa-wallet text-white text-4xl"></i>
+    </div>
 
-    <section class="container mx-auto px-6 py-24 text-center">
-        <span class="bg-blue-50 text-blue-600 px-4 py-1 rounded-full text-sm font-bold uppercase tracking-widest">Controle Total</span>
-        <h2 class="text-5xl md:text-7xl font-extrabold mt-6 mb-8 tracking-tighter">
-            Suas finanças de forma <br> <span class="text-blue-600">clara e objetiva.</span>
-        </h2>
-        <p class="text-xl text-slate-500 max-w-2xl mx-auto mb-12">
-            O iFinance elimina a bagunça das planilhas e foca no que importa: quanto entra, quanto sai e quanto sobra.
-        </p>
-        <div class="flex flex-col md:flex-row justify-center gap-4">
-            <button id="btn-start" onclick="irParaApp()" class="bg-blue-600 text-white px-10 py-4 rounded-xl font-bold text-lg shadow-2xl shadow-blue-200 hover:bg-blue-700 transition-all flex items-center justify-center gap-2">
-                Criar minha conta grátis
-            </button>
-        </div>
-    </section>
+    <h1 class="text-5xl font-black tracking-tighter mb-4">i<span class="text-blue-600">Finance</span></h1>
+    <p class="text-xl text-slate-500 max-w-sm mb-10 leading-relaxed">
+        Sua vida financeira organizada de um jeito que você finalmente entende.
+    </p>
 
-    <section class="bg-slate-50 py-20 border-y border-slate-100">
-        <div class="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                <div class="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-leaf text-green-600 text-xl"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Interface Limpa</h3>
-                <p class="text-slate-500">Sem anúncios, sem distrações. Apenas os seus dados financeiros em destaque.</p>
-            </div>
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-clock-rotate-left text-blue-600 text-xl"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Histórico Inteligente</h3>
-                <p class="text-slate-500">Visualize seus gastos passados e projete o futuro com facilidade.</p>
-            </div>
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                <div class="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center mb-6">
-                    <i class="fa-solid fa-lock text-purple-600 text-xl"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Privacidade</h3>
-                <p class="text-slate-500">Seus dados não saem do seu navegador. Segurança total.</p>
-            </div>
-        </div>
-    </section>
+    <button onclick="window.location.href='app.html'" class="bg-blue-600 text-white px-12 py-4 rounded-2xl font-bold text-lg shadow-2xl shadow-blue-200 hover:bg-blue-700 hover:scale-105 transition-all active:scale-95">
+        Começar agora
+    </button>
 
-    <script>
-        function irParaApp() {
-            // Adiciona um ícone de carregamento no botão
-            const btn = document.getElementById('btn-start');
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i> Carregando...';
-            
-            // Efeito de saída suave
-            document.body.classList.add('fade-out');
-            
-            // Redireciona após 300ms (tempo da animação)
-            setTimeout(() => {
-                window.location.href = "app.html";
-            }, 300);
-        }
-    </script>
 </body>
 </html>
