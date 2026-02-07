@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* ESTILOS GERAIS E BLOQUEIO DE ZOOM */
+        /* CONFIGURAÇÕES DE INTERFACE NATIVA */
         html, body { 
             touch-action: pan-x pan-y; 
             overscroll-behavior: none;
@@ -27,269 +27,370 @@
         }
 
         body { 
-            padding-bottom: 90px; 
+            padding-bottom: 100px; 
             -webkit-tap-highlight-color: transparent; 
         }
 
         .hidden { display: none !important; }
 
+        /* ESTILO DOS BOTÕES DE NAVEGAÇÃO */
         .tab-active { 
             color: #2563eb; 
             transform: scale(1.1); 
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* IMPEDIR SELEÇÃO DE TEXTO PARA PARECER APP */
+        /* FORÇAR LETRAS MAIÚSCULAS NO INPUT DE DESCRIÇÃO */
+        #desc {
+            text-transform: uppercase;
+        }
+
+        /* BLOQUEIO DE SELEÇÃO PARA PARECER APP */
         * { 
             user-select: none; 
             -webkit-user-select: none;
             -webkit-touch-callout: none; 
         }
 
-        /* PERMITIR SELEÇÃO APENAS EM INPUTS */
+        /* PERMITIR DIGITAÇÃO APENAS ONDE PRECISA */
         input, select, textarea { 
             user-select: auto; 
             -webkit-user-select: auto;
-            font-size: 16px !important; /* Essencial para não dar zoom no iPhone */
+            font-size: 16px !important; /* Trava o zoom do iPhone no foco */
         }
 
+        /* ESTILOS DE FUNDO E SCROLL */
         .bg-auth { 
             background: radial-gradient(circle at top right, #eff6ff, #ffffff); 
         }
 
-        /* ESCONDER SCROLLBARS */
         ::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* ANIMAÇÕES */
+        /* ANIMAÇÕES DE TRANSIÇÃO */
         .fade-in {
-            animation: fadeIn 0.3s ease-in;
+            animation: fadeIn 0.4s ease-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* EFEITO DE CLIQUE NOS BOTÕES */
+        button:active {
+            transform: scale(0.96);
         }
     </style>
 </head>
 <body>
 
     <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 bg-auth text-center">
-        <div class="mb-6 w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center shadow-xl text-white text-4xl">
+        <div class="mb-6 w-24 h-24 bg-blue-600 rounded-[32px] flex items-center justify-center shadow-2xl text-white text-5xl">
             <i class="fa-solid fa-wallet"></i>
         </div>
         
-        <h1 id="auth-title" class="text-4xl font-black mb-2">i<span class="text-blue-600">Finance</span></h1>
-        <p id="auth-subtitle" class="text-slate-500 mb-8 font-medium">Sua jornada financeira começa aqui.</p>
+        <h1 id="auth-title" class="text-4xl font-black mb-2 tracking-tight">i<span class="text-blue-600">Finance</span></h1>
+        <p id="auth-subtitle" data-i18n="welcome" class="text-slate-500 mb-8 font-medium">Controle financeiro premium ao seu alcance.</p>
 
         <div class="flex flex-col w-full max-w-sm gap-4">
-            <input type="email" id="emailInput" placeholder="E-mail" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm border-slate-100">
-            <input type="password" id="passInput" placeholder="Senha" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm border-slate-100">
+            <input type="email" id="emailInput" placeholder="E-mail" class="bg-white border border-slate-100 p-5 rounded-2xl font-bold text-lg outline-none shadow-sm focus:border-blue-300 transition-all">
+            <input type="password" id="passInput" placeholder="Senha" class="bg-white border border-slate-100 p-5 rounded-2xl font-bold text-lg outline-none shadow-sm focus:border-blue-300 transition-all">
             
             <div id="register-fields" class="hidden flex flex-col gap-4 fade-in">
-                <input type="text" id="userNameInput" placeholder="Como quer ser chamado?" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm border-slate-100">
+                <input type="text" id="userNameInput" placeholder="Seu nome ou apelido" class="bg-white border border-slate-100 p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
                 
-                <select id="userCurrencyInput" onchange="updateSalaryMask()" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm border-slate-100">
+                <select id="userCurrencyInput" onchange="updateSalaryMask()" class="bg-white border border-slate-100 p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
                     <option value="BRL">🇧🇷 BRL - Real</option>
                     <option value="USD">🇺🇸 USD - Dólar</option>
                     <option value="EUR">🇪🇺 EUR - Euro</option>
                     <option value="GBP">🇬🇧 GBP - Libra</option>
                     <option value="JPY">🇯🇵 JPY - Iene</option>
                     <option value="MXN">🇲🇽 MXN - Peso Mexicano</option>
-                    <option value="CHF">🇨🇭 CHF - Franco Suíço</option>
-                    <option value="BTC">₿ BTC - Bitcoin</option>
                 </select>
 
-                <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100 text-left">
-                    <p class="text-[10px] font-black text-blue-600 uppercase mb-2 tracking-widest">Configuração de Renda Mensal</p>
-                    <input type="text" id="salaryInput" placeholder="0,00" class="w-full bg-transparent border-b border-blue-200 py-2 font-bold text-xl outline-none">
-                    <p class="text-[9px] text-blue-400 mt-2">Este valor será adicionado ao seu saldo todo início de mês.</p>
+                <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 text-left">
+                    <p class="text-[10px] font-black text-blue-600 uppercase mb-2 tracking-widest" data-i18n="monthly_income">Renda Mensal Automática</p>
+                    <input type="text" id="salaryInput" placeholder="0,00" class="w-full bg-transparent border-b-2 border-blue-200 py-2 font-bold text-2xl outline-none text-blue-900">
+                    <p class="text-[9px] text-blue-400 mt-2 font-bold uppercase">Lançado todo dia 1º no seu saldo.</p>
                 </div>
             </div>
 
-            <button onclick="handleAuth()" id="btn-main-auth" class="bg-blue-600 text-white py-5 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition">Entrar</button>
-            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-blue-600 font-bold mt-2">Criar conta gratuita</button>
+            <button onclick="handleAuth()" id="btn-main-auth" class="bg-blue-600 text-white py-5 rounded-2xl font-bold text-lg shadow-xl hover:bg-blue-700 transition-all uppercase tracking-wide">Entrar</button>
+            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-blue-600 font-bold mt-2 hover:text-blue-800 transition-colors" data-i18n="create_account">Criar minha conta gratuita</button>
         </div>
     </section>
 
     <div id="main-app" class="hidden">
         
         <section id="tab-home" class="fade-in">
-            <header class="bg-white border-b p-4 sticky top-0 z-10 flex justify-between items-center px-8">
-                <h1 class="text-xl font-extrabold text-blue-600 italic">iFinance</h1>
+            <header class="bg-white border-b border-slate-100 p-5 sticky top-0 z-10 flex justify-between items-center px-8 shadow-sm">
+                <h1 class="text-2xl font-black text-blue-600 italic tracking-tighter">iFinance</h1>
                 <div class="flex items-center gap-4">
-                    <span id="displayUserName" class="text-slate-500 font-bold text-sm"></span>
-                    <button onclick="logout()"><i class="fa-solid fa-right-from-bracket text-slate-300"></i></button>
+                    <span id="displayUserName" class="text-slate-400 font-extrabold text-xs uppercase tracking-widest"></span>
+                    <button onclick="logout()" class="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 hover:text-red-500 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
                 </div>
             </header>
             
             <main class="p-6 max-w-4xl mx-auto">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-center">
-                    <div class="bg-white p-6 rounded-2xl border-2 border-blue-50 shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">Saldo Disponível</p>
-                        <h2 class="text-3xl font-black" id="balance">0,00</h2>
-                        <div class="mt-2 inline-flex items-center px-3 py-1 bg-blue-100 rounded-full">
-                            <span class="text-[9px] font-black text-blue-600 uppercase">Salário: <span id="displaySalary">0,00</span></span>
-                        </div>
+                    <div class="bg-white p-8 rounded-[32px] border-2 border-blue-50 shadow-sm">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1" data-i18n="balance">Meu Saldo</p>
+                        <h2 class="text-4xl font-black text-slate-900" id="balance">0,00</h2>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                        <p class="text-xs font-bold text-green-500 uppercase tracking-tighter">Entradas</p>
-                        <h2 class="text-2xl font-black text-green-600" id="incomes">0,00</h2>
+                    <div class="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
+                        <p class="text-[10px] font-bold text-green-500 uppercase tracking-widest mb-1" data-i18n="incomes">Entradas</p>
+                        <h2 class="text-3xl font-black text-green-600" id="incomes">0,00</h2>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                        <p class="text-xs font-bold text-red-500 uppercase tracking-tighter">Saídas</p>
-                        <h2 class="text-2xl font-black text-red-600" id="expenses">0,00</h2>
+                    <div class="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
+                        <p class="text-[10px] font-bold text-red-500 uppercase tracking-widest mb-1" data-i18n="expenses">Saídas</p>
+                        <h2 class="text-3xl font-black text-red-600" id="expenses">0,00</h2>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-3xl border mb-10 grid grid-cols-1 md:grid-cols-4 gap-4 shadow-sm">
-                    <input type="text" id="desc" placeholder="O que você comprou?" class="bg-slate-50 p-4 rounded-2xl border-none outline-blue-500 font-medium">
-                    <input type="text" id="amountDisplay" placeholder="0,00" class="bg-slate-50 p-4 rounded-2xl border-none font-bold text-lg outline-blue-500 text-center">
-                    <select id="type" class="bg-slate-50 p-4 rounded-2xl border-none font-bold">
-                        <option value="expense">Gastei (Saída)</option>
-                        <option value="income">Recebi (Entrada)</option>
-                    </select>
-                    <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold rounded-2xl py-4 shadow-lg active:scale-95 transition">Salvar Lançamento</button>
+                <div class="bg-white p-8 rounded-[32px] border border-slate-100 mb-10 shadow-md">
+                    <h3 class="text-xs font-black text-slate-400 uppercase mb-6 tracking-widest text-center">Novo Lançamento</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <input type="text" id="desc" placeholder="Ex: Jantar, Aluguel..." class="bg-slate-50 p-5 rounded-2xl border-none outline-blue-500 font-bold text-slate-700">
+                        <input type="text" id="amountDisplay" placeholder="0,00" class="bg-slate-50 p-5 rounded-2xl border-none font-black text-xl outline-blue-500 text-center text-blue-600">
+                        <select id="type" class="bg-slate-50 p-5 rounded-2xl border-none font-bold text-slate-600 appearance-none">
+                            <option value="expense" data-i18n="opt_expense">Despesa (-)</option>
+                            <option value="income" data-i18n="opt_income">Receita (+)</option>
+                        </select>
+                        <button onclick="addTransaction()" class="bg-blue-600 text-white font-black rounded-2xl py-5 shadow-lg hover:bg-blue-700 transition-all uppercase text-sm tracking-wider" data-i18n="btn_save">Confirmar</button>
+                    </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-3xl border shadow-sm">
-                    <h3 class="font-black text-slate-400 text-[10px] uppercase tracking-widest mb-4 px-2">Histórico de Movimentações</h3>
+                <div class="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm">
+                    <h3 class="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-6">Últimas Atividades</h3>
                     <ul id="transaction-list" class="divide-y divide-slate-50">
                         </ul>
-                    <button onclick="limparTudo()" class="w-full text-center py-4 text-[10px] text-red-300 font-bold uppercase tracking-widest mt-4">Zerar Histórico</button>
+                    <button onclick="limparTudo()" class="w-full text-center py-6 text-[10px] text-red-200 font-black uppercase tracking-[0.2em] mt-6 hover:text-red-500 transition-colors" data-i18n="btn_clear">Limpar todos os dados</button>
                 </div>
             </main>
         </section>
 
         <section id="tab-cambio" class="hidden p-6 fade-in">
-             <div class="max-w-md mx-auto bg-white p-8 rounded-[40px] border shadow-sm space-y-6 mt-4">
-                <h2 class="text-center font-black text-xl">Conversor Global</h2>
-                
+             <div class="max-w-md mx-auto bg-white p-10 rounded-[48px] border border-slate-100 shadow-xl space-y-8 mt-6">
+                <div class="text-center">
+                    <h2 class="font-black text-2xl uppercase tracking-tighter" data-i18n="converter">Câmbio em Tempo Real</h2>
+                    <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mt-1">Cotações oficiais atualizadas</p>
+                </div>
+
                 <div class="flex items-center justify-between gap-4">
-                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-bold border-none outline-none">
+                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-5 rounded-3xl font-black border-none text-lg">
                         <option value="USD">🇺🇸 USD</option>
                         <option value="EUR">🇪🇺 EUR</option>
                         <option value="BRL">🇧🇷 BRL</option>
                         <option value="GBP">🇬🇧 GBP</option>
                         <option value="JPY">🇯🇵 JPY</option>
                     </select>
-                    <i class="fa-solid fa-repeat text-blue-500"></i>
-                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-bold border-none outline-none">
+                    <div class="bg-blue-50 w-12 h-12 rounded-full flex items-center justify-center text-blue-500 shadow-inner">
+                        <i class="fa-solid fa-right-left"></i>
+                    </div>
+                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-5 rounded-3xl font-black border-none text-lg">
                         <option value="BRL">🇧🇷 BRL</option>
                         <option value="USD">🇺🇸 USD</option>
                         <option value="EUR">🇪🇺 EUR</option>
                     </select>
                 </div>
 
-                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-6 rounded-2xl font-bold text-3xl border-none text-center outline-none">
-                
-                <div class="text-center py-2">
-                    <span id="infoCotacao" class="text-blue-500 font-bold bg-blue-50 px-4 py-2 rounded-full text-[10px]">Carregando cotação...</span>
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-300 uppercase ml-4 tracking-widest">Valor para converter</label>
+                    <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-8 rounded-[32px] font-black text-4xl text-center border-none outline-none text-blue-600 shadow-inner">
                 </div>
 
-                <div class="bg-blue-600 p-8 rounded-[32px] text-center shadow-xl">
-                    <p class="text-blue-200 text-[10px] font-black mb-1 uppercase tracking-widest">Valor Convertido</p>
-                    <h3 class="text-4xl font-black text-white" id="calcResultDisplay">0,00</h3>
+                <div class="bg-blue-600 p-10 rounded-[40px] text-center shadow-2xl transform hover:scale-[1.02] transition-transform">
+                    <p class="text-blue-200 text-[10px] font-black uppercase tracking-[0.2em] mb-2">Resultado Estimado</p>
+                    <h3 class="text-5xl font-black text-white" id="calcResultDisplay">0,00</h3>
                 </div>
 
-                <button onclick="lancarCambio()" class="w-full bg-slate-900 text-white font-black p-5 rounded-2xl shadow-lg active:scale-95 transition text-xs uppercase tracking-widest">Lançar no Saldo Principal</button>
+                <button onclick="lancarCambio()" class="w-full bg-slate-900 text-white font-black p-6 rounded-3xl uppercase text-xs tracking-[0.15em] shadow-lg active:bg-black transition-colors" data-i18n="btn_apply_exchange">Lançar gasto no meu saldo</button>
              </div>
         </section>
 
         <section id="tab-viagem" class="hidden p-6 text-center fade-in">
-            <h2 class="text-2xl font-black mb-6 mt-4">Guia de Restaurantes Premium</h2>
+            <h2 class="text-3xl font-black mb-2 mt-6 uppercase tracking-tighter" data-i18n="guide_title">World Guide</h2>
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-10">Restaurantes selecionados para você</p>
             
-            <div class="flex gap-2 overflow-x-auto pb-4 mb-4 no-scrollbar">
-                <button onclick="setGuide('BRL')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0 active:bg-blue-600 active:text-white transition">🇧🇷 Brasil</button>
-                <button onclick="setGuide('USD')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0 active:bg-blue-600 active:text-white transition">🇺🇸 EUA</button>
-                <button onclick="setGuide('EUR')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0 active:bg-blue-600 active:text-white transition">🇪🇺 Europa</button>
-                <button onclick="setGuide('ITA')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0 active:bg-blue-600 active:text-white transition">🇮🇹 Itália</button>
-                <button onclick="setGuide('JPN')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0 active:bg-blue-600 active:text-white transition">🇯🇵 Japão</button>
-                <button onclick="setGuide('MEX')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0 active:bg-blue-600 active:text-white transition">🇲🇽 México</button>
-                <button onclick="setGuide('PRT')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0 active:bg-blue-600 active:text-white transition">🇵🇹 Portugal</button>
+            <div class="flex gap-3 overflow-x-auto pb-6 mb-6 no-scrollbar px-2">
+                <button onclick="setGuide('BRL')" class="bg-white border border-slate-100 px-8 py-4 rounded-2xl font-black shadow-sm shrink-0 hover:bg-blue-50 transition-colors">🇧🇷 BRASIL</button>
+                <button onclick="setGuide('USD')" class="bg-white border border-slate-100 px-8 py-4 rounded-2xl font-black shadow-sm shrink-0 hover:bg-blue-50 transition-colors">🇺🇸 EUA</button>
+                <button onclick="setGuide('EUR')" class="bg-white border border-slate-100 px-8 py-4 rounded-2xl font-black shadow-sm shrink-0 hover:bg-blue-50 transition-colors">🇪🇺 EUROPA</button>
+                <button onclick="setGuide('ITA')" class="bg-white border border-slate-100 px-8 py-4 rounded-2xl font-black shadow-sm shrink-0 hover:bg-blue-50 transition-colors">🇮🇹 ITÁLIA</button>
+                <button onclick="setGuide('JPN')" class="bg-white border border-slate-100 px-8 py-4 rounded-2xl font-black shadow-sm shrink-0 hover:bg-blue-50 transition-colors">🇯🇵 JAPÃO</button>
+                <button onclick="setGuide('MEX')" class="bg-white border border-slate-100 px-8 py-4 rounded-2xl font-black shadow-sm shrink-0 hover:bg-blue-50 transition-colors">🇲🇽 MÉXICO</button>
+                <button onclick="setGuide('PRT')" class="bg-white border border-slate-100 px-8 py-4 rounded-2xl font-black shadow-sm shrink-0 hover:bg-blue-50 transition-colors">🇵🇹 PORTUGAL</button>
             </div>
 
-            <div id="restaurant-list" class="space-y-4 pb-24">
+            <div id="restaurant-list" class="grid grid-cols-1 gap-4 pb-32 max-w-2xl mx-auto">
                 </div>
         </section>
 
-        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t py-4 flex justify-around shadow-2xl z-50">
+        <nav class="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-slate-100 py-5 flex justify-around shadow-[0_-10px_40px_rgba(0,0,0,0.05)] z-50">
             <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center tab-active">
-                <i class="fa-solid fa-wallet text-xl"></i>
-                <span class="text-[9px] font-black mt-1 uppercase">Carteira</span>
+                <i class="fa-solid fa-wallet text-2xl"></i>
+                <span class="text-[10px] font-black mt-2 uppercase tracking-widest" data-i18n="nav_wallet">Carteira</span>
             </button>
-            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-slate-400">
-                <i class="fa-solid fa-money-bill-transfer text-xl"></i>
-                <span class="text-[9px] font-black mt-1 uppercase">Câmbio</span>
+            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-slate-300">
+                <i class="fa-solid fa-money-bill-transfer text-2xl"></i>
+                <span class="text-[10px] font-black mt-2 uppercase tracking-widest" data-i18n="nav_exchange">Câmbio</span>
             </button>
-            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-slate-400">
-                <i class="fa-solid fa-utensils text-xl"></i>
-                <span class="text-[9px] font-black mt-1 uppercase">Guia</span>
+            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-slate-300">
+                <i class="fa-solid fa-utensils text-2xl"></i>
+                <span class="text-[10px] font-black mt-2 uppercase tracking-widest" data-i18n="nav_guide">Guia</span>
             </button>
         </nav>
     </div>
 
     <script>
-        // BANCO DE DADOS DOS RESTAURANTES (5 POR PAÍS)
+        // BANCO DE TRADUÇÃO MULTI-IDIOMA
+        const translations = {
+            pt: {
+                welcome: "Controle financeiro premium ao seu alcance.",
+                balance: "Meu Saldo",
+                incomes: "Entradas",
+                expenses: "Saídas",
+                opt_expense: "Despesa (-)",
+                opt_income: "Receita (+)",
+                btn_save: "Confirmar",
+                btn_clear: "Limpar todos os dados",
+                converter: "Câmbio em Tempo Real",
+                btn_apply_exchange: "Lançar gasto no meu saldo",
+                guide_title: "World Guide",
+                nav_wallet: "Carteira",
+                nav_exchange: "Câmbio",
+                nav_guide: "Guia",
+                monthly_income: "Renda Mensal Automática",
+                create_account: "Criar minha conta gratuita"
+            },
+            en: {
+                welcome: "Premium financial control at your fingertips.",
+                balance: "Total Balance",
+                incomes: "Incomes",
+                expenses: "Expenses",
+                opt_expense: "Expense (-)",
+                opt_income: "Income (+)",
+                btn_save: "Confirm",
+                btn_clear: "Clear all data",
+                converter: "Real-Time Exchange",
+                btn_apply_exchange: "Post to my balance",
+                guide_title: "World Guide",
+                nav_wallet: "Wallet",
+                nav_exchange: "Exchange",
+                nav_guide: "Guide",
+                monthly_income: "Auto Monthly Income",
+                create_account: "Create my free account"
+            }
+        };
+
+        // BANCO DE DADOS DE RESTAURANTES (5 POR PAÍS)
         const restaurantesDB = {
             'BRL': [
-                {nome:'A Casa do Porco', cidade:'São Paulo', tipo:'Autoral', preco:'$$$', icone:'🐷'},
-                {nome:'Marius Degustare', cidade:'Rio de Janeiro', tipo:'Churrasco', preco:'$$$$', icone:'🥩'},
-                {nome:'D.O.M', cidade:'São Paulo', tipo:'Fina', preco:'$$$$$', icone:'🌿'},
-                {nome:'Maní', cidade:'São Paulo', tipo:'Contemporânea', preco:'$$$$', icone:'🥣'},
-                {nome:'Glouton', cidade:'Belo Horizonte', tipo:'Mineira Moderno', preco:'$$$', icone:'🍷'}
+                {nome:'A CASA DO PORCO', cidade:'SÃO PAULO', tipo:'AUTORAL', preco:'$$$', icone:'🐷'},
+                {nome:'MARIUS DEGUSTARE', cidade:'RIO DE JANEIRO', tipo:'CHURRASCO', preco:'$$$$', icone:'🥩'},
+                {nome:'D.O.M', cidade:'SÃO PAULO', tipo:'ALTA GASTRONOMIA', preco:'$$$$$', icone:'🌿'},
+                {nome:'MANÍ', cidade:'SÃO PAULO', tipo:'CONTEMPORÂNEA', preco:'$$$$', icone:'🥣'},
+                {nome:'GLOUTON', cidade:'BELO HORIZONTE', tipo:'MINEIRA', preco:'$$$', icone:'🍷'}
             ],
             'USD': [
-                {nome:'Joe\'s Pizza', cidade:'New York', tipo:'Pizza', preco:'$', icone:'🍕'},
-                {nome:'Katz\'s Deli', cidade:'New York', tipo:'Sanduíche', preco:'$$', icone:'🥪'},
-                {nome:'Le Bernardin', cidade:'New York', tipo:'Frutos do Mar', preco:'$$$$$', icone:'🐟'},
-                {nome:'Nobu Malibu', cidade:'Los Angeles', tipo:'Japonês', preco:'$$$$', icone:'🍣'},
-                {nome:'French Laundry', cidade:'Napa Valley', tipo:'Francês', preco:'$$$$$', icone:'🏰'}
+                {nome:'JOE\'S PIZZA', cidade:'NEW YORK', tipo:'PIZZA', preco:'$', icone:'🍕'},
+                {nome:'KATZ\'S DELI', cidade:'NEW YORK', tipo:'SANDUÍCHES', preco:'$$', icone:'🥪'},
+                {nome:'LE BERNARDIN', cidade:'NEW YORK', tipo:'FRUTOS DO MAR', preco:'$$$$$', icone:'🐟'},
+                {nome:'NOBU MALIBU', cidade:'LOS ANGELES', tipo:'JAPONÊS', preco:'$$$$', icone:'🍣'},
+                {nome:'FRENCH LAUNDRY', cidade:'NAPA VALLEY', tipo:'FRANCÊS', preco:'$$$$$', icone:'🏰'}
             ],
             'EUR': [
-                {nome:'Le Meurice', cidade:'Paris', tipo:'Luxo Francês', preco:'$$$$$', icone:'🥐'},
-                {nome:'Septime', cidade:'Paris', tipo:'Moderno', preco:'$$$$', icone:'🍷'},
-                {nome:'Hofbräuhaus', cidade:'Munique', tipo:'Alemã Tradicional', preco:'$$', icone:'🍺'},
-                {nome:'Steirereck', cidade:'Viena', tipo:'Criativa', preco:'$$$$$', icone:'🇦🇹'},
-                {nome:'Ciel de Paris', cidade:'Paris', tipo:'Vista Panorâmica', preco:'$$$$', icone:'🗼'}
+                {nome:'LE MEURICE', cidade:'PARIS', tipo:'LUXO', preco:'$$$$$', icone:'🥐'},
+                {nome:'SEPTIME', cidade:'PARIS', tipo:'MODERNO', preco:'$$$$', icone:'🍷'},
+                {nome:'HOFBRÄUHAUS', cidade:'MUNIQUE', tipo:'ALEMÃ', preco:'$$', icone:'🍺'},
+                {nome:'STEIRERECK', cidade:'VIENA', tipo:'CRIATIVA', preco:'$$$$$', icone:'🇦🇹'},
+                {nome:'CIEL DE PARIS', cidade:'PARIS', tipo:'VISTA ÚNICA', preco:'$$$$', icone:'🗼'}
             ],
             'ITA': [
-                {nome:'Osteria Francescana', cidade:'Modena', tipo:'Criativa', preco:'$$$$$', icone:'🎨'},
-                {nome:'Trattoria Baffetto', cidade:'Roma', tipo:'Pizza Italiana', preco:'$$', icone:'🇮🇹'},
-                {nome:'La Pergola', cidade:'Roma', tipo:'Gourmet Luxo', preco:'$$$$$', icone:'🏛️'},
-                {nome:'Da Vittorio', cidade:'Bérgamo', tipo:'Peixes e Massas', preco:'$$$$', icone:'🍝'},
-                {nome:'Antica Pesa', cidade:'Roma', tipo:'Histórico', preco:'$$$', icone:'🍷'}
+                {nome:'OSTERIA FRANCESCANA', cidade:'MODENA', tipo:'CRIATIVA', preco:'$$$$$', icone:'🎨'},
+                {nome:'TRATTORIA BAFFETTO', cidade:'ROMA', tipo:'PIZZA', preco:'$$', icone:'🇮🇹'},
+                {nome:'LA PERGOLA', cidade:'ROMA', tipo:'GOURMET', preco:'$$$$$', icone:'🏛️'},
+                {nome:'DA VITTORIO', cidade:'BÉRGAMO', tipo:'PEIXES', preco:'$$$$', icone:'🍝'},
+                {nome:'ANTICA PESA', cidade:'ROMA', tipo:'TRADICIONAL', preco:'$$$', icone:'🍷'}
             ],
             'JPN': [
-                {nome:'Sukiyabashi Jiro', cidade:'Tóquio', tipo:'Sushi Master', preco:'$$$$$', icone:'🍣'},
-                {nome:'Ichiran Ramen', cidade:'Tóquio', tipo:'Ramen Tradicional', preco:'$', icone:'🍜'},
-                {nome:'Narisawa', cidade:'Tóquio', tipo:'Experimental', preco:'$$$$$', icone:'🌲'},
-                {nome:'Kobe Beef Kaiseki', cidade:'Kobe', tipo:'Wagyu Premium', preco:'$$$$', icone:'🐂'},
-                {nome:'Gion Nanba', cidade:'Quioto', tipo:'Kaiseki', preco:'$$$$', icone:'🍵'}
+                {nome:'SUKIYABASHI JIRO', cidade:'TÓQUIO', tipo:'SUSHI', preco:'$$$$$', icone:'🍣'},
+                {nome:'ICHIRAN RAMEN', cidade:'TÓQUIO', tipo:'RAMEN', preco:'$', icone:'🍜'},
+                {nome:'NARISAWA', cidade:'TÓQUIO', tipo:'INOVADOR', preco:'$$$$$', icone:'🌲'},
+                {nome:'KOBE BEEF KAISEKI', cidade:'KOBE', tipo:'WAGYU', preco:'$$$$', icone:'🐂'},
+                {nome:'GION NANBA', cidade:'QUIOTO', tipo:'KAISEKI', preco:'$$$$', icone:'🍵'}
             ],
             'MEX': [
-                {nome:'Pujol', cidade:'CDMX', tipo:'Mexicana Raiz', preco:'$$$$$', icone:'🌮'},
-                {nome:'Quintonil', cidade:'CDMX', tipo:'Moderna', preco:'$$$$$', icone:'🥑'},
-                {nome:'El Farolito', cidade:'CDMX', tipo:'Tacos Autênticos', preco:'$', icone:'🌮'},
-                {nome:'Rosetta', cidade:'CDMX', tipo:'Fusão Italiana', preco:'$$$', icone:'🍝'},
-                {nome:'Contramar', cidade:'CDMX', tipo:'Frutos do Mar', preco:'$$$', icone:'🐟'}
+                {nome:'PUJOL', cidade:'CDMX', tipo:'MEXICANA', preco:'$$$$$', icone:'🌮'},
+                {nome:'QUINTONIL', cidade:'CDMX', tipo:'MODERNA', preco:'$$$$$', icone:'🥑'},
+                {nome:'EL FAROLITO', cidade:'CDMX', tipo:'TACOS', preco:'$', icone:'🌮'},
+                {nome:'ROSETTA', cidade:'CDMX', tipo:'FUSÃO', preco:'$$$', icone:'🍝'},
+                {nome:'CONTRAMAR', cidade:'CDMX', tipo:'MAR', preco:'$$$', icone:'🐟'}
             ],
             'PRT': [
-                {nome:'Belcanto', cidade:'Lisboa', tipo:'Portuguesa Criativa', preco:'$$$$$', icone:'🇵🇹'},
-                {nome:'Solar dos Presuntos', cidade:'Lisboa', tipo:'Regional', preco:'$$$', icone:'🐷'},
-                {nome:'Ramiro', cidade:'Lisboa', tipo:'Mariscos', preco:'$$$$', icone:'🦞'},
-                {nome:'The Yeatman', cidade:'Porto', tipo:'Alta Gastronomia', preco:'$$$$$', icone:'🍷'},
-                {nome:'Pastéis de Belém', cidade:'Lisboa', tipo:'Docaria', preco:'$', icone:'🧁'}
+                {nome:'BELCANTO', cidade:'LISBOA', tipo:'PORTUGUESA', preco:'$$$$$', icone:'🇵🇹'},
+                {nome:'SOLAR DOS PRESUNTOS', cidade:'LISBOA', tipo:'REGIONAL', preco:'$$$', icone:'🐷'},
+                {nome:'RAMIRO', cidade:'LISBOA', tipo:'MARISCOS', preco:'$$$$', icone:'🦞'},
+                {nome:'THE YEATMAN', cidade:'PORTO', tipo:'GOURMET', preco:'$$$$$', icone:'🍷'},
+                {nome:'PASTÉIS DE BELÉM', cidade:'LISBOA', tipo:'DOCARIA', preco:'$', icone:'🧁'}
             ]
         };
 
-        // VARIÁVEIS DE ESTADO
+        // VARIÁVEIS DE CONTROLE
         let isRegisterMode = false;
         let currentUser = null;
-        let rawValues = { amountDisplay: 0, salaryInput: 0, calcValueDisplay: 0 };
         let currentRate = 1;
+        let rawValues = { amountDisplay: 0, salaryInput: 0, calcValueDisplay: 0 };
 
-        // FUNÇÕES DE AUTENTICAÇÃO
+        // DETECÇÃO DE IDIOMA
+        function initLanguage() {
+            const userLang = navigator.language.startsWith('pt') ? 'pt' : 'en';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[userLang][key]) {
+                    el.innerText = translations[userLang][key];
+                }
+            });
+        }
+
+        // MÁSCARA DE MOEDA (CORRIGIDA PARA APAGAR)
+        function applyMask(id) {
+            const el = document.getElementById(id);
+            el.addEventListener('input', (e) => {
+                let val = e.target.value.replace(/\D/g, '');
+                
+                // Se o usuário apagar tudo, garantimos que o valor seja 0
+                if (val === "" || val === "0") {
+                    rawValues[id] = 0;
+                    el.value = formatCurrency(0, getContextCurrency(id));
+                    if (id === 'calcValueDisplay') calcularConversao();
+                    return;
+                }
+
+                let num = parseFloat(val) / 100;
+                rawValues[id] = num;
+                el.value = formatCurrency(num, getContextCurrency(id));
+                
+                if (id === 'calcValueDisplay') calcularConversao();
+            });
+            el.value = formatCurrency(0, getContextCurrency(id));
+        }
+
+        function getContextCurrency(id) {
+            if(id === 'salaryInput') return document.getElementById('userCurrencyInput').value;
+            if(id === 'calcValueDisplay') return document.getElementById('fromCurrency').value;
+            return currentUser ? currentUser.currency : 'BRL';
+        }
+
+        function formatCurrency(val, curr) {
+            const c = curr || (currentUser ? currentUser.currency : 'BRL');
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: c });
+        }
+
+        // SISTEMA DE LOGIN / CADASTRO
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             const fields = document.getElementById('register-fields');
@@ -299,335 +400,211 @@
 
             if (isRegisterMode) {
                 fields.classList.remove('hidden');
-                title.innerText = 'Nova Conta';
-                btnMain.innerText = 'Começar Agora';
-                btnSwitch.innerText = 'Já tenho uma conta';
-                updateSalaryMask();
+                title.innerHTML = 'Nova Conta';
+                btnMain.innerText = 'CADASTRAR';
+                btnSwitch.innerText = 'Já tenho acesso';
             } else {
                 fields.classList.add('hidden');
-                title.innerText = 'iFinance';
-                btnMain.innerText = 'Entrar';
-                btnSwitch.innerText = 'Criar conta gratuita';
+                title.innerHTML = 'i<span class="text-blue-600">Finance</span>';
+                btnMain.innerText = 'ENTRAR';
+                btnSwitch.innerText = 'Criar minha conta gratuita';
             }
-        }
-
-        function updateSalaryMask() {
-            const currency = document.getElementById('userCurrencyInput').value;
-            document.getElementById('salaryInput').value = format(rawValues.salaryInput, currency);
         }
 
         function handleAuth() {
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value.trim();
 
+            if (!email || !pass) { alert("Preencha os campos!"); return; }
+
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
                 const currency = document.getElementById('userCurrencyInput').value;
                 
-                if(!email || !pass || !name) {
-                    alert("Por favor, preencha todos os campos!");
-                    return;
-                }
+                if(!name) { alert("Diga-nos seu nome!"); return; }
 
                 const userData = {
-                    name: name,
+                    name: name.toUpperCase(),
                     pass: pass,
                     currency: currency,
                     salary: rawValues.salaryInput,
-                    lastMonth: "",
                     transactions: []
                 };
 
                 localStorage.setItem(`user_${email}`, JSON.stringify(userData));
-                alert("Conta criada com sucesso!");
+                alert("Conta criada! Agora é só entrar.");
                 toggleAuthMode();
             } else {
-                const savedData = localStorage.getItem(`user_${email}`);
-                if (savedData) {
-                    const user = JSON.parse(savedData);
+                const saved = localStorage.getItem(`user_${email}`);
+                if (saved) {
+                    const user = JSON.parse(saved);
                     if (user.pass === pass) {
-                        currentUser = { ...user, email: email };
-                        verificarSalarioMensal();
-                        entrarNoApp();
-                    } else {
-                        alert("Senha incorreta!");
-                    }
-                } else {
-                    alert("Usuário não encontrado!");
-                }
+                        currentUser = { ...user, email };
+                        entrarApp();
+                    } else { alert("Senha incorreta!"); }
+                } else { alert("Usuário não encontrado!"); }
             }
         }
 
-        function entrarNoApp() {
+        function entrarApp() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('displayUserName').innerText = `Olá, ${currentUser.name}`;
-            document.getElementById('displaySalary').innerText = format(currentUser.salary);
+            document.getElementById('displayUserName').innerText = currentUser.name;
             document.getElementById('toCurrency').value = currentUser.currency;
             
-            atualizarInterface();
+            renderTransactions();
             setGuide('BRL');
             buscarCotacao();
         }
 
-        function verificarSalarioMensal() {
-            const dataAtual = new Date();
-            const mesReferencia = `${dataAtual.getMonth() + 1}/${dataAtual.getFullYear()}`;
-            
-            if (currentUser.salary > 0 && currentUser.lastMonth !== mesReferencia) {
-                const transacaoSalario = {
-                    id: Date.now(),
-                    text: "Salário Mensal Automático 💰",
-                    amount: currentUser.salary,
-                    date: dataAtual.toLocaleDateString('pt-BR')
-                };
-                currentUser.transactions.push(transacaoSalario);
-                currentUser.lastMonth = mesReferencia;
-                salvarDados();
-            }
-        }
-
-        // FUNÇÕES DE FORMATAÇÃO E MÁSCARA
-        function format(valor, moeda) {
-            const m = moeda || (currentUser ? currentUser.currency : 'BRL');
-            const locales = {
-                'BRL': 'pt-BR', 'USD': 'en-US', 'EUR': 'de-DE', 
-                'GBP': 'en-GB', 'JPY': 'ja-JP', 'BTC': 'en-US', 'MXN': 'es-MX'
-            };
-            
-            const casasDecimais = (m === 'BTC') ? 8 : 2;
-            
-            return valor.toLocaleString(locales[m] || 'pt-BR', {
-                style: 'currency',
-                currency: m,
-                minimumFractionDigits: casasDecimais
-            });
-        }
-
-        function applyMask(id) {
-            const elemento = document.getElementById(id);
-            
-            elemento.addEventListener('input', (e) => {
-                let valorLimpo = e.target.value.replace(/\D/g, '');
-                let numero = valorLimpo ? parseFloat(valorLimpo) / 100 : 0;
-                
-                rawValues[id] = numero;
-                
-                let moedaParaUsar = null;
-                if(id === 'salaryInput') moedaParaUsar = document.getElementById('userCurrencyInput').value;
-                if(id === 'calcValueDisplay') moedaParaUsar = document.getElementById('fromCurrency').value;
-                
-                e.target.value = format(numero, moedaParaUsar);
-                
-                if (id === 'calcValueDisplay') calcularConversao();
-            });
-            
-            // Valor inicial 0,00
-            elemento.value = format(0, id === 'salaryInput' ? 'BRL' : null);
-        }
-
-        // Inicializar máscaras
-        applyMask('amountDisplay');
-        applyMask('salaryInput');
-        applyMask('calcValueDisplay');
-
-        // FUNÇÕES DA CARTEIRA (HOME)
+        // LÓGICA DA CARTEIRA
         function addTransaction() {
-            const desc = document.getElementById('desc').value;
-            const valorBruto = rawValues.amountDisplay;
-            const tipo = document.getElementById('type').value;
+            const desc = document.getElementById('desc').value.toUpperCase();
+            const type = document.getElementById('type').value;
+            const val = rawValues.amountDisplay;
 
-            if (!desc || valorBruto === 0) {
-                alert("Preencha a descrição e o valor!");
-                return;
-            }
+            if (!desc || val === 0) return;
 
-            const valorFinal = (tipo === 'expense') ? -valorBruto : valorBruto;
+            const finalVal = (type === 'expense') ? -val : val;
 
-            const novaTransacao = {
+            currentUser.transactions.push({
                 id: Date.now(),
                 text: desc,
-                amount: valorFinal,
+                amount: finalVal,
                 date: new Date().toLocaleDateString('pt-BR')
-            };
-
-            currentUser.transactions.push(novaTransacao);
-            salvarDados();
-            atualizarInterface();
-
-            // Limpar campos
-            document.getElementById('desc').value = '';
-            rawValues.amountDisplay = 0;
-            document.getElementById('amountDisplay').value = format(0);
-        }
-
-        function atualizarInterface() {
-            const lista = document.getElementById('transaction-list');
-            lista.innerHTML = '';
-
-            let totalSaldo = 0;
-            let totalEntradas = 0;
-            let totalSaidas = 0;
-
-            // Processar transações (do mais novo para o mais antigo)
-            const transacoesInvertidas = [...currentUser.transactions].reverse();
-
-            transacoesInvertidas.forEach(t => {
-                totalSaldo += t.amount;
-                if (t.amount > 0) totalEntradas += t.amount;
-                else totalSaidas += Math.abs(t.amount);
-
-                const li = document.createElement('li');
-                li.className = "flex justify-between items-center py-5 fade-in";
-                
-                li.innerHTML = `
-                    <div>
-                        <p class="font-bold text-sm text-slate-700">${t.text}</p>
-                        <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">${t.date}</p>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="${t.amount < 0 ? 'text-red-500' : 'text-emerald-600'} font-black">
-                            ${format(t.amount)}
-                        </span>
-                        <button onclick="deletarTransacao(${t.id})" class="text-slate-200 hover:text-red-400 transition">
-                            <i class="fa-solid fa-circle-xmark"></i>
-                        </button>
-                    </div>
-                `;
-                lista.appendChild(li);
             });
 
-            document.getElementById('balance').innerText = format(totalSaldo);
-            document.getElementById('incomes').innerText = format(totalEntradas);
-            document.getElementById('expenses').innerText = format(totalSaidas);
+            saveAndSync();
+            renderTransactions();
+
+            // Reset campos
+            document.getElementById('desc').value = '';
+            document.getElementById('amountDisplay').value = formatCurrency(0);
+            rawValues.amountDisplay = 0;
         }
 
-        function deletarTransacao(id) {
-            currentUser.transactions = currentUser.transactions.filter(t => t.id !== id);
-            salvarDados();
-            atualizarInterface();
+        function renderTransactions() {
+            const list = document.getElementById('transaction-list');
+            list.innerHTML = '';
+            let bal = 0, inc = 0, exp = 0;
+
+            [...currentUser.transactions].reverse().forEach(t => {
+                bal += t.amount;
+                if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
+
+                const item = document.createElement('li');
+                item.className = "flex justify-between items-center py-5 fade-in";
+                item.innerHTML = `
+                    <div class="text-left">
+                        <p class="font-black text-sm text-slate-700 tracking-tight">${t.text}</p>
+                        <p class="text-[9px] text-slate-300 font-bold uppercase">${t.date}</p>
+                    </div>
+                    <span class="${t.amount < 0 ? 'text-red-500' : 'text-emerald-600'} font-black text-sm">
+                        ${formatCurrency(t.amount)}
+                    </span>
+                `;
+                list.appendChild(item);
+            });
+
+            document.getElementById('balance').innerText = formatCurrency(bal);
+            document.getElementById('incomes').innerText = formatCurrency(inc);
+            document.getElementById('expenses').innerText = formatCurrency(exp);
         }
 
-        function salvarDados() {
-            localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser));
-        }
-
-        function limparTudo() {
-            if (confirm("Tem certeza que deseja apagar todo o histórico?")) {
-                currentUser.transactions = [];
-                salvarDados();
-                atualizarInterface();
-            }
-        }
-
-        // FUNÇÕES DE CÂMBIO
+        // LÓGICA DE CÂMBIO
         async function buscarCotacao() {
-            const de = document.getElementById('fromCurrency').value;
-            const para = document.getElementById('toCurrency').value;
-            const info = document.getElementById('infoCotacao');
+            const from = document.getElementById('fromCurrency').value;
+            const to = document.getElementById('toCurrency').value;
 
-            if (de === para) {
-                currentRate = 1;
-                info.innerText = "1 : 1 (Mesma moeda)";
-                calcularConversao();
-                return;
-            }
-
-            info.innerText = "Buscando cotação em tempo real...";
+            if (from === to) { currentRate = 1; calcularConversao(); return; }
 
             try {
-                const response = await fetch(`https://economia.awesomeapi.com.br/last/${de}-${para}`);
-                const data = await response.json();
-                const par = de + para;
-                currentRate = parseFloat(data[par].bid);
-                
-                info.innerText = `1 ${de} = ${currentRate.toFixed(4)} ${para}`;
+                const res = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
+                const data = await res.json();
+                currentRate = parseFloat(data[from + to].bid);
                 calcularConversao();
-            } catch (error) {
-                info.innerText = "Erro ao carregar cotação.";
-            }
+            } catch (e) { console.log("Erro cotação"); }
         }
 
         function calcularConversao() {
-            const valorBase = rawValues.calcValueDisplay;
-            const resultado = valorBase * currentRate;
-            const moedaDestino = document.getElementById('toCurrency').value;
-            
-            document.getElementById('calcResultDisplay').innerText = format(resultado, moedaDestino);
+            const res = rawValues.calcValueDisplay * currentRate;
+            const toCur = document.getElementById('toCurrency').value;
+            document.getElementById('calcResultDisplay').innerText = formatCurrency(res, toCur);
         }
 
         function lancarCambio() {
-            const valorConvertido = rawValues.calcValueDisplay * currentRate;
-            const moedaOrigem = document.getElementById('fromCurrency').value;
+            const res = rawValues.calcValueDisplay * currentRate;
+            if(res === 0) return;
 
-            if (valorConvertido <= 0) {
-                alert("Insira um valor para converter!");
-                return;
-            }
-
-            const novaTransacao = {
+            currentUser.transactions.push({
                 id: Date.now(),
-                text: `Câmbio: ${moedaOrigem} para ${currentUser.currency}`,
-                amount: -valorConvertido, // Lançado como saída do saldo principal
+                text: `CÂMBIO: ${document.getElementById('fromCurrency').value}`,
+                amount: -res,
                 date: new Date().toLocaleDateString('pt-BR')
-            };
+            });
 
-            currentUser.transactions.push(novaTransacao);
-            salvarDados();
-            atualizarInterface();
+            saveAndSync();
+            renderTransactions();
             switchTab('home');
-            alert("Valor lançado como débito na sua carteira!");
+            alert("Lançado com sucesso!");
         }
 
         // GUIA DE VIAGEM
         function setGuide(pais) {
             const container = document.getElementById('restaurant-list');
             container.innerHTML = '';
+            
+            const data = restaurantesDB[pais] || restaurantesDB['BRL'];
 
-            const lista = restaurantesDB[pais] || restaurantesDB['BRL'];
-
-            lista.forEach(res => {
-                const card = document.createElement('div');
-                card.className = "bg-white p-5 rounded-3xl border shadow-sm text-left flex items-center gap-4 fade-in";
-                
-                card.innerHTML = `
-                    <div class="text-3xl bg-slate-50 w-14 h-14 flex items-center justify-center rounded-2xl">
-                        ${res.icone}
-                    </div>
+            data.forEach(r => {
+                const div = document.createElement('div');
+                div.className = "bg-white p-6 rounded-[28px] border border-slate-100 shadow-sm flex items-center gap-5 text-left fade-in";
+                div.innerHTML = `
+                    <div class="text-3xl bg-slate-50 w-16 h-16 flex items-center justify-center rounded-2xl shadow-inner">${r.icone}</div>
                     <div class="flex-1">
-                        <h4 class="font-bold text-slate-800 text-sm">${res.nome}</h4>
-                        <p class="text-[9px] text-blue-500 font-bold uppercase tracking-wider">${res.cidade} • ${res.tipo}</p>
+                        <h4 class="font-black text-slate-800 text-sm tracking-tight">${r.nome}</h4>
+                        <p class="text-[9px] text-blue-500 font-extrabold uppercase tracking-widest">${r.cidade} • ${r.tipo}</p>
                     </div>
-                    <div class="text-right">
-                        <span class="text-emerald-500 font-black text-xs">${res.preco}</span>
-                    </div>
+                    <span class="text-emerald-500 font-black text-xs">${r.preco}</span>
                 `;
-                container.appendChild(card);
+                container.appendChild(div);
             });
         }
 
-        // NAVEGAÇÃO ENTRE ABAS
-        function switchTab(nomeAba) {
-            // Esconder todas
-            const abas = ['home', 'cambio', 'viagem'];
-            abas.forEach(aba => {
-                document.getElementById('tab-' + aba).classList.add('hidden');
-                document.getElementById('nav-' + aba).classList.remove('tab-active');
-                document.getElementById('nav-' + aba).classList.add('text-slate-400');
+        // UTILITÁRIOS
+        function switchTab(tab) {
+            ['home', 'cambio', 'viagem'].forEach(t => {
+                document.getElementById('tab-' + t).classList.add('hidden');
+                document.getElementById('nav-' + t).classList.remove('tab-active');
+                document.getElementById('nav-' + t).classList.add('text-slate-300');
             });
-
-            // Mostrar a selecionada
-            document.getElementById('tab-' + nomeAba).classList.remove('hidden');
-            const navBtn = document.getElementById('nav-' + nomeAba);
-            navBtn.classList.add('tab-active');
-            navBtn.classList.remove('text-slate-400');
+            document.getElementById('tab-' + tab).classList.remove('hidden');
+            document.getElementById('nav-' + tab).classList.add('tab-active');
+            document.getElementById('nav-' + tab).classList.remove('text-slate-300');
         }
 
-        function logout() {
-            if(confirm("Deseja sair da conta?")) {
-                location.reload();
+        function saveAndSync() {
+            localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser));
+        }
+
+        function logout() { location.reload(); }
+
+        function limparTudo() {
+            if(confirm("Deseja apagar tudo?")) {
+                currentUser.transactions = [];
+                saveAndSync();
+                renderTransactions();
             }
         }
+
+        // INICIALIZAÇÃO
+        window.onload = () => {
+            initLanguage();
+            applyMask('amountDisplay');
+            applyMask('salaryInput');
+            applyMask('calcValueDisplay');
+        };
+
     </script>
 </body>
 </html>
