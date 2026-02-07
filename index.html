@@ -17,7 +17,7 @@
         input { user-select: auto; }
         .bg-auth { background: radial-gradient(circle at top right, #eff6ff, #ffffff); }
         ::-webkit-scrollbar { display: none; }
-        select { cursor: pointer; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -27,13 +27,12 @@
             <i class="fa-solid fa-wallet"></i>
         </div>
         <h1 id="auth-title" class="text-4xl font-black mb-2">i<span class="text-blue-600">Finance</span></h1>
-        <p id="auth-subtitle" class="text-slate-500 mb-8 font-medium">Sua jornada financeira começa aqui.</p>
-
+        
         <div class="flex flex-col w-full max-w-sm gap-4">
             <input type="email" id="emailInput" placeholder="E-mail" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
             <input type="password" id="passInput" placeholder="Senha" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
             
-            <div id="register-fields" class="hidden flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-4">
+            <div id="register-fields" class="hidden flex flex-col gap-4">
                 <input type="text" id="userNameInput" placeholder="Como quer ser chamado?" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
                 
                 <select id="userCurrencyInput" onchange="updateSalaryMask()" class="bg-white border p-5 rounded-2xl font-bold text-lg outline-none shadow-sm">
@@ -42,17 +41,14 @@
                     <option value="EUR">🇪🇺 EUR - Euro</option>
                     <option value="GBP">🇬🇧 GBP - Libra</option>
                     <option value="JPY">🇯🇵 JPY - Iene</option>
+                    <option value="MXN">🇲🇽 MXN - Peso Mexicano</option>
                     <option value="CHF">🇨🇭 CHF - Franco Suíço</option>
-                    <option value="CAD">🇨🇦 CAD - Dólar Canadense</option>
-                    <option value="AUD">🇦🇺 AUD - Dólar Australiano</option>
-                    <option value="CNY">🇨🇳 CNY - Yuan</option>
-                    <option value="ARS">🇦🇷 ARS - Peso Argentino</option>
                     <option value="BTC">₿ BTC - Bitcoin</option>
                 </select>
 
                 <div class="bg-blue-50 p-5 rounded-2xl border border-blue-100 text-left">
-                    <p class="text-[10px] font-black text-blue-600 uppercase mb-2 tracking-widest">Configuração de Renda</p>
-                    <input type="text" id="salaryInput" placeholder="0,00" class="w-full bg-transparent border-b border-blue-200 py-2 font-bold text-xl outline-none mb-2">
+                    <p class="text-[10px] font-black text-blue-600 uppercase mb-2">Configuração de Renda</p>
+                    <input type="text" id="salaryInput" placeholder="0,00" class="w-full bg-transparent border-b border-blue-200 py-2 font-bold text-xl outline-none">
                 </div>
             </div>
 
@@ -65,77 +61,73 @@
         <section id="tab-home">
             <header class="bg-white border-b p-4 sticky top-0 z-10 flex justify-between items-center px-8">
                 <h1 class="text-xl font-extrabold text-blue-600 italic">iFinance</h1>
-                <div class="flex items-center gap-4">
-                    <span id="displayUserName" class="text-slate-500 font-bold text-sm"></span>
-                    <button onclick="logout()"><i class="fa-solid fa-right-from-bracket text-slate-300"></i></button>
-                </div>
+                <button onclick="logout()"><i class="fa-solid fa-right-from-bracket text-slate-300"></i></button>
             </header>
             
             <main class="p-6 max-w-4xl mx-auto">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-center">
                     <div class="bg-white p-6 rounded-2xl border-2 border-blue-50 shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-tighter">Saldo Disponível</p>
+                        <p class="text-xs font-bold text-slate-400 uppercase">Saldo Disponível</p>
                         <h2 class="text-3xl font-black" id="balance">0,00</h2>
-                        <div class="mt-2 inline-flex items-center px-3 py-1 bg-blue-100 rounded-full">
-                            <span class="text-[9px] font-black text-blue-600">RENDA: <span id="displaySalary">0,00</span></span>
-                        </div>
+                        <span class="text-[9px] font-black text-blue-600 bg-blue-100 px-2 py-1 rounded-full uppercase">Renda: <span id="displaySalary">0,00</span></span>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                        <p class="text-xs font-bold text-green-500 uppercase tracking-tighter">Entradas</p>
-                        <h2 class="text-3xl font-black text-green-600" id="incomes">0,00</h2>
+                        <p class="text-xs font-bold text-green-500 uppercase">Entradas</p>
+                        <h2 class="text-2xl font-black text-green-600" id="incomes">0,00</h2>
                     </div>
                     <div class="bg-white p-6 rounded-2xl border shadow-sm">
-                        <p class="text-xs font-bold text-red-500 uppercase tracking-tighter">Saídas</p>
-                        <h2 class="text-3xl font-black text-red-600" id="expenses">0,00</h2>
+                        <p class="text-xs font-bold text-red-500 uppercase">Saídas</p>
+                        <h2 class="text-2xl font-black text-red-600" id="expenses">0,00</h2>
                     </div>
                 </div>
 
                 <div class="bg-white p-6 rounded-3xl border mb-10 grid grid-cols-1 md:grid-cols-4 gap-4 shadow-sm">
-                    <input type="text" id="desc" placeholder="O que você comprou?" class="bg-slate-50 p-4 rounded-2xl border-none outline-blue-500 font-medium">
-                    <input type="text" id="amountDisplay" placeholder="0,00" class="bg-slate-50 p-4 rounded-2xl border-none font-bold text-lg outline-blue-500 text-center">
+                    <input type="text" id="desc" placeholder="Descrição" class="bg-slate-50 p-4 rounded-2xl border-none outline-blue-500">
+                    <input type="text" id="amountDisplay" placeholder="0,00" class="bg-slate-50 p-4 rounded-2xl border-none font-bold text-lg text-center outline-blue-500">
                     <select id="type" class="bg-slate-50 p-4 rounded-2xl border-none font-bold">
-                        <option value="expense">Gastei (Saída)</option>
-                        <option value="income">Recebi (Entrada)</option>
+                        <option value="expense">Saída (-)</option>
+                        <option value="income">Entrada (+)</option>
                     </select>
-                    <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold rounded-2xl py-4 shadow-lg active:scale-95 transition">Salvar</button>
+                    <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold rounded-2xl py-4 shadow-lg">Salvar</button>
                 </div>
 
                 <div class="bg-white p-6 rounded-3xl border shadow-sm">
-                    <h3 class="font-black text-slate-400 text-[10px] uppercase tracking-widest mb-4 px-2">Histórico Mensal</h3>
                     <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
-                    <button onclick="limparTudo()" class="w-full text-center py-4 text-[10px] text-red-300 font-bold uppercase tracking-widest mt-4">Zerar Tudo</button>
+                    <button onclick="limparTudo()" class="w-full text-center py-4 text-[10px] text-red-300 font-bold uppercase mt-4">Zerar Tudo</button>
                 </div>
             </main>
         </section>
 
         <section id="tab-cambio" class="hidden p-6">
-             <div class="max-w-md mx-auto bg-white p-8 rounded-[40px] border shadow-sm space-y-6 mt-4">
+             <div class="max-w-md mx-auto bg-white p-8 rounded-[40px] border shadow-sm space-y-6">
                 <div class="flex items-center justify-between gap-4">
-                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-bold border-none outline-none">
-                        <option value="USD">🇺🇸 USD</option><option value="EUR">🇪🇺 EUR</option><option value="BRL">🇧🇷 BRL</option><option value="GBP">🇬🇧 GBP</option><option value="JPY">🇯🇵 JPY</option><option value="BTC">₿ BTC</option>
+                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-bold border-none">
+                        <option value="USD">🇺🇸 USD</option><option value="EUR">🇪🇺 EUR</option><option value="BRL">🇧🇷 BRL</option><option value="GBP">🇬🇧 GBP</option>
                     </select>
                     <i class="fa-solid fa-repeat text-blue-500"></i>
-                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-bold border-none outline-none">
-                        <option value="BRL">🇧🇷 BRL</option><option value="USD">🇺🇸 USD</option><option value="EUR">🇪🇺 EUR</option>
+                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-bold border-none">
+                        <option value="BRL">🇧🇷 BRL</option><option value="USD">🇺🇸 USD</option>
                     </select>
                 </div>
-                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-6 rounded-2xl font-bold text-3xl border-none text-center outline-none">
-                <div class="text-center py-2"><span id="infoCotacao" class="text-blue-500 font-bold bg-blue-50 px-4 py-2 rounded-full text-[10px]">Carregando...</span></div>
+                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-6 rounded-2xl font-bold text-3xl text-center outline-none">
+                <div class="text-center"><span id="infoCotacao" class="text-blue-500 font-bold bg-blue-50 px-4 py-2 rounded-full text-[10px]">Carregando...</span></div>
                 <div class="bg-blue-600 p-8 rounded-[32px] text-center shadow-xl">
-                    <p class="text-blue-200 text-[10px] font-black mb-1 uppercase tracking-widest">Convertido</p>
                     <h3 class="text-4xl font-black text-white" id="calcResultDisplay">0,00</h3>
                 </div>
-                <button onclick="lancarCambio()" class="w-full bg-slate-900 text-white font-black p-5 rounded-2xl shadow-lg active:scale-95 transition text-xs uppercase tracking-widest">Lançar no Saldo</button>
+                <button onclick="lancarCambio()" class="w-full bg-slate-900 text-white font-black p-5 rounded-2xl text-xs uppercase">Lançar no Saldo</button>
              </div>
         </section>
 
         <section id="tab-viagem" class="hidden p-6 text-center">
-            <h2 class="text-2xl font-black mb-6 mt-4">Guia de Restaurantes</h2>
+            <h2 class="text-2xl font-black mb-6">Guia de Restaurantes</h2>
             <div class="flex gap-2 overflow-x-auto pb-4 mb-4 no-scrollbar">
-                <button onclick="setGuide('BRL')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm">🇧🇷 Brasil</button>
-                <button onclick="setGuide('USD')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm">🇺🇸 EUA</button>
-                <button onclick="setGuide('EUR')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm">🇪🇺 Europa</button>
-                <button onclick="setGuide('GBP')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm">🇬🇧 UK</button>
+                <button onclick="setGuide('BRL')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0">🇧🇷 Brasil</button>
+                <button onclick="setGuide('USD')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0">🇺🇸 EUA</button>
+                <button onclick="setGuide('EUR')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0">🇪🇺 Europa</button>
+                <button onclick="setGuide('ITA')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0">🇮🇹 Itália</button>
+                <button onclick="setGuide('JPN')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0">🇯🇵 Japão</button>
+                <button onclick="setGuide('MEX')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0">🇲🇽 México</button>
+                <button onclick="setGuide('PRT')" class="bg-white border px-6 py-3 rounded-full font-bold shadow-sm shrink-0">🇵🇹 Portugal</button>
             </div>
             <div id="restaurant-list" class="space-y-4 pb-24"></div>
         </section>
@@ -155,10 +147,55 @@
 
     <script>
         const restaurantesDB = {
-            'BRL': [{nome:'A Casa do Porco', cidade:'SP', tipo:'Brasileira', preco:'$$$', icone:'🐷'}, {nome:'Marius Degustare', cidade:'RJ', tipo:'Churrasco', preco:'$$$$', icone:'🥩'}],
-            'USD': [{nome:'Joe\'s Pizza', cidade:'NY', tipo:'Pizza', preco:'$', icone:'🍕'}, {nome:'Katz\'s Deli', cidade:'NY', tipo:'Sanduíche', preco:'$$', icone:'🥪'}],
-            'EUR': [{nome:'Le Meurice', cidade:'Paris', tipo:'Luxo', preco:'$$$$$', icone:'🥐'}, {nome:'Trattoria Baffetto', cidade:'Roma', tipo:'Pizza', preco:'$$', icone:'🇮🇹'}],
-            'GBP': [{nome:'Dishoom', cidade:'Londres', tipo:'Indiana', preco:'$$', icone:'🍛'}, {nome:'Sketch', cidade:'Londres', tipo:'Chá', preco:'$$$$', icone:'🫖'}]
+            'BRL': [
+                {nome:'A Casa do Porco', cidade:'SP', tipo:'Brasileira', preco:'$$$', icone:'🐷'},
+                {nome:'Marius Degustare', cidade:'RJ', tipo:'Churrasco', preco:'$$$$', icone:'🥩'},
+                {nome:'D.O.M', cidade:'SP', tipo:'Fina', preco:'$$$$$', icone:'🌿'},
+                {nome:'Maní', cidade:'SP', tipo:'Moderna', preco:'$$$$', icone:'🥣'},
+                {nome:'Glouton', cidade:'BH', tipo:'Mineira', preco:'$$$', icone:'🍷'}
+            ],
+            'USD': [
+                {nome:'Joe\'s Pizza', cidade:'NY', tipo:'Pizza', preco:'$', icone:'🍕'},
+                {nome:'Katz\'s Deli', cidade:'NY', tipo:'Sanduíche', preco:'$$', icone:'🥪'},
+                {nome:'Le Bernardin', cidade:'NY', tipo:'Peixe', preco:'$$$$$', icone:'🐟'},
+                {nome:'Nobu Malibu', cidade:'LA', tipo:'Japonês', preco:'$$$$', icone:'🍣'},
+                {nome:'French Laundry', cidade:'Napa', tipo:'Francês', preco:'$$$$$', icone:'🏰'}
+            ],
+            'EUR': [
+                {nome:'Le Meurice', cidade:'Paris', tipo:'Luxo', preco:'$$$$$', icone:'🥐'},
+                {nome:'Ciel de Paris', cidade:'Paris', tipo:'Vista', preco:'$$$$', icone:'🗼'},
+                {nome:'Hofbräuhaus', cidade:'Munique', tipo:'Alemã', preco:'$$', icone:'🍺'},
+                {nome:'Septime', cidade:'Paris', tipo:'Moderno', preco:'$$$$', icone:'🍷'},
+                {nome:'Steirereck', cidade:'Viena', tipo:'Criativa', preco:'$$$$$', icone:'🇦🇹'}
+            ],
+            'ITA': [
+                {nome:'Osteria Francescana', cidade:'Modena', tipo:'Criativa', preco:'$$$$$', icone:'🎨'},
+                {nome:'Trattoria Baffetto', cidade:'Roma', tipo:'Pizza', preco:'$$', icone:'🇮🇹'},
+                {nome:'La Pergola', cidade:'Roma', tipo:'Gourmet', preco:'$$$$$', icone:'🏛️'},
+                {nome:'Da Vittorio', cidade:'Bérgamo', tipo:'Peixes', preco:'$$$$', icone:'🍝'},
+                {nome:'Antica Pesa', cidade:'Roma', tipo:'Tradicional', preco:'$$$', icone:'🍷'}
+            ],
+            'JPN': [
+                {nome:'Sukiyabashi Jiro', cidade:'Tóquio', tipo:'Sushi', preco:'$$$$$', icone:'🍣'},
+                {nome:'Ichiran Ramen', cidade:'Tóquio', tipo:'Ramen', preco:'$', icone:'🍜'},
+                {nome:'Narisawa', cidade:'Tóquio', tipo:'Inovador', preco:'$$$$$', icone:'🌲'},
+                {nome:'Kobe Beef Kaiseki', cidade:'Kobe', tipo:'Wagyu', preco:'$$$$', icone:'🐂'},
+                {nome:'Gion Nanba', cidade:'Quioto', tipo:'Kaiseki', preco:'$$$$', icone:'🍵'}
+            ],
+            'MEX': [
+                {nome:'Pujol', cidade:'CDMX', tipo:'Mexicana', preco:'$$$$$', icone:'🌮'},
+                {nome:'Quintonil', cidade:'CDMX', tipo:'Moderna', preco:'$$$$$', icone:'🥑'},
+                {nome:'El Farolito', cidade:'CDMX', tipo:'Tacos', preco:'$', icone:'🌮'},
+                {nome:'Rosetta', cidade:'CDMX', tipo:'Italiano-Mex', preco:'$$$', icone:'🍝'},
+                {nome:'Contramar', cidade:'CDMX', tipo:'Frutos do Mar', preco:'$$$', icone:'🐟'}
+            ],
+            'PRT': [
+                {nome:'Belcanto', cidade:'Lisboa', tipo:'Portuguesa', preco:'$$$$$', icone:'🇵🇹'},
+                {nome:'Solar dos Presuntos', cidade:'Lisboa', tipo:'Tradicional', preco:'$$$', icone:'🐷'},
+                {nome:'Ramiro', cidade:'Lisboa', tipo:'Marisqueira', preco:'$$$$', icone:'🦞'},
+                {nome:'The Yeatman', cidade:'Porto', tipo:'Gourmet', preco:'$$$$$', icone:'🍷'},
+                {nome:'Pastéis de Belém', cidade:'Lisboa', tipo:'Doces', preco:'$', icone:'🧁'}
+            ]
         };
 
         let isRegisterMode = false, currentUser = null;
@@ -168,9 +205,7 @@
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('auth-title').innerText = isRegisterMode ? 'Nova Conta' : 'iFinance';
             document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Começar Agora' : 'Entrar';
-            document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já sou membro' : 'Criar conta gratuita';
             if(isRegisterMode) updateSalaryMask();
         }
 
@@ -185,7 +220,6 @@
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
                 const currency = document.getElementById('userCurrencyInput').value;
-                if(!email || !pass || !name || !currency) return alert("Preencha tudo!");
                 const userData = { name, pass, currency, salary: rawValues.salaryInput, lastMonth: "", transactions: [] };
                 localStorage.setItem(`user_${email}`, JSON.stringify(userData));
                 alert("Conta criada!"); toggleAuthMode();
@@ -198,7 +232,7 @@
                         verificarSalario();
                         startApp();
                     } else { alert("Senha incorreta."); }
-                } else { alert("Usuário não encontrado."); }
+                } else { alert("Não encontrado."); }
             }
         }
 
@@ -215,28 +249,24 @@
         function startApp() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
-            document.getElementById('displayUserName').innerText = `Olá, ${currentUser.name}`;
             document.getElementById('displaySalary').innerText = format(currentUser.salary);
             document.getElementById('toCurrency').value = currentUser.currency;
-            render(); setGuide(currentUser.currency); buscarCotacao();
+            render(); setGuide('BRL'); buscarCotacao();
         }
 
         function format(val, curr) {
             const c = curr || (currentUser ? currentUser.currency : 'BRL');
-            const loc = {'BRL':'pt-BR','USD':'en-US','EUR':'de-DE','GBP':'en-GB','JPY':'ja-JP','CHF':'de-CH','CAD':'en-CA','AUD':'en-AU','CNY':'zh-CN','ARS':'es-AR','BTC':'en-US'};
+            const loc = {'BRL':'pt-BR','USD':'en-US','EUR':'de-DE','GBP':'en-GB','JPY':'ja-JP','BTC':'en-US','MXN':'es-MX'};
             return val.toLocaleString(loc[c] || 'pt-BR', { style:'currency', currency: c, minimumFractionDigits: (c === 'BTC' ? 8 : 2) });
         }
 
         function applyMask(id) {
             document.getElementById(id).addEventListener('input', (e) => {
                 let v = e.target.value.replace(/\D/g, '');
-                let factor = (id === 'calcValueDisplay' && document.getElementById('fromCurrency').value === 'BTC') ? 100000000 : 100;
-                let num = v ? parseFloat(v) / factor : 0;
+                let num = v ? parseFloat(v) / 100 : 0;
                 rawValues[id] = num;
-                let currencyToUse = null;
-                if(id === 'salaryInput') currencyToUse = document.getElementById('userCurrencyInput').value;
-                if(id === 'calcValueDisplay') currencyToUse = document.getElementById('fromCurrency').value;
-                e.target.value = format(num, currencyToUse);
+                let c = id === 'salaryInput' ? document.getElementById('userCurrencyInput').value : (id === 'calcValueDisplay' ? document.getElementById('fromCurrency').value : null);
+                e.target.value = format(num, c);
                 if (id === 'calcValueDisplay') atualizarResultado();
             });
             document.getElementById(id).value = format(0, id === 'salaryInput' ? 'BRL' : null);
@@ -247,7 +277,7 @@
         function addTransaction() {
             const desc = document.getElementById('desc').value;
             const amtRaw = rawValues.amountDisplay;
-            if(!desc || amtRaw === 0) return alert("Preencha descrição e valor!");
+            if(!desc || amtRaw === 0) return;
             const amt = document.getElementById('type').value === 'expense' ? -amtRaw : amtRaw;
             currentUser.transactions.push({ id: Date.now(), text: desc, amount: amt, date: new Date().toLocaleDateString() });
             save(); render();
@@ -259,25 +289,17 @@
         function render() {
             const amts = currentUser.transactions.map(t => t.amount);
             const total = amts.reduce((a, b) => a + b, 0);
-            const inc = amts.filter(v => v > 0).reduce((a, b) => a + b, 0);
-            const exp = amts.filter(v => v < 0).reduce((a, b) => a + b, 0);
             document.getElementById('balance').innerText = format(total);
-            document.getElementById('incomes').innerText = format(inc);
-            document.getElementById('expenses').innerText = format(Math.abs(exp));
+            document.getElementById('incomes').innerText = format(amts.filter(v => v > 0).reduce((a, b) => a + b, 0));
+            document.getElementById('expenses').innerText = format(Math.abs(amts.filter(v => v < 0).reduce((a, b) => a + b, 0)));
             const list = document.getElementById('transaction-list');
-            list.innerHTML = '';
-            [...currentUser.transactions].reverse().forEach(t => {
-                const li = document.createElement('li');
-                li.className = "flex justify-between items-center py-5";
-                li.innerHTML = `<div><p class="font-bold text-sm text-slate-700">${t.text}</p><p class="text-[9px] text-slate-400 font-bold uppercase">${t.date}</p></div><div class="flex items-center gap-4"><span class="${t.amount < 0 ? 'text-red-500':'text-emerald-600'} font-black">${format(t.amount)}</span><button onclick="del(${t.id})" class="text-slate-200"><i class="fa-solid fa-circle-xmark"></i></button></div>`;
-                list.appendChild(li);
-            });
+            list.innerHTML = [...currentUser.transactions].reverse().map(t => `
+                <li class="flex justify-between items-center py-4">
+                    <div><p class="font-bold text-sm">${t.text}</p><p class="text-[9px] text-slate-400 font-bold">${t.date}</p></div>
+                    <span class="${t.amount < 0 ? 'text-red-500':'text-emerald-600'} font-black">${format(t.amount)}</span>
+                </li>
+            `).join('');
         }
-
-        function logout() { location.reload(); }
-        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
-        function del(id) { currentUser.transactions = currentUser.transactions.filter(t => t.id !== id); save(); render(); }
-        function limparTudo() { if(confirm("Zerar histórico?")) { currentUser.transactions = []; save(); render(); } }
 
         async function buscarCotacao() {
             const f = document.getElementById('fromCurrency').value, t = document.getElementById('toCurrency').value;
@@ -288,12 +310,11 @@
                 currentRate = parseFloat(d[f+t].bid);
                 document.getElementById('infoCotacao').innerText = `1 ${f} = ${currentRate.toFixed(2)} ${t}`;
                 atualizarResultado();
-            } catch(e) { document.getElementById('infoCotacao').innerText = "Sem conexão"; }
+            } catch(e) { document.getElementById('infoCotacao').innerText = "Erro"; }
         }
 
         function atualizarResultado() {
-            const res = rawValues.calcValueDisplay * currentRate;
-            document.getElementById('calcResultDisplay').innerText = format(res, document.getElementById('toCurrency').value);
+            document.getElementById('calcResultDisplay').innerText = format(rawValues.calcValueDisplay * currentRate, document.getElementById('toCurrency').value);
         }
 
         function lancarCambio() {
@@ -303,7 +324,7 @@
         }
 
         function setGuide(dest) {
-            const data = restaurantesDB[dest] || restaurantesDB['USD'];
+            const data = restaurantesDB[dest] || restaurantesDB['BRL'];
             document.getElementById('restaurant-list').innerHTML = data.map(res => `
                 <div class="bg-white p-5 rounded-3xl border shadow-sm text-left flex items-center gap-4">
                     <div class="text-2xl">${res.icone}</div>
@@ -322,6 +343,10 @@
             document.getElementById('nav-' + t).classList.add('tab-active');
             document.getElementById('nav-' + t).classList.remove('text-slate-400');
         }
+
+        function logout() { location.reload(); }
+        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
+        function limparTudo() { if(confirm("Zerar?")) { currentUser.transactions = []; save(); render(); } }
     </script>
 </body>
 </html>
