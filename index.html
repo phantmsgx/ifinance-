@@ -171,7 +171,7 @@
     </div>
 
     <script>
-        // --- BANCO DE DADOS COMPLETO (5 POR PAÍS) ---
+        // --- BANCO DE DADOS COMPLETO ---
         const restaurantesDB = {
             'BRL': [
                 { nome: 'A Casa do Porco', cidade: 'São Paulo', endereco: 'R. Araújo, 124 - República', tipo: 'Brasileira Contemporânea', precoEstimado: 'R$ 150 - R$ 250', preco: '$$$', icone: '🐷' },
@@ -203,7 +203,6 @@
             ]
         };
 
-        // --- LÓGICA GERAL ---
         const amountDisplay = document.getElementById('amountDisplay');
         const descInput = document.getElementById('desc');
         const typeSelect = document.getElementById('type');
@@ -215,11 +214,10 @@
             return value.toLocaleString(localeMap[currency] || 'pt-BR', { style: 'currency', currency: currency });
         }
 
-        // Correção de apagar na Home
         amountDisplay.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
             if (value === '' || value === '0') { rawValue = 0; e.target.value = ''; updateTotals(); return; }
-            rawValue = value / 100;
+            rawValue = parseFloat(value) / 100;
             e.target.value = formatValue(rawValue);
         });
 
@@ -345,16 +343,23 @@
         function sair() { if(confirm("Deseja sair?")) { localStorage.removeItem('iFinance_User'); location.reload(); } }
         function limparTudo() { if(confirm("Apagar histórico?")) { transactions = []; saveAndInit(); } }
 
-        // --- LÓGICA CAMBIO ---
+        // --- LÓGICA CAMBIO - BUG DO BACKSPACE RESOLVIDO ---
         let currentRate = 1; let rawCalcValue = 0;
         const calcValueDisplay = document.getElementById('calcValueDisplay');
         const calcResultDisplay = document.getElementById('calcResultDisplay');
 
-        // Correção de apagar no Câmbio
         calcValueDisplay.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
-            if (value === '' || value === '0') { rawCalcValue = 0; e.target.value = ''; atualizarResultado(); return; }
-            rawCalcValue = value / 100;
+            
+            // CORREÇÃO: Se o campo estiver vazio, zera tudo e permite redigitar
+            if (!value || value === '' || value === '0') { 
+                rawCalcValue = 0; 
+                e.target.value = ''; 
+                atualizarResultado(); 
+                return; 
+            }
+            
+            rawCalcValue = parseFloat(value) / 100;
             const fromMoeda = document.getElementById('fromCurrency').value;
             e.target.value = formatValue(rawCalcValue, fromMoeda);
             atualizarResultado();
