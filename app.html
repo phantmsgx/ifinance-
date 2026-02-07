@@ -6,51 +6,57 @@
     <title>iFinance - Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900">
+<body class="bg-slate-50 text-slate-900">
 
     <header class="bg-white border-b border-slate-200 p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold text-blue-600">iFinance</h1>
-            <a href="index.html" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-house"></i></a>
+        <div class="container mx-auto flex justify-between items-center px-4">
+            <h1 class="text-xl font-extrabold text-blue-600">iFinance</h1>
+            <a href="index.html" class="text-slate-400 hover:text-blue-600 transition">
+                <i class="fa-solid fa-house text-lg"></i>
+            </a>
         </div>
     </header>
 
     <main class="container mx-auto p-6 max-w-4xl">
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Saldo Atual</p>
-                <h2 class="text-2xl font-black text-slate-800" id="balance">R$ 0,00</h2>
+                <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Saldo Atual</p>
+                <h2 class="text-3xl font-black text-slate-800" id="balance">R$ 0,00</h2>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-green-500 text-xs font-bold uppercase tracking-wider">Entradas</p>
-                <h2 class="text-2xl font-black text-green-600" id="incomes">R$ 0,00</h2>
+                <p class="text-green-500 text-xs font-bold uppercase tracking-widest mb-1">Entradas</p>
+                <h2 class="text-3xl font-black text-green-600" id="incomes">R$ 0,00</h2>
             </div>
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <p class="text-red-500 text-xs font-bold uppercase tracking-wider">Saídas</p>
-                <h2 class="text-2xl font-black text-red-600" id="expenses">R$ 0,00</h2>
+                <p class="text-red-500 text-xs font-bold uppercase tracking-widest mb-1">Saídas</p>
+                <h2 class="text-3xl font-black text-red-600" id="expenses">R$ 0,00</h2>
             </div>
         </section>
 
-        <div class="grid grid-cols-1 md:gap-8">
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 mb-8">
-                <h3 class="text-lg font-bold mb-6">Adicionar Transação</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <input type="text" id="desc" placeholder="Ex: Salário, Aluguel" class="bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="number" id="amount" placeholder="Valor (Ex: 150.00)" class="bg-slate-50 border border-slate-200 p-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold p-3 rounded-xl hover:bg-blue-700 transition-all">
-                        Adicionar
-                    </button>
-                </div>
+        <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 mb-10">
+            <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-plus-circle text-blue-600"></i> Nova Transação
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <input type="text" id="desc" placeholder="Ex: Salário, Almoço" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                <input type="number" id="amount" placeholder="Valor (Ex: 100 ou -50)" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold p-4 rounded-2xl hover:bg-blue-700 hover:shadow-lg transition-all transform active:scale-95">
+                    Adicionar
+                </button>
             </div>
+            <p class="text-xs text-slate-400 mt-4 italic">* Use sinal de menos (-) para despesas (ex: -20,00).</p>
+        </section>
 
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                <h3 class="text-lg font-bold mb-6">Histórico</h3>
-                <ul id="transaction-list" class="divide-y divide-slate-100">
-                    <p class="text-center text-slate-400 py-4">Nenhuma transação cadastrada.</p>
+        <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+            <h3 class="text-lg font-bold mb-6">Histórico</h3>
+            <ul id="transaction-list" class="divide-y divide-slate-50">
                 </ul>
-            </div>
-        </div>
+        </section>
     </main>
 
     <script>
@@ -61,7 +67,6 @@
         const descInput = document.getElementById('desc');
         const amountInput = document.getElementById('amount');
 
-        // Recupera os dados salvos ou começa uma lista vazia
         let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
         function updateTotals() {
@@ -70,21 +75,24 @@
             const income = amounts.filter(item => item > 0).reduce((acc, item) => (acc += item), 0).toFixed(2);
             const expense = (amounts.filter(item => item < 0).reduce((acc, item) => (acc += item), 0) * -1).toFixed(2);
 
-            balanceDisplay.innerHTML = `R$ ${total}`;
-            incomeDisplay.innerHTML = `R$ ${income}`;
-            expenseDisplay.innerHTML = `R$ ${expense}`;
+            balanceDisplay.innerText = `R$ ${total.replace('.', ',')}`;
+            incomeDisplay.innerText = `R$ ${income.replace('.', ',')}`;
+            expenseDisplay.innerText = `R$ ${expense.replace('.', ',')}`;
         }
 
         function addTransaction() {
-            if (descInput.value.trim() === '' || amountInput.value.trim() === '') {
-                alert('Por favor, preencha a descrição e o valor!');
+            const desc = descInput.value.trim();
+            const amount = amountInput.value.trim();
+
+            if (desc === '' || amount === '') {
+                alert('Preencha os dois campos para continuar!');
                 return;
             }
 
             const transaction = {
                 id: Math.floor(Math.random() * 1000000),
-                text: descInput.value,
-                amount: parseFloat(amountInput.value)
+                text: desc,
+                amount: parseFloat(amount)
             };
 
             transactions.push(transaction);
@@ -106,12 +114,12 @@
             const colorClass = transaction.amount < 0 ? 'text-red-600' : 'text-green-600';
             const item = document.createElement('li');
 
-            item.className = 'flex justify-between items-center py-4';
+            item.className = 'flex justify-between items-center py-4 group';
             item.innerHTML = `
                 <span class="font-medium text-slate-700">${transaction.text}</span>
                 <div class="flex items-center gap-4">
-                    <span class="${colorClass} font-bold">${sign} R$ ${Math.abs(transaction.amount).toFixed(2)}</span>
-                    <button onclick="removeTransaction(${transaction.id})" class="text-slate-300 hover:text-red-500 transition">
+                    <span class="${colorClass} font-bold">${sign} R$ ${Math.abs(transaction.amount).toFixed(2).replace('.', ',')}</span>
+                    <button onclick="removeTransaction(${transaction.id})" class="text-slate-200 hover:text-red-500 transition-colors">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
@@ -126,7 +134,7 @@
         function init() {
             transactionList.innerHTML = '';
             if (transactions.length === 0) {
-                transactionList.innerHTML = '<p class="text-center text-slate-400 py-4">Nenhuma transação cadastrada.</p>';
+                transactionList.innerHTML = '<p class="text-center text-slate-300 py-10">Nenhuma transação cadastrada ainda.</p>';
             } else {
                 transactions.forEach(renderTransaction);
             }
