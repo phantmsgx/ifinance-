@@ -20,10 +20,18 @@
             <i class="fa-solid fa-wallet"></i>
         </div>
         <h1 class="text-5xl font-black tracking-tighter mb-4">i<span class="text-blue-600">Finance</span></h1>
-        <p class="text-xl text-slate-500 mb-10">Para começar, como podemos te chamar?</p>
+        <p class="text-xl text-slate-500 mb-10">Configurações de perfil</p>
         
-        <div class="flex flex-col w-full max-sm gap-4">
-            <input type="text" id="userNameInput" placeholder="Digite seu nome..." class="bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-center font-bold text-lg">
+        <div class="flex flex-col w-full max-w-sm gap-4">
+            <input type="text" id="userNameInput" placeholder="Seu nome..." class="bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 text-center font-bold text-lg">
+            
+            <select id="userCurrencyInput" class="bg-slate-50 border border-slate-200 p-5 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-bold text-lg text-slate-600 text-center">
+                <option value="BRL">🇧🇷 Brasil (Real)</option>
+                <option value="USD">🇺🇸 EUA (Dólar)</option>
+                <option value="EUR">🇪🇺 Europa (Euro)</option>
+                <option value="GBP">🇬🇧 Reino Unido (Libra)</option>
+            </select>
+
             <button onclick="salvarNome()" class="bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl shadow-blue-200 hover:bg-blue-700 transition-all">
                 Acessar meu Painel
             </button>
@@ -52,22 +60,22 @@
                 <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                         <p class="text-slate-400 text-xs font-bold uppercase mb-1">Saldo Atual</p>
-                        <h2 class="text-3xl font-black" id="balance">R$ 0,00</h2>
+                        <h2 class="text-3xl font-black" id="balance">0,00</h2>
                     </div>
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                         <p class="text-green-500 text-xs font-bold uppercase mb-1">Entradas</p>
-                        <h2 class="text-3xl font-black text-green-600" id="incomes">R$ 0,00</h2>
+                        <h2 class="text-3xl font-black text-green-600" id="incomes">0,00</h2>
                     </div>
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                         <p class="text-red-500 text-xs font-bold uppercase mb-1">Saídas</p>
-                        <h2 class="text-3xl font-black text-red-600" id="expenses">R$ 0,00</h2>
+                        <h2 class="text-3xl font-black text-red-600" id="expenses">0,00</h2>
                     </div>
                 </section>
 
                 <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 mb-10">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <input type="text" id="desc" placeholder="Ex: Mercado" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
-                        <input type="text" id="amountDisplay" placeholder="R$ 0,00" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-bold">
+                        <input type="text" id="amountDisplay" placeholder="0,00" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-bold">
                         <select id="type" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none font-semibold text-slate-600">
                             <option value="income">Entrada (+)</option>
                             <option value="expense">Saída (-)</option>
@@ -91,7 +99,7 @@
                 <i class="fa-solid fa-money-bill-transfer"></i>
             </div>
             <h2 class="text-2xl font-black">Conversor</h2>
-            <p class="text-slate-500">Em breve: conversão automática de moedas.</p>
+            <p class="text-slate-500">Pronto para a próxima fase: Câmbio</p>
         </section>
 
         <section id="tab-viagem" class="hidden min-h-screen flex flex-col items-center justify-center p-6 text-center">
@@ -99,7 +107,7 @@
                 <i class="fa-solid fa-plane"></i>
             </div>
             <h2 class="text-2xl font-black">Viagem</h2>
-            <p class="text-slate-500">Em breve: planeje seu orçamento de viagem.</p>
+            <p class="text-slate-500">Pronto para a próxima fase: Viagem</p>
         </section>
 
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 py-4 px-6 flex justify-around items-center shadow-2xl z-50">
@@ -125,24 +133,32 @@
     </div>
 
     <script>
-        // --- CÓDIGO ANTIGO MANTIDO 100% ---
         const amountDisplay = document.getElementById('amountDisplay');
         const descInput = document.getElementById('desc');
         const typeSelect = document.getElementById('type');
         let rawValue = 0;
 
+        // FUNÇÃO DE FORMATAÇÃO DINÂMICA
+        function formatValue(value) {
+            const currency = localStorage.getItem('iFinance_Currency') || 'BRL';
+            const localeMap = { 'BRL': 'pt-BR', 'USD': 'en-US', 'EUR': 'de-DE', 'GBP': 'en-GB' };
+            return value.toLocaleString(localeMap[currency], { style: 'currency', currency: currency });
+        }
+
         amountDisplay.addEventListener('input', (e) => {
             let value = e.target.value.replace(/\D/g, '');
             rawValue = value / 100;
-            e.target.value = rawValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            e.target.value = formatValue(rawValue);
         });
 
         let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
         function salvarNome() {
             const nome = document.getElementById('userNameInput').value.trim();
+            const moeda = document.getElementById('userCurrencyInput').value;
             if (nome === "") return alert("Por favor, digite seu nome.");
             localStorage.setItem('iFinance_User', nome);
+            localStorage.setItem('iFinance_Currency', moeda);
             checkUser();
         }
 
@@ -168,9 +184,9 @@
             const inc = amounts.filter(v => v > 0).reduce((acc, v) => acc + v, 0);
             const exp = amounts.filter(v => v < 0).reduce((acc, v) => acc + v, 0) * -1;
 
-            document.getElementById('balance').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            document.getElementById('incomes').innerText = inc.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            document.getElementById('expenses').innerText = exp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById('balance').innerText = formatValue(total);
+            document.getElementById('incomes').innerText = formatValue(inc);
+            document.getElementById('expenses').innerText = formatValue(exp);
         }
 
         function addTransaction() {
@@ -199,7 +215,7 @@
                     <span class="text-slate-700 font-medium ml-2">${t.text}</span>
                     <div class="flex items-center gap-4">
                         <span class="${isExpense ? 'text-red-500' : 'text-green-600'} font-bold">
-                            ${t.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            ${formatValue(t.amount)}
                         </span>
                         <button onclick="removeTransaction(${t.id})" class="text-slate-300 hover:text-red-500 transition-colors">
                             <i class="fa-solid fa-trash-can"></i>
@@ -212,6 +228,7 @@
         function sair() {
             if(confirm("Deseja realmente sair?")) {
                 localStorage.removeItem('iFinance_User');
+                localStorage.removeItem('iFinance_Currency');
                 location.reload();
             }
         }
@@ -223,22 +240,13 @@
             }
         }
 
-        // --- ADICIONADO: LÓGICA DE TROCA DE ABAS ---
         function switchTab(tab) {
-            // Esconde todas as abas
             document.getElementById('tab-home').classList.add('hidden');
             document.getElementById('tab-cambio').classList.add('hidden');
             document.getElementById('tab-viagem').classList.add('hidden');
-
-            // Reseta cores do menu
-            document.getElementById('nav-home').classList.remove('tab-active');
-            document.getElementById('nav-home').classList.add('text-slate-400');
-            document.getElementById('nav-cambio').classList.remove('tab-active');
-            document.getElementById('nav-cambio').classList.add('text-slate-400');
-            document.getElementById('nav-viagem').classList.remove('tab-active');
-            document.getElementById('nav-viagem').classList.add('text-slate-400');
-
-            // Mostra a aba atual e ativa ícone
+            document.getElementById('nav-home').classList.replace('tab-active', 'text-slate-400');
+            document.getElementById('nav-cambio').classList.replace('tab-active', 'text-slate-400');
+            document.getElementById('nav-viagem').classList.replace('tab-active', 'text-slate-400');
             document.getElementById('tab-' + tab).classList.remove('hidden');
             document.getElementById('nav-' + tab).classList.add('tab-active');
             document.getElementById('nav-' + tab).classList.remove('text-slate-400');
