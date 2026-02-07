@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .hidden { display: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -55,22 +55,4 @@
 
             <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 mb-10">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <input type="text" id="desc" placeholder="Ex: Mercado" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="text" id="amountDisplay" placeholder="R$ 0,00" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 font-bold">
-                    <select id="type" class="bg-slate-50 border border-slate-200 p-4 rounded-2xl outline-none font-semibold text-slate-600">
-                        <option value="income">Entrada (+)</option>
-                        <option value="expense">Saída (-)</option>
-                    </select>
-                    <button onclick="addTransaction()" class="bg-blue-600 text-white font-bold p-4 rounded-2xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">Salvar</button>
-                </div>
-            </section>
-
-            <section class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-                <h3 class="text-lg font-bold mb-6">Histórico</h3>
-                <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
-            </section>
-        </main>
-    </div>
-
-    <script>
-        const amountDisplay = document.getElementById
+                    <input type="text" id="desc" placeholder="Ex
