@@ -10,11 +10,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
+        /* TRAVA ADICIONAL PARA TOQUE E ZOOM */
+        html, body { 
+            touch-action: pan-x pan-y; 
+            overscroll-behavior: none;
+        }
         body { font-family: 'Inter', sans-serif; padding-bottom: 90px; -webkit-tap-highlight-color: transparent; }
         .hidden { display: none !important; }
         .tab-active { color: #2563eb; transform: scale(1.1); }
-        * { user-select: none; }
-        input { user-select: auto; }
+        * { user-select: none; -webkit-touch-callout: none; }
+        input, select, textarea { user-select: auto; font-size: 16px !important; } /* Font-size 16px evita zoom automático no iOS */
         .bg-auth { background: radial-gradient(circle at top right, #eff6ff, #ffffff); }
         ::-webkit-scrollbar { display: none; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -146,61 +151,19 @@
     </div>
 
     <script>
+        // ... (Mesma lógica de JavaScript do código anterior, mantendo restaurantes e funções)
         const restaurantesDB = {
-            'BRL': [
-                {nome:'A Casa do Porco', cidade:'SP', tipo:'Brasileira', preco:'$$$', icone:'🐷'},
-                {nome:'Marius Degustare', cidade:'RJ', tipo:'Churrasco', preco:'$$$$', icone:'🥩'},
-                {nome:'D.O.M', cidade:'SP', tipo:'Fina', preco:'$$$$$', icone:'🌿'},
-                {nome:'Maní', cidade:'SP', tipo:'Moderna', preco:'$$$$', icone:'🥣'},
-                {nome:'Glouton', cidade:'BH', tipo:'Mineira', preco:'$$$', icone:'🍷'}
-            ],
-            'USD': [
-                {nome:'Joe\'s Pizza', cidade:'NY', tipo:'Pizza', preco:'$', icone:'🍕'},
-                {nome:'Katz\'s Deli', cidade:'NY', tipo:'Sanduíche', preco:'$$', icone:'🥪'},
-                {nome:'Le Bernardin', cidade:'NY', tipo:'Peixe', preco:'$$$$$', icone:'🐟'},
-                {nome:'Nobu Malibu', cidade:'LA', tipo:'Japonês', preco:'$$$$', icone:'🍣'},
-                {nome:'French Laundry', cidade:'Napa', tipo:'Francês', preco:'$$$$$', icone:'🏰'}
-            ],
-            'EUR': [
-                {nome:'Le Meurice', cidade:'Paris', tipo:'Luxo', preco:'$$$$$', icone:'🥐'},
-                {nome:'Ciel de Paris', cidade:'Paris', tipo:'Vista', preco:'$$$$', icone:'🗼'},
-                {nome:'Hofbräuhaus', cidade:'Munique', tipo:'Alemã', preco:'$$', icone:'🍺'},
-                {nome:'Septime', cidade:'Paris', tipo:'Moderno', preco:'$$$$', icone:'🍷'},
-                {nome:'Steirereck', cidade:'Viena', tipo:'Criativa', preco:'$$$$$', icone:'🇦🇹'}
-            ],
-            'ITA': [
-                {nome:'Osteria Francescana', cidade:'Modena', tipo:'Criativa', preco:'$$$$$', icone:'🎨'},
-                {nome:'Trattoria Baffetto', cidade:'Roma', tipo:'Pizza', preco:'$$', icone:'🇮🇹'},
-                {nome:'La Pergola', cidade:'Roma', tipo:'Gourmet', preco:'$$$$$', icone:'🏛️'},
-                {nome:'Da Vittorio', cidade:'Bérgamo', tipo:'Peixes', preco:'$$$$', icone:'🍝'},
-                {nome:'Antica Pesa', cidade:'Roma', tipo:'Tradicional', preco:'$$$', icone:'🍷'}
-            ],
-            'JPN': [
-                {nome:'Sukiyabashi Jiro', cidade:'Tóquio', tipo:'Sushi', preco:'$$$$$', icone:'🍣'},
-                {nome:'Ichiran Ramen', cidade:'Tóquio', tipo:'Ramen', preco:'$', icone:'🍜'},
-                {nome:'Narisawa', cidade:'Tóquio', tipo:'Inovador', preco:'$$$$$', icone:'🌲'},
-                {nome:'Kobe Beef Kaiseki', cidade:'Kobe', tipo:'Wagyu', preco:'$$$$', icone:'🐂'},
-                {nome:'Gion Nanba', cidade:'Quioto', tipo:'Kaiseki', preco:'$$$$', icone:'🍵'}
-            ],
-            'MEX': [
-                {nome:'Pujol', cidade:'CDMX', tipo:'Mexicana', preco:'$$$$$', icone:'🌮'},
-                {nome:'Quintonil', cidade:'CDMX', tipo:'Moderna', preco:'$$$$$', icone:'🥑'},
-                {nome:'El Farolito', cidade:'CDMX', tipo:'Tacos', preco:'$', icone:'🌮'},
-                {nome:'Rosetta', cidade:'CDMX', tipo:'Italiano-Mex', preco:'$$$', icone:'🍝'},
-                {nome:'Contramar', cidade:'CDMX', tipo:'Frutos do Mar', preco:'$$$', icone:'🐟'}
-            ],
-            'PRT': [
-                {nome:'Belcanto', cidade:'Lisboa', tipo:'Portuguesa', preco:'$$$$$', icone:'🇵🇹'},
-                {nome:'Solar dos Presuntos', cidade:'Lisboa', tipo:'Tradicional', preco:'$$$', icone:'🐷'},
-                {nome:'Ramiro', cidade:'Lisboa', tipo:'Marisqueira', preco:'$$$$', icone:'🦞'},
-                {nome:'The Yeatman', cidade:'Porto', tipo:'Gourmet', preco:'$$$$$', icone:'🍷'},
-                {nome:'Pastéis de Belém', cidade:'Lisboa', tipo:'Doces', preco:'$', icone:'🧁'}
-            ]
+            'BRL': [{nome:'A Casa do Porco', cidade:'SP', tipo:'Brasileira', preco:'$$$', icone:'🐷'}, {nome:'Marius Degustare', cidade:'RJ', tipo:'Churrasco', preco:'$$$$', icone:'🥩'}, {nome:'D.O.M', cidade:'SP', tipo:'Fina', preco:'$$$$$', icone:'🌿'}, {nome:'Maní', cidade:'SP', tipo:'Moderna', preco:'$$$$', icone:'🥣'}, {nome:'Glouton', cidade:'BH', tipo:'Mineira', preco:'$$$', icone:'🍷'}],
+            'USD': [{nome:'Joe\'s Pizza', cidade:'NY', tipo:'Pizza', preco:'$', icone:'🍕'}, {nome:'Katz\'s Deli', cidade:'NY', tipo:'Sanduíche', preco:'$$', icone:'🥪'}, {nome:'Le Bernardin', cidade:'NY', tipo:'Peixe', preco:'$$$$$', icone:'🐟'}, {nome:'Nobu Malibu', cidade:'LA', tipo:'Japonês', preco:'$$$$', icone:'🍣'}, {nome:'French Laundry', cidade:'Napa', tipo:'Francês', preco:'$$$$$', icone:'🏰'}],
+            'EUR': [{nome:'Le Meurice', cidade:'Paris', tipo:'Luxo', preco:'$$$$$', icone:'🥐'}, {nome:'Ciel de Paris', cidade:'Paris', tipo:'Vista', preco:'$$$$', icone:'🗼'}, {nome:'Hofbräuhaus', cidade:'Munique', tipo:'Alemã', preco:'$$', icone:'🍺'}, {nome:'Septime', cidade:'Paris', tipo:'Moderno', preco:'$$$$', icone:'🍷'}, {nome:'Steirereck', cidade:'Viena', tipo:'Criativa', preco:'$$$$$', icone:'🇦🇹'}],
+            'ITA': [{nome:'Osteria Francescana', cidade:'Modena', tipo:'Criativa', preco:'$$$$$', icone:'🎨'}, {nome:'Trattoria Baffetto', cidade:'Roma', tipo:'Pizza', preco:'$$', icone:'🇮🇹'}, {nome:'La Pergola', cidade:'Roma', tipo:'Gourmet', preco:'$$$$$', icone:'🏛️'}, {nome:'Da Vittorio', cidade:'Bérgamo', tipo:'Peixes', preco:'$$$$', icone:'🍝'}, {nome:'Antica Pesa', cidade:'Roma', tipo:'Tradicional', preco:'$$$', icone:'🍷'}],
+            'JPN': [{nome:'Sukiyabashi Jiro', cidade:'Tóquio', tipo:'Sushi', preco:'$$$$$', icone:'🍣'}, {nome:'Ichiran Ramen', cidade:'Tóquio', tipo:'Ramen', preco:'$', icone:'🍜'}, {nome:'Narisawa', cidade:'Tóquio', tipo:'Inovador', preco:'$$$$$', icone:'🌲'}, {nome:'Kobe Beef Kaiseki', cidade:'Kobe', tipo:'Wagyu', preco:'$$$$', icone:'🐂'}, {nome:'Gion Nanba', cidade:'Quioto', tipo:'Kaiseki', preco:'$$$$', icone:'🍵'}],
+            'MEX': [{nome:'Pujol', cidade:'CDMX', tipo:'Mexicana', preco:'$$$$$', icone:'🌮'}, {nome:'Quintonil', cidade:'CDMX', tipo:'Moderna', preco:'$$$$$', icone:'🥑'}, {nome:'El Farolito', cidade:'CDMX', tipo:'Tacos', preco:'$', icone:'🌮'}, {nome:'Rosetta', cidade:'CDMX', tipo:'Italiano-Mex', preco:'$$$', icone:'🍝'}, {nome:'Contramar', cidade:'CDMX', tipo:'Frutos do Mar', preco:'$$$', icone:'🐟'}],
+            'PRT': [{nome:'Belcanto', cidade:'Lisboa', tipo:'Portuguesa', preco:'$$$$$', icone:'🇵🇹'}, {nome:'Solar dos Presuntos', cidade:'Lisboa', tipo:'Tradicional', preco:'$$$', icone:'🐷'}, {nome:'Ramiro', cidade:'Lisboa', tipo:'Marisqueira', preco:'$$$$', icone:'🦞'}, {nome:'The Yeatman', cidade:'Porto', tipo:'Gourmet', preco:'$$$$$', icone:'🍷'}, {nome:'Pastéis de Belém', cidade:'Lisboa', tipo:'Doces', preco:'$', icone:'🧁'}]
         };
 
-        let isRegisterMode = false, currentUser = null;
+        let isRegisterMode = false, currentUser = null, currentRate = 1;
         let rawValues = { amountDisplay: 0, salaryInput: 0, calcValueDisplay: 0 };
-        let currentRate = 1;
 
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
