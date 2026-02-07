@@ -33,7 +33,12 @@
         <header class="bg-white border-b border-slate-200 p-4">
             <div class="container mx-auto flex justify-between items-center px-4">
                 <h1 class="text-xl font-extrabold text-blue-600">iFinance</h1>
-                <span id="displayUserName" class="text-slate-500 font-medium italic"></span>
+                <div class="flex items-center gap-4">
+                    <span id="displayUserName" class="text-slate-500 font-medium italic"></span>
+                    <button onclick="sair()" class="text-slate-400 hover:text-red-500 transition-colors title='Sair'">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -73,7 +78,6 @@
     </div>
 
     <script>
-        // --- MOTOR DO SITE ---
         let rawValue = 0;
         let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
@@ -89,82 +93,4 @@
                 li.innerHTML = `
                     <span class="text-slate-700 font-medium ml-2">${t.text}</span>
                     <div class="flex items-center gap-4">
-                        <span class="${isExpense ? 'text-red-500' : 'text-green-600'} font-bold">
-                            ${t.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </span>
-                        <button onclick="removeTransaction(${t.id})" class="text-slate-300 hover:text-red-500"><i class="fa-solid fa-trash-can"></i></button>
-                    </div>`;
-                list.appendChild(li);
-            });
-            updateTotals();
-        }
-
-        function updateTotals() {
-            const amounts = transactions.map(t => t.amount);
-            const total = amounts.reduce((acc, item) => acc + item, 0);
-            const inc = amounts.filter(v => v > 0).reduce((acc, v) => acc + v, 0);
-            const exp = Math.abs(amounts.filter(v => v < 0).reduce((acc, v) => acc + v, 0));
-
-            document.getElementById('balance').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            document.getElementById('incomes').innerText = inc.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            document.getElementById('expenses').innerText = exp.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        }
-
-        window.removeTransaction = function(id) {
-            transactions = transactions.filter(t => t.id !== id);
-            localStorage.setItem('transactions', JSON.stringify(transactions));
-            render();
-        }
-
-        function checkUser() {
-            const savedName = localStorage.getItem('iFinance_User');
-            if (savedName) {
-                document.getElementById('welcome-screen').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                document.getElementById('displayUserName').innerText = `Olá, ${savedName}!`;
-                render();
-            }
-        }
-
-        // --- INICIALIZAÇÃO ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Botão Entrar
-            document.getElementById('btnEntrar').onclick = () => {
-                const nome = document.getElementById('userNameInput').value.trim();
-                if (nome) {
-                    localStorage.setItem('iFinance_User', nome);
-                    checkUser();
-                } else {
-                    alert("Digite seu nome!");
-                }
-            };
-
-            // Máscara de Dinheiro
-            document.getElementById('amountDisplay').oninput = (e) => {
-                let value = e.target.value.replace(/\D/g, '');
-                rawValue = value / 100;
-                e.target.value = rawValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            };
-
-            // Botão Salvar
-            document.getElementById('btnSalvar').onclick = () => {
-                const desc = document.getElementById('desc').value;
-                const type = document.getElementById('type').value;
-                if (desc && rawValue !== 0) {
-                    const amount = type === 'expense' ? -rawValue : rawValue;
-                    transactions.push({ id: Date.now(), text: desc, amount });
-                    localStorage.setItem('transactions', JSON.stringify(transactions));
-                    document.getElementById('desc').value = '';
-                    document.getElementById('amountDisplay').value = '';
-                    rawValue = 0;
-                    render();
-                } else {
-                    alert("Preencha os campos!");
-                }
-            };
-
-            checkUser();
-        });
-    </script>
-</body>
-</html>
+                        <span class="${
