@@ -137,23 +137,24 @@
         function render() {
             const list = document.getElementById('transaction-list');
             list.innerHTML = transactions.length === 0 ? '<p class="text-slate-300 py-4 text-center">Nenhuma transação.</p>' : '';
+            
             transactions.forEach(t => {
+                const isExpense = t.amount < 0;
                 const li = document.createElement('li');
-                li.className = 'flex justify-between items-center py-4';
+                
+                // Adicionamos uma borda lateral para dar destaque (Verde ou Vermelha)
+                li.className = `flex justify-between items-center py-4 px-2 border-l-4 ${isExpense ? 'border-red-400' : 'border-green-400'} mb-2 bg-slate-50/50 rounded-r-lg`;
+                
                 li.innerHTML = `
-                    <span class="text-slate-700 font-medium">${t.text}</span>
+                    <span class="text-slate-700 font-medium ml-2">${t.text}</span>
                     <div class="flex items-center gap-4">
-                        <span class="${t.amount < 0 ? 'text-red-500' : 'text-green-500'} font-bold">
+                        <span class="${isExpense ? 'text-red-500' : 'text-green-600'} font-bold">
                             ${t.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                         </span>
-                        <button onclick="removeTransaction(${t.id})" class="text-slate-200 hover:text-red-500 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                        <button onclick="removeTransaction(${t.id})" class="text-slate-300 hover:text-red-500 transition-colors">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
                     </div>`;
                 list.appendChild(li);
             });
         }
-
-        // Inicia checando se o usuário já existe
-        checkUser();
-    </script>
-</body>
-</html>
