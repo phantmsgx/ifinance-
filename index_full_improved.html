@@ -108,6 +108,13 @@
         .insight-card {
             border-left: 4px solid #2563eb;
         }
+
+        /* Estilos para as novas abas */
+        .progress-bar-container { background-color: #e2e8f0; border-radius: 9999px; height: 8px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; border-radius: 9999px; background-color: #2563eb; transition: width 0.5s ease-in-out; }
+        .bill-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid #f1f5f9; }
+        .bill-item:last-child { border-bottom: none; }
+        .bill-paid { text-decoration: line-through; color: #94a3b8; }
     </style>
 </head>
 <body>
@@ -189,6 +196,9 @@
                             <option value="expense">Saída (-)</option>
                             <option value="income">Entrada (+)</option>
                         </select>
+                        <select id="category" class="w-full bg-slate-50 p-4 rounded-xl font-black text-[10px] text-slate-500 uppercase appearance-none outline-none">
+                            <!-- Categorias serão populadas via JS -->
+                        </select>
                         <button onclick="addTransaction()" class="btn-action btn-gradient text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest">Confirmar</button>
                     </div>
                 </div>
@@ -233,19 +243,32 @@
         <section id="tab-insights" class="hidden p-4 fade-in-up">
             <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Financial <span class="text-blue-600">Insights</span></h2>
             <div id="insights-container" class="max-w-xl mx-auto space-y-4 pb-24"></div>
+            <div class="max-w-xl mx-auto card-inner p-6 premium-shadow mt-4">
+                <h3 class="font-black text-[10px] uppercase tracking-widest mb-4">Gastos por Categoria</h3>
+                <div id="category-summary" class="space-y-2"></div>
+            </div>
         </section>
 
-        <section id="tab-viagem" class="hidden p-4 text-center fade-in-up">
-            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter">VIP Guide</h2>
-            <div class="flex gap-2 overflow-x-auto pb-4 mb-4 no-scrollbar">
-                <button onclick="setGuide('BRL')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇧🇷 Brasil</button>
-                <button onclick="setGuide('USD')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇺🇸 EUA</button>
-                <button onclick="setGuide('EUR')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇪🇺 Europa</button>
-                <button onclick="setGuide('ITA')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇮🇹 Itália</button>
-                <button onclick="setGuide('FRA')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇫🇷 França</button>
-                <button onclick="setGuide('JPN')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇯🇵 Japão</button>
+        <section id="tab-goals" class="hidden p-4 fade-in-up">
+            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Minhas <span class="text-blue-600">Metas</span></h2>
+            <div class="max-w-xl mx-auto card-inner p-6 premium-shadow space-y-4">
+                <input type="text" id="goalNameInput" placeholder="Nome da Meta" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none">
+                <input type="text" id="goalTargetInput" placeholder="Valor Total (0,00)" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-blue-600 outline-none">
+                <input type="text" id="goalSavedInput" placeholder="Valor Já Guardado (0,00)" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-emerald-600 outline-none">
+                <button onclick="addGoal()" class="btn-gradient text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest w-full">Adicionar Meta</button>
             </div>
-            <div id="restaurant-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20 max-w-5xl mx-auto"></div>
+            <div id="goals-list" class="max-w-xl mx-auto space-y-4 pb-24 mt-4"></div>
+        </section>
+
+        <section id="tab-bills" class="hidden p-4 fade-in-up">
+            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Contas <span class="text-blue-600">Fixas</span></h2>
+            <div class="max-w-xl mx-auto card-inner p-6 premium-shadow space-y-4">
+                <input type="text" id="billNameInput" placeholder="Nome da Conta" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none">
+                <input type="text" id="billAmountInput" placeholder="Valor (0,00)" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-red-600 outline-none">
+                <input type="number" id="billDayInput" placeholder="Dia do Vencimento (1-31)" min="1" max="31" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-slate-700 outline-none">
+                <button onclick="addBill()" class="btn-gradient text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest w-full">Adicionar Conta</button>
+            </div>
+            <div id="bills-list" class="max-w-xl mx-auto space-y-4 pb-24 mt-4"></div>
         </section>
 
         <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 py-5 flex justify-around shadow-2xl z-50">
@@ -261,9 +284,13 @@
                 <i class="fa-solid fa-chart-pie text-xl"></i>
                 <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Insights</span>
             </button>
-            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-slate-300">
-                <i class="fa-solid fa-utensils text-xl"></i>
-                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Guia VIP</span>
+            <button onclick="switchTab('goals')" id="nav-goals" class="flex flex-col items-center text-slate-300">
+                <i class="fa-solid fa-bullseye text-xl"></i>
+                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Metas</span>
+            </button>
+            <button onclick="switchTab('bills')" id="nav-bills" class="flex flex-col items-center text-slate-300">
+                <i class="fa-solid fa-calendar-check text-xl"></i>
+                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Contas</span>
             </button>
         </nav>
     </div>
@@ -320,18 +347,15 @@
 
         const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "AUD":"Dólar Aus", "CAD":"Dólar Can", "CHF":"Suíço", "ARS":"Peso Arg", "BTC":"Bitcoin" };
 
-        const restaurantesDB = {
-            'BRL': [{nome: 'A CASA DO PORCO', cidade: 'SP', tipo: 'CONCEITUAL', icone: '🐷', desc: 'Focado na carne suína.'}, {nome: 'D.O.M', cidade: 'SP', tipo: 'AMAZÔNICO', icone: '🌿', desc: 'Alta gastronomia Amazônica.'}, {nome: 'LASAI', cidade: 'RJ', tipo: 'ORGÂNICO', icone: '🥕', desc: 'Ingredientes colhidos no dia.'}, {nome: 'MANÍ', cidade: 'SP', tipo: 'CONTEMPORÂNEO', icone: '🥣', desc: 'A sofisticação de Helena Rizzo.'}, {nome: 'MARIUS DEGUSTARE', cidade: 'RJ', tipo: 'EXCLUSIVO', icone: '🥩', desc: 'Ambiente temático épico.'}],
-            'USD': [{nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'PEIXES', icone: '🐟', desc: 'O ápice dos frutos do mar.'}, {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'Fatia lendária de Manhattan.'}, {nome: 'PETER LUGER', cidade: 'BROOKLYN', tipo: 'STEAKHOUSE', icone: '🥩', desc: 'Famoso desde 1887.'}, {nome: 'NOBU MALIBU', cidade: 'LA', tipo: 'FUSION', icone: '🍣', desc: 'Elite de Hollywood.'}, {nome: 'KATZ\'S DELI', cidade: 'NY', tipo: 'DELI', icone: '🥪', desc: 'Pastrami definitivo.'}],
-            'EUR': [{nome: 'STEIRERECK', cidade: 'VIENA', tipo: 'MODERNO', icone: '🇦🇹', desc: 'Coração do Stadtpark.'}, {nome: 'HOFBRÄUHAUS', cidade: 'MUNICH', tipo: 'HISTÓRICO', icone: '🍺', desc: 'Cervejaria mais famosa.'}, {nome: 'TICKET BAR', cidade: 'BARCELONA', tipo: 'TAPAS', icone: '🥘', desc: 'Inovação extrema.'}, {nome: 'OSTERIA FRANCESCANA', cidade: 'MODENA', tipo: 'ARTE', icone: '🎨', desc: 'Massimo Bottura.'}, {nome: 'NOMA', cidade: 'COPENHAGUE', tipo: 'NÓRDICO', icone: '🌲', desc: 'Frequentemente nº 1 do mundo.'}],
-            'ITA': [{nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin.'}, {nome: 'DA VITTORIO', cidade: 'BERGAMO', tipo: 'FAMILIAR', icone: '🍝', desc: 'Tradição italiana elevada.'}, {nome: 'TRATTORIA BAFFETTO', cidade: 'ROMA', tipo: 'PIZZA', icone: '🇮🇹', desc: 'Massa mais fina de Roma.'}, {nome: 'ANTICA PESA', cidade: 'ROMA', tipo: 'HISTÓRICO', icone: '🍷', desc: 'Jantar no Trastevere.'}, {nome: 'LANGHOSTERIA', cidade: 'MILÃO', tipo: 'FASHION', icone: '🦞', desc: 'Melhor peixe fresco do norte.'}],
-            'FRA': [{nome: 'LE MEURICE', cidade: 'PARIS', tipo: 'PALÁCIO', icone: '🥐', desc: 'Ambiente real Alain Ducasse.'}, {nome: 'SEPTIME', cidade: 'PARIS', tipo: 'NEO-BISTRO', icone: '🍷', desc: 'O mais concorrido de Paris.'}, {nome: 'MIRAZUR', cidade: 'MENTON', tipo: 'RIVIERA', icone: '🌊', desc: 'Mar e jardins.'}, {nome: 'L\'AMI LOUIS', cidade: 'PARIS', tipo: 'BISTRO', icone: '🦆', desc: 'Bistrô mais famoso do mundo.'}, {nome: 'CIEL DE PARIS', cidade: 'PARIS', tipo: 'VISTA', icone: '🗼', desc: 'Topo da Torre Montparnasse.'}],
-            'JPN': [{nome: 'SUKIYABASHI JIRO', cidade: 'TOKYO', tipo: 'SUSHI', icone: '🍣', desc: 'Lenda de Jiro Ono.'}, {nome: 'NARISAWA', cidade: 'TOKYO', tipo: 'ECO', icone: '🌲', desc: 'Respeito à natureza.'}, {nome: 'ICHIRAN RAMEN', cidade: 'TOKYO', tipo: 'RAMEN', icone: '🍜', desc: 'Ramen definitivo.'}, {nome: 'KOBE BEEF KAISEKI', cidade: 'KOBE', tipo: 'WAGYU', icone: '🐂', desc: 'Carne mais macia do mundo.'}, {nome: 'DEN', cidade: 'TOKYO', tipo: 'CRIATIVO', icone: '🍱', desc: 'Humor e técnica impecável.'}]
+        // Novas categorias para transações
+        const transactionCategories = {
+            'income': ['Salário', 'Investimentos', 'Presente', 'Outros'],
+            'expense': ['Alimentação', 'Transporte', 'Moradia', 'Lazer', 'Educação', 'Saúde', 'Compras', 'Contas', 'Outros']
         };
 
         let isRegisterMode = false;
         let currentUser = null;
-        let rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
+        let rawValues = { amountDisplay: 0, calcValueDisplay: 0, goalTargetInput: 0, goalSavedInput: 0, billAmountInput: 0 };
         let ghostMode = false; // Estado do Modo Fantasma
 
         function populateCurrencySelectors() {
@@ -342,6 +366,16 @@
                 to.add(new Option(`${code} - ${allCurrencies[code]}`, code));
             });
             from.value = "USD"; to.value = "BRL";
+        }
+
+        function populateCategorySelector() {
+            const categorySelect = document.getElementById('category');
+            categorySelect.innerHTML = ''; // Limpa opções existentes
+            const currentType = document.getElementById('type').value;
+            const categories = transactionCategories[currentType] || [];
+            categories.forEach(cat => {
+                categorySelect.add(new Option(cat.toUpperCase(), cat));
+            });
         }
 
         function inverterMoedas() {
@@ -378,6 +412,8 @@
             const mesAtual = meses[new Date().getMonth()];
             document.getElementById('desc').value = `RENDA - ${mesAtual}`;
             document.getElementById('type').value = 'income';
+            populateCategorySelector(); // Atualiza categorias para 'income'
+            document.getElementById('category').value = 'Salário'; // Define uma categoria padrão
             document.getElementById('amountDisplay').focus();
         }
 
@@ -390,7 +426,6 @@
                 return;
             }
 
-            // Hashing da senha antes de armazenar/comparar (apenas para demonstração client-side)
             const hashedPassword = await hashPasswordClientSide(pass);
 
             if (isRegisterMode) {
@@ -399,17 +434,27 @@
                     alert("Por favor, preencha seu nome completo.");
                     return;
                 }
-                const newUser = { name: name.toUpperCase(), pass: hashedPassword, currency: document.getElementById('userCurrencyInput').value, transactions: [] };
+                const newUser = { 
+                    name: name.toUpperCase(), 
+                    pass: hashedPassword, 
+                    currency: document.getElementById('userCurrencyInput').value, 
+                    transactions: [],
+                    goals: [],
+                    fixedBills: []
+                };
                 localStorage.setItem(`user_${email}`, JSON.stringify(newUser));
                 alert("Conta VIP criada!"); 
-                isRegisterMode = false; // Resetar para modo de login após registro
-                toggleAuthMode(); // Atualizar UI
+                isRegisterMode = false; 
+                toggleAuthMode(); 
             } else {
                 const saved = localStorage.getItem(`user_${email}`);
                 if (saved) {
                     const userData = JSON.parse(saved);
-                    if (userData.pass === hashedPassword) { // Comparação com a senha hashed
+                    if (userData.pass === hashedPassword) {
                         currentUser = { ...userData, email };
+                        // Garante que as novas propriedades existam para usuários antigos
+                        if (!currentUser.goals) currentUser.goals = [];
+                        if (!currentUser.fixedBills) currentUser.fixedBills = [];
                         localStorage.setItem('iFinance_session', email);
                         entrarApp();
                     } else { 
@@ -426,9 +471,15 @@
             document.getElementById('main-app').classList.remove('hidden');
             applyMask('amountDisplay'); 
             applyMask('calcValueDisplay');
-            populateMonthFilter(); // Popula os meses na entrada
+            applyMask('goalTargetInput');
+            applyMask('goalSavedInput');
+            applyMask('billAmountInput');
+            populateMonthFilter(); 
+            populateCategorySelector(); // Popula o seletor de categorias
+            document.getElementById('type').addEventListener('change', populateCategorySelector); // Atualiza categorias ao mudar tipo
             renderTransactions(); 
-            setGuide('BRL');
+            renderGoals();
+            renderFixedBills();
         }
 
         async function buscarCotacao() {
@@ -447,7 +498,7 @@
             } catch { document.getElementById('calcResultDisplay').innerText = "Erro de rede"; }
         }
 
-        const debouncedBuscarCotacao = debounce(buscarCotacao, 500); // Debounce de 500ms
+        const debouncedBuscarCotacao = debounce(buscarCotacao, 500); 
 
         function atualizarConversao(rate) {
             const res = rawValues.calcValueDisplay * rate;
@@ -458,19 +509,26 @@
             const savedEmail = localStorage.getItem('iFinance_session');
             if (savedEmail) {
                 const userData = localStorage.getItem(`user_${savedEmail}`);
-                if (userData) { currentUser = { ...JSON.parse(userData), email: savedEmail }; entrarApp(); }
+                if (userData) { 
+                    currentUser = { ...JSON.parse(userData), email: savedEmail }; 
+                    // Garante que as novas propriedades existam para usuários antigos
+                    if (!currentUser.goals) currentUser.goals = [];
+                    if (!currentUser.fixedBills) currentUser.fixedBills = [];
+                    entrarApp(); 
+                }
             }
         }
 
         function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
         function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
 
-        function repetirTransacao(text, amount) {
+        function repetirTransacao(text, amount, category) {
             if(confirm(`Deseja lançar "${sanitizeInput(text)}" novamente?`)) {
                 currentUser.transactions.push({ 
                     id: Date.now(), 
                     text: sanitizeInput(text), 
                     amount, 
+                    category: sanitizeInput(category),
                     date: new Date().toLocaleDateString('pt-BR'),
                     monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
                 });
@@ -484,17 +542,16 @@
             list.innerHTML = ''; let inc = 0, exp = 0;
             
             currentUser.transactions.sort((a,b) => b.id - a.id).forEach(t => {
-                // Filtro por mês
                 if (filter !== 'all' && t.monthYear !== filter) return;
 
                 if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
                 const li = document.createElement('li');
                 li.className = "flex justify-between items-center py-4 anim-fade";
                 
-                // Aplica blur se Modo Fantasma estiver ativo
                 const blurClass = ghostMode ? 'blur-val' : '';
+                const categoryText = t.category ? `<span class="text-[7px] text-slate-400 uppercase">${sanitizeInput(t.category)}</span>` : '';
 
-                li.innerHTML = `<div class="flex items-center gap-3"><button onclick="repetirTransacao('${sanitizeInput(t.text)}', ${t.amount})" class="btn-repeat text-sm"><i class="fa-solid fa-rotate"></i></button><div><p class="font-black text-[10px] text-slate-700">${sanitizeInput(t.text)}</p><p class="text-[7px] text-slate-300 uppercase">${sanitizeInput(t.date)}</p></div></div><p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}">${sanitizeInput(formatCurrency(t.amount))}</p>`;
+                li.innerHTML = `<div class="flex items-center gap-3"><button onclick="repetirTransacao('${sanitizeInput(t.text)}', ${t.amount}, '${sanitizeInput(t.category)}')" class="btn-repeat text-sm"><i class="fa-solid fa-rotate"></i></button><div><p class="font-black text-[10px] text-slate-700">${sanitizeInput(t.text)}</p><p class="text-[7px] text-slate-300 uppercase">${sanitizeInput(t.date)} ${categoryText}</p></div></div><p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}">${sanitizeInput(formatCurrency(t.amount))}</p>`;
                 list.appendChild(li);
             });
 
@@ -502,7 +559,6 @@
             document.getElementById('incomes').innerText = formatCurrency(inc);
             document.getElementById('expenses').innerText = formatCurrency(exp);
 
-            // Borra os cartões superiores no Modo Fantasma
             if(ghostMode) {
                 document.getElementById('balance').classList.add('blur-val');
                 document.getElementById('incomes').classList.add('blur-val');
@@ -535,7 +591,7 @@
         }
 
         function exportData() {
-            const data = JSON.stringify(currentUser.transactions, null, 2);
+            const data = JSON.stringify(currentUser, null, 2); // Exporta todos os dados do usuário
             const blob = new Blob([data], { type: 'text/plain' });
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -551,40 +607,71 @@
                 <div class="card-inner p-6 insight-card premium-shadow"><p class="text-[8px] font-black text-blue-600 uppercase mb-2">Saúde do Orçamento</p><h3 class="font-black text-sm mb-1">Você comprometeu ${sanitizeInput(percentUsed)}% da sua renda.</h3><div class="w-full bg-slate-100 h-2 rounded-full mt-3"><div class="bg-blue-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div></div></div>
                 <div class="card-inner p-6 insight-card premium-shadow border-l-emerald-500"><p class="text-[8px] font-black text-emerald-500 uppercase mb-2">Disponibilidade Real</p><h3 class="font-black text-sm">Seu saldo líquido: ${sanitizeInput(formatCurrency(remaining))}.</h3></div>
             `;
+            renderCategorySummary();
+        }
+
+        function renderCategorySummary() {
+            const categorySummaryDiv = document.getElementById('category-summary');
+            categorySummaryDiv.innerHTML = '';
+            const expenseCategories = {};
+
+            currentUser.transactions.filter(t => t.amount < 0).forEach(t => {
+                const category = t.category || 'Outros';
+                expenseCategories[category] = (expenseCategories[category] || 0) + Math.abs(t.amount);
+            });
+
+            const totalExpenses = Object.values(expenseCategories).reduce((sum, val) => sum + val, 0);
+
+            for (const category in expenseCategories) {
+                const amount = expenseCategories[category];
+                const percentage = totalExpenses > 0 ? ((amount / totalExpenses) * 100).toFixed(1) : 0;
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center";
+                div.innerHTML = `
+                    <p class="text-[9px] font-bold text-slate-700">${sanitizeInput(category.toUpperCase())}</p>
+                    <p class="text-[9px] font-bold text-red-600">${sanitizeInput(formatCurrency(amount))} (${sanitizeInput(percentage)}%)</p>
+                `;
+                categorySummaryDiv.appendChild(div);
+            }
         }
 
         function switchTab(tab) {
-            ['home', 'cambio', 'viagem', 'insights'].forEach(t => {
+            ['home', 'cambio', 'insights', 'goals', 'bills'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).classList.remove('tab-active');
                 document.getElementById(`nav-${t}`).classList.add('text-slate-300');
             });
             document.getElementById(`tab-${tab}`).classList.remove('hidden');
             document.getElementById(`nav-${tab}`).classList.add('tab-active');
-        }
 
-        function setGuide(reg) {
-            const container = document.getElementById('restaurant-list');
-            container.innerHTML = '';
-            (restaurantesDB[reg] || []).forEach(r => {
-                const div = document.createElement('div');
-                div.className = "card-inner p-5 text-left premium-shadow fade-in-up";
-                div.innerHTML = `<div class="text-2xl mb-3">${sanitizeInput(r.icone)}</div><h4 class="font-black text-[11px]">${sanitizeInput(r.nome)}</h4><p class="text-[8px] font-bold text-blue-600 mb-1">${sanitizeInput(r.cidade)} • ${sanitizeInput(r.tipo)}</p><p class="text-[9px] text-slate-400 font-medium">${sanitizeInput(r.desc)}</p>`;
-                container.appendChild(div);
-            });
+            // Renderiza as listas ao mudar de aba para garantir que estejam atualizadas
+            if (tab === 'goals') renderGoals();
+            if (tab === 'bills') renderFixedBills();
+            if (tab === 'insights') updateInsights(0,0); // Recalcula insights
         }
 
         function addTransaction() {
             const descInput = document.getElementById('desc').value.trim();
             const val = rawValues.amountDisplay;
-            if (val === 0) return;
-            const finalDesc = descInput === "" ? " — " : sanitizeInput(descInput.toUpperCase());
+            const category = document.getElementById('category').value;
+
+            if (val === 0) {
+                alert("O valor da transação não pode ser zero.");
+                return;
+            }
+            if (!descInput && category === 'Outros') {
+                alert("Por favor, adicione uma descrição ou escolha uma categoria específica.");
+                return;
+            }
+
+            const finalDesc = descInput === "" ? sanitizeInput(category.toUpperCase()) : sanitizeInput(descInput.toUpperCase());
             const finalVal = (document.getElementById('type').value === 'expense') ? -val : val;
             
             currentUser.transactions.push({ 
                 id: Date.now(), 
                 text: finalDesc, 
                 amount: finalVal, 
+                category: sanitizeInput(category),
                 date: new Date().toLocaleDateString('pt-BR'),
                 monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
             });
@@ -592,14 +679,20 @@
             save(); populateMonthFilter(); renderTransactions();
             document.getElementById('desc').value = ''; rawValues.amountDisplay = 0;
             document.getElementById('amountDisplay').value = formatCurrency(0);
+            populateCategorySelector(); // Reseta a categoria para o padrão
         }
 
         function lancarCambio() {
-            const val = rawValues.calcValueDisplay; if(val <= 0) return;
+            const val = rawValues.calcValueDisplay; 
+            if(val <= 0) {
+                alert("O valor para câmbio deve ser maior que zero.");
+                return;
+            }
             currentUser.transactions.push({ 
                 id: Date.now(), 
                 text: `CÂMBIO REALIZADO`, 
                 amount: -val, 
+                category: 'Câmbio',
                 date: new Date().toLocaleDateString('pt-BR'),
                 monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
             });
@@ -613,9 +706,179 @@
             document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já possui conta? Acesse' : 'Ainda não possui conta? Registre-se';
         }
 
-        function limparTudo() { if(confirm("Apagar tudo?")) { localStorage.clear(); logout(); } }
+        function limparTudo() { if(confirm("Apagar TUDO (transações, metas, contas fixas)? Esta ação é irreversível!")) { localStorage.clear(); logout(); } }
 
-        window.onload = () => { populateCurrencySelectors(); checkSession(); };
+        // --- Funções de Metas ---
+        function addGoal() {
+            const name = document.getElementById('goalNameInput').value.trim();
+            const target = rawValues.goalTargetInput;
+            const saved = rawValues.goalSavedInput;
+
+            if (!name || target <= 0) {
+                alert("Por favor, preencha o nome da meta e um valor total válido.");
+                return;
+            }
+            if (saved > target) {
+                alert("O valor já guardado não pode ser maior que o valor total da meta.");
+                return;
+            }
+
+            currentUser.goals.push({
+                id: Date.now(),
+                name: sanitizeInput(name.toUpperCase()),
+                target: target,
+                saved: saved
+            });
+            save();
+            renderGoals();
+            document.getElementById('goalNameInput').value = '';
+            rawValues.goalTargetInput = 0;
+            document.getElementById('goalTargetInput').value = formatCurrency(0);
+            rawValues.goalSavedInput = 0;
+            document.getElementById('goalSavedInput').value = formatCurrency(0);
+        }
+
+        function renderGoals() {
+            const goalsList = document.getElementById('goals-list');
+            goalsList.innerHTML = '';
+
+            if (currentUser.goals.length === 0) {
+                goalsList.innerHTML = '<p class="text-center text-slate-500">Nenhuma meta cadastrada ainda.</p>';
+                return;
+            }
+
+            currentUser.goals.forEach(goal => {
+                const progress = (goal.saved / goal.target) * 100;
+                const div = document.createElement('div');
+                div.className = "card-inner p-6 premium-shadow fade-in-up";
+                div.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-black text-[11px]">${sanitizeInput(goal.name)}</h4>
+                        <button onclick="removeGoal(${goal.id})" class="text-red-400 hover:text-red-600 transition-all"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                    <p class="text-[9px] font-bold text-slate-400">${sanitizeInput(formatCurrency(goal.saved))} / ${sanitizeInput(formatCurrency(goal.target))}</p>
+                    <div class="progress-bar-container mt-2">
+                        <div class="progress-bar-fill" style="width: ${Math.min(progress, 100)}%"></div>
+                    </div>
+                    <p class="text-[8px] text-right mt-1 text-slate-500">${sanitizeInput(progress.toFixed(1))}% Concluído</p>
+                `;
+                goalsList.appendChild(div);
+            });
+        }
+
+        function removeGoal(id) {
+            if (confirm("Tem certeza que deseja remover esta meta?")) {
+                currentUser.goals = currentUser.goals.filter(goal => goal.id !== id);
+                save();
+                renderGoals();
+            }
+        }
+
+        // --- Funções de Contas Fixas ---
+        function addBill() {
+            const name = document.getElementById('billNameInput').value.trim();
+            const amount = rawValues.billAmountInput;
+            const day = parseInt(document.getElementById('billDayInput').value);
+
+            if (!name || amount <= 0 || isNaN(day) || day < 1 || day > 31) {
+                alert("Por favor, preencha o nome da conta, um valor válido e um dia de vencimento entre 1 e 31.");
+                return;
+            }
+
+            currentUser.fixedBills.push({
+                id: Date.now(),
+                name: sanitizeInput(name.toUpperCase()),
+                amount: amount,
+                day: day,
+                paid: false // Nova propriedade para controlar se foi paga no mês
+            });
+            save();
+            renderFixedBills();
+            document.getElementById('billNameInput').value = '';
+            rawValues.billAmountInput = 0;
+            document.getElementById('billAmountInput').value = formatCurrency(0);
+            document.getElementById('billDayInput').value = '';
+        }
+
+        function renderFixedBills() {
+            const billsList = document.getElementById('bills-list');
+            billsList.innerHTML = '';
+
+            if (currentUser.fixedBills.length === 0) {
+                billsList.innerHTML = '<p class="text-center text-slate-500">Nenhuma conta fixa cadastrada ainda.</p>';
+                return;
+            }
+
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+
+            currentUser.fixedBills.sort((a, b) => a.day - b.day).forEach(bill => {
+                const isPaidForCurrentMonth = bill.paid && new Date(bill.paidDate).getMonth() === currentMonth && new Date(bill.paidDate).getFullYear() === currentYear;
+                const div = document.createElement('div');
+                div.className = "bill-item anim-fade";
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="bill-${bill.id}" ${isPaidForCurrentMonth ? 'checked' : ''} onchange="toggleBillPaid(${bill.id})">
+                        <label for="bill-${bill.id}" class="font-black text-[10px] ${isPaidForCurrentMonth ? 'bill-paid' : 'text-slate-700'}">
+                            ${sanitizeInput(bill.name)} - Vence dia ${bill.day}
+                        </label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p class="font-black text-[10px] ${isPaidForCurrentMonth ? 'bill-paid' : 'text-red-600'}">${sanitizeInput(formatCurrency(bill.amount))}</p>
+                        <button onclick="removeBill(${bill.id})" class="text-red-400 hover:text-red-600 transition-all"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+                billsList.appendChild(div);
+            });
+        }
+
+        function toggleBillPaid(id) {
+            const billIndex = currentUser.fixedBills.findIndex(bill => bill.id === id);
+            if (billIndex > -1) {
+                const bill = currentUser.fixedBills[billIndex];
+                // Se a conta já foi paga este mês, desmarca. Caso contrário, marca.
+                const currentMonth = new Date().getMonth();
+                const currentYear = new Date().getFullYear();
+                const wasPaidThisMonth = bill.paid && new Date(bill.paidDate).getMonth() === currentMonth && new Date(bill.paidDate).getFullYear() === currentYear;
+
+                if (wasPaidThisMonth) {
+                    bill.paid = false;
+                    delete bill.paidDate; // Remove a data de pagamento
+                } else {
+                    bill.paid = true;
+                    bill.paidDate = new Date().toISOString(); // Salva a data de pagamento
+                    // Opcional: Adicionar transação de despesa automaticamente
+                    currentUser.transactions.push({
+                        id: Date.now(),
+                        text: `PAGAMENTO: ${bill.name}`,
+                        amount: -bill.amount,
+                        category: 'Contas',
+                        date: new Date().toLocaleDateString('pt-BR'),
+                        monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
+                    });
+                }
+                save();
+                renderFixedBills();
+                renderTransactions(); // Atualiza o extrato e insights
+            }
+        }
+
+        function removeBill(id) {
+            if (confirm("Tem certeza que deseja remover esta conta fixa?")) {
+                currentUser.fixedBills = currentUser.fixedBills.filter(bill => bill.id !== id);
+                save();
+                renderFixedBills();
+            }
+        }
+
+        window.onload = () => { 
+            populateCurrencySelectors(); 
+            checkSession(); 
+            // Inicializa o seletor de categorias para o tipo padrão (expense)
+            populateCategorySelector();
+            // Adiciona listener para atualizar categorias quando o tipo de transação muda
+            document.getElementById('type').addEventListener('change', populateCategorySelector);
+        };
     </script>
 </body>
 </html>
