@@ -112,10 +112,6 @@
 </head>
 <body>
 
-    <div class="w-full bg-amber-100 text-amber-800 text-[10px] font-bold py-2 px-4 text-center uppercase tracking-widest border-b border-amber-200">
-        ⚠️ Site em versão de teste, se achar bugs constatar ao criador.
-    </div>
-
     <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 bg-auth-gradient text-center">
         <div class="mb-6 w-20 h-20 bg-blue-600 rounded-[30px] flex items-center justify-center shadow-2xl text-white text-4xl transform rotate-12">
             <i class="fa-solid fa-wallet"></i>
@@ -520,13 +516,25 @@
 
         function lancarCambio() {
             const val = rawValues.calcValueDisplay; if(val <= 0) return;
-            // (Código de lançamento de câmbio continuaria aqui...)
+            currentUser.transactions.push({ 
+                id: Date.now(), 
+                text: `CÂMBIO REALIZADO`, 
+                amount: -val, 
+                date: new Date().toLocaleDateString('pt-BR'),
+                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
+            });
+            save(); populateMonthFilter(); renderTransactions(); switchTab('home');
         }
 
-        // Inicialização
-        checkSession();
-        populateCurrencySelectors();
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('register-fields').classList.toggle('hidden');
+            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'CRIAR CONTA' : 'ACESSAR';
+        }
 
+        function limparTudo() { if(confirm("Apagar tudo?")) { localStorage.clear(); logout(); } }
+
+        window.onload = () => { populateCurrencySelectors(); checkSession(); };
     </script>
 </body>
 </html>
