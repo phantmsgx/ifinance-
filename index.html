@@ -28,7 +28,6 @@
             height: 100%;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
-            transition: background-color 0.3s ease;
         }
 
         body { padding-bottom: 110px; -webkit-tap-highlight-color: transparent; }
@@ -68,7 +67,6 @@
             font-weight: 800;
         }
 
-        /* NOVO: Estilo para ocultar valores */
         .blur-val { filter: blur(10px); pointer-events: none; }
 
         @media (max-width: 640px) {
@@ -93,8 +91,6 @@
         .card-inner { background: white; border: 1px solid #f1f5f9; border-radius: 40px; overflow: hidden; }
         button:active { transform: scale(0.96); }
         .btn-gradient { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-        .anim-fade { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
         .btn-income-quick {
             background: #f0fdf4;
@@ -102,17 +98,6 @@
             border: 1px solid #bbf7d0;
         }
 
-        .btn-repeat {
-            color: #cbd5e1;
-            transition: all 0.2s;
-        }
-        .btn-repeat:hover { color: #2563eb; }
-
-        .insight-card {
-            border-left: 4px solid #2563eb;
-        }
-
-        /* Melhorias de Visual */
         .glass-nav {
             backdrop-filter: blur(10px);
             background: rgba(255, 255, 255, 0.8);
@@ -121,44 +106,26 @@
             transition: all 0.2s;
             border-radius: 20px;
         }
-        .transaction-item:hover {
-            background-color: #f1f5f9;
-            transform: translateX(5px);
-        }
-        .dark-mode-toggle {
-            cursor: pointer;
-            transition: all 0.3s;
-        }
     </style>
 </head>
 <body>
 
+    <!-- AUTH SCREEN -->
     <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 bg-auth-gradient text-center">
         <div class="mb-6 w-20 h-20 bg-blue-600 rounded-[30px] flex items-center justify-center shadow-2xl text-white text-4xl transform rotate-12">
             <i class="fa-solid fa-wallet"></i>
         </div>
-        
-        <h1 id="auth-title" class="text-3xl font-black mb-1 tracking-tighter">i<span class="text-blue-600">Finance</span></h1>
-        <p id="auth-subtitle" class="text-slate-500 mb-8 font-medium text-sm">Gestão de elite.</p>
+        <h1 class="text-3xl font-black mb-1 tracking-tighter">i<span class="text-blue-600">Finance</span></h1>
+        <p class="text-slate-500 mb-8 font-medium text-sm">Gestão de elite.</p>
 
         <div class="flex flex-col w-full max-w-md gap-3">
-            <div class="relative">
-                <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
-                <input type="email" id="emailInput" placeholder="E-mail" class="w-full bg-white border-2 border-slate-50 p-4 pl-12 rounded-2xl font-bold outline-none shadow-sm focus:border-blue-200 transition-all">
-            </div>
-            <div class="relative">
-                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
-                <input type="password" id="passInput" placeholder="Senha" class="w-full bg-white border-2 border-slate-50 p-4 pl-12 rounded-2xl font-bold outline-none shadow-sm focus:border-blue-200 transition-all">
-            </div>
+            <input type="email" id="emailInput" placeholder="E-mail" class="w-full bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm focus:border-blue-200 transition-all">
+            <input type="password" id="passInput" placeholder="Senha" class="w-full bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm focus:border-blue-200 transition-all">
             
             <div id="register-fields" class="hidden flex flex-col gap-3 fade-in-up">
+                <input type="text" id="userNameInput" placeholder="Nome Completo" class="w-full bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm">
                 <div class="relative">
-                    <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
-                    <input type="text" id="userNameInput" placeholder="Nome Completo" class="w-full bg-white border-2 border-slate-50 p-4 pl-12 rounded-2xl font-bold outline-none shadow-sm">
-                </div>
-                <div class="relative">
-                    <i class="fa-solid fa-coins absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
-                    <select id="userCurrencyInput" class="w-full bg-white border-2 border-slate-50 p-4 pl-12 rounded-2xl font-bold outline-none shadow-sm appearance-none">
+                    <select id="userCurrencyInput" class="w-full bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm appearance-none">
                         <option value="BRL">🇧🇷 BRL - Real Brasileiro</option>
                         <option value="USD">🇺🇸 USD - Dólar Americano</option>
                         <option value="EUR">🇪🇺 EUR - Euro</option>
@@ -169,11 +136,12 @@
                 </div>
             </div>
 
-            <button onclick="handleAuth()" id="btn-main-auth" class="btn-gradient text-white py-4 rounded-2xl font-black shadow-xl uppercase tracking-widest mt-2 hover:opacity-90 transition-all active:scale-95">Acessar Sistema</button>
+            <button onclick="handleAuth()" id="btn-main-auth" class="btn-gradient text-white py-4 rounded-2xl font-black shadow-xl uppercase tracking-widest mt-2">Acessar Sistema</button>
             <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-blue-600 font-bold mt-2 text-[10px] uppercase tracking-wider">Ainda não possui conta? Registre-se</button>
         </div>
     </section>
 
+    <!-- MAIN APP -->
     <div id="main-app" class="hidden">
         <section id="tab-home" class="fade-in-up">
             <header class="header-main bg-white/80 backdrop-blur-xl border-b border-slate-100 p-5 sticky top-0 z-20 flex justify-between items-center px-6 md:px-10">
@@ -182,24 +150,19 @@
                     <p class="text-[7px] font-bold text-slate-400 uppercase tracking-[0.3em]">Premium Dashboard</p>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="toggleGhostMode()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-all">
-                        <i id="ghost-icon" class="fa-solid fa-eye"></i>
-                    </button>
-                    <button onclick="logout()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 transition-all">
-                        <i class="fa-solid fa-power-off text-base"></i>
-                    </button>
+                    <button onclick="toggleGhostMode()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400"><i id="ghost-icon" class="fa-solid fa-eye"></i></button>
+                    <button onclick="logout()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500"><i class="fa-solid fa-power-off text-base"></i></button>
                 </div>
             </header>
             
             <main class="p-4 max-w-6xl mx-auto space-y-4">
-                <!-- Gráfico de Inteligência -->
+                <!-- GRÁFICO -->
                 <div class="card-inner p-6 premium-shadow mb-4">
-                    <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">Resumo Inteligente</h3>
-                    <div class="h-[200px]">
-                        <canvas id="mainChart"></canvas>
-                    </div>
+                    <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">Evolução Financeira</h3>
+                    <div class="h-[200px]"><canvas id="mainChart"></canvas></div>
                 </div>
 
+                <!-- CARDS DE SALDO -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="card-inner p-6 border-blue-100 border-2 premium-shadow bg-gradient-to-br from-white to-blue-50/30">
                         <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Saldo Disponível</p>
@@ -215,45 +178,34 @@
                     </div>
                 </div>
 
-                <button onclick="prepararRendaMensal()" class="w-full btn-income-quick p-4 rounded-[25px] flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest shadow-sm hover:bg-emerald-100 transition-all">
-                    <i class="fa-solid fa-hand-holding-dollar text-lg"></i>
-                    Lançar Renda do Mês
-                </button>
-
+                <!-- ADICIONAR TRANSAÇÃO -->
                 <div class="card-inner p-6 premium-shadow">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                        <input type="text" id="desc" placeholder="DESCRIÇÃO (OPCIONAL)" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none focus:ring-2 focus:ring-blue-100 transition-all">
-                        <input type="text" id="amountDisplay" placeholder="0,00" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-blue-600 outline-none focus:ring-2 focus:ring-blue-100 transition-all">
-                        <select id="type" class="w-full bg-slate-50 p-4 rounded-xl font-black text-[10px] text-slate-500 uppercase appearance-none outline-none focus:ring-2 focus:ring-blue-100 transition-all">
+                        <input type="text" id="desc" placeholder="DESCRIÇÃO" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none">
+                        <input type="text" id="amountDisplay" placeholder="0,00" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-blue-600 outline-none">
+                        <select id="type" class="w-full bg-slate-50 p-4 rounded-xl font-black text-[10px] text-slate-500 uppercase appearance-none outline-none">
                             <option value="expense">Saída (-)</option>
                             <option value="income">Entrada (+)</option>
                         </select>
-                        <button onclick="addTransaction()" class="btn-action btn-gradient text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest hover:opacity-90 transition-all shadow-lg active:scale-95">Confirmar</button>
+                        <button onclick="addTransaction()" class="btn-action btn-gradient text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest shadow-lg">Confirmar</button>
                     </div>
                 </div>
 
+                <!-- EXTRATO -->
                 <div class="card-inner p-6 premium-shadow">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-black text-[10px] uppercase tracking-widest">Extrato de Transações</h3>
-                        <div class="flex gap-2">
-                            <select id="filterMonth" onchange="renderTransactions()" class="bg-slate-50 p-2 px-4 rounded-lg font-black text-[9px] outline-none border border-slate-100">
-                                <option value="all">TODOS OS MESES</option>
-                            </select>
-                            <button onclick="exportData()" class="bg-slate-50 p-2 px-3 rounded-lg text-blue-600 hover:bg-blue-50 transition-all">
-                                <i class="fa-solid fa-file-export"></i>
-                            </button>
-                        </div>
+                        <h3 class="font-black text-[10px] uppercase tracking-widest">Extrato</h3>
+                        <select id="filterMonth" onchange="renderTransactions()" class="bg-slate-50 p-2 px-4 rounded-lg font-black text-[9px] outline-none"></select>
                     </div>
-
-                    <ul id="transaction-list" class="divide-y divide-slate-50 space-y-1"></ul>
+                    <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
                 </div>
             </main>
         </section>
 
-        <!-- ABA DE CALCULADORA (ORIGINAL MANTIDA) -->
+        <!-- ABA CÂMBIO -->
         <section id="tab-calc" class="hidden p-6 fade-in-up">
             <div class="max-w-md mx-auto card-inner p-8 premium-shadow text-center">
-                <h2 class="text-xl font-black mb-6 uppercase tracking-tighter">Conversor de Moeda</h2>
+                <h2 class="text-xl font-black mb-6 uppercase tracking-tighter">Conversor Inteligente</h2>
                 <div class="space-y-4">
                     <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-6 rounded-3xl font-black text-3xl text-center text-blue-600 outline-none">
                     <div class="grid grid-cols-2 gap-3">
@@ -266,62 +218,56 @@
                             <select id="calcTo" class="w-full bg-transparent font-bold outline-none"></select>
                         </div>
                     </div>
-                    <button onclick="lancarCambio()" class="w-full btn-gradient text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg mt-4">Lançar Conversão</button>
+                    <div id="conv-result" class="text-xs font-black text-slate-400 uppercase py-2">Informe um valor para converter</div>
+                    <button onclick="lancarCambio()" class="w-full btn-gradient text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg">Lançar Conversão</button>
                 </div>
             </div>
         </section>
 
-        <!-- ABA DE CONFIGURAÇÕES -->
+        <!-- ABA PERFIL -->
         <section id="tab-settings" class="hidden p-6 fade-in-up">
             <div class="max-w-md mx-auto space-y-4">
                 <div class="card-inner p-6 premium-shadow">
-                    <h3 class="text-xs font-black uppercase tracking-widest mb-4">Minha Conta</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-2xl">
-                            <span class="text-xs font-bold text-slate-500">Nome</span>
-                            <span id="display-name" class="text-xs font-black">Usuário</span>
-                        </div>
-                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-2xl">
-                            <span class="text-xs font-bold text-slate-500">Moeda</span>
-                            <span id="display-currency" class="text-xs font-black">BRL</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-inner p-6 premium-shadow">
-                    <h3 class="text-xs font-black uppercase tracking-widest mb-4 text-red-500">Zona de Perigo</h3>
-                    <button onclick="limparTudo()" class="w-full p-4 bg-red-50 text-red-600 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-100 transition-all">
-                        Apagar Todos os Dados
-                    </button>
+                    <h3 class="text-xs font-black uppercase tracking-widest mb-4">Configurações</h3>
+                    <button onclick="limparTudo()" class="w-full p-4 bg-red-50 text-red-600 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-100 transition-all">Apagar Todos os Dados</button>
                 </div>
             </div>
         </section>
 
-        <!-- Navegação Inferior (ORIGINAL MANTIDA E MELHORADA) -->
+        <!-- NAV -->
         <nav class="fixed bottom-0 left-0 right-0 glass-nav border-t border-slate-100 p-4 flex justify-around items-center z-30">
             <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 tab-active">
                 <i class="fa-solid fa-house-chimney text-xl"></i>
-                <span class="nav-text text-[9px] font-black uppercase tracking-tighter">Início</span>
+                <span class="text-[9px] font-black uppercase">Início</span>
             </button>
             <button onclick="switchTab('calc')" id="nav-calc" class="flex flex-col items-center gap-1 text-slate-300">
                 <i class="fa-solid fa-calculator text-xl"></i>
-                <span class="nav-text text-[9px] font-black uppercase tracking-tighter">Câmbio</span>
+                <span class="text-[9px] font-black uppercase">Câmbio</span>
             </button>
             <button onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center gap-1 text-slate-300">
                 <i class="fa-solid fa-circle-user text-xl"></i>
-                <span class="nav-text text-[9px] font-black uppercase tracking-tighter">Perfil</span>
+                <span class="text-[9px] font-black uppercase">Perfil</span>
             </button>
         </nav>
     </div>
 
     <script>
-        // ESTADO GLOBAL
         let currentUser = null;
         let isRegisterMode = false;
         let isGhostMode = false;
         let mainChart = null;
-        const USERS_DB = 'ifinance_users_secure_v1';
+        const DB_NAME = 'ifinance_ultra_v3';
 
-        // LÓGICA DE INPUT MONETÁRIO (MANTIDA DO ORIGINAL)
+        // TAXAS DE CÂMBIO (Simuladas/Fixas para estabilidade)
+        const exchangeRates = {
+            'BRL': 1,
+            'USD': 5.00,
+            'EUR': 5.40,
+            'GBP': 6.30,
+            'JPY': 0.033
+        };
+
+        // MÁSCARA MONETÁRIA COM CENTAVOS (FIXO)
         const rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
         
         function setupMask(id) {
@@ -330,83 +276,71 @@
                 let val = e.target.value.replace(/\D/g, '');
                 rawValues[id] = parseInt(val || 0) / 100;
                 e.target.value = formatCurrency(rawValues[id]);
+                if(id === 'calcValueDisplay') updateConversionPreview();
             });
             el.value = formatCurrency(0);
         }
 
-        // LÓGICA DE PROTEÇÃO E LOGIN (REFEITA PARA SER INTELIGENTE)
+        function formatCurrency(val) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: currentUser ? currentUser.currency : 'BRL',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(val);
+        }
+
+        // AUTH
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'CRIAR CONTA PREMIUM' : 'ACESSAR SISTEMA';
-            document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'JÁ POSSUI CONTA? ACESSAR' : 'AINDA NÃO POSSUI CONTA? REGISTRE-SE';
+            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'CRIAR CONTA' : 'ACESSAR SISTEMA';
+            document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'JÁ TEM CONTA? ACESSE' : 'AINDA NÃO TEM CONTA? REGISTRE-SE';
         }
 
         function handleAuth() {
             const email = document.getElementById('emailInput').value.trim().toLowerCase();
             const pass = document.getElementById('passInput').value.trim();
-
             if (!email || !pass) return toast('Preencha os campos!', 'error');
 
-            let users = JSON.parse(localStorage.getItem(USERS_DB) || '[]');
+            let users = JSON.parse(localStorage.getItem(DB_NAME) || '[]');
 
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
                 const currency = document.getElementById('userCurrencyInput').value;
-
                 if (!name) return toast('Qual o seu nome?', 'error');
-                if (users.find(u => u.email === email)) return toast('E-mail já cadastrado!', 'error');
+                if (users.find(u => u.email === email)) return toast('E-mail já existe!', 'error');
 
-                const newUser = {
-                    email, pass, name, currency,
-                    transactions: [],
-                    createdAt: new Date().toISOString()
-                };
-
+                const newUser = { email, pass, name, currency, transactions: [] };
                 users.push(newUser);
-                localStorage.setItem(USERS_DB, JSON.stringify(users));
-                toast('Bem-vindo ao iFinance!', 'success');
+                localStorage.setItem(DB_NAME, JSON.stringify(users));
                 login(newUser);
             } else {
                 const user = users.find(u => u.email === email && u.pass === pass);
-                if (user) {
-                    login(user);
-                } else {
-                    toast('E-mail ou senha incorretos!', 'error');
-                }
+                if (user) login(user);
+                else toast('Credenciais incorretas!', 'error');
             }
         }
 
         function login(user) {
             currentUser = user;
-            sessionStorage.setItem('ifinance_active_session', user.email);
-            
+            sessionStorage.setItem('ifinance_session', user.email);
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
-            
-            // Atualiza Perfil
-            document.getElementById('display-name').innerText = user.name;
-            document.getElementById('display-currency').innerText = user.currency;
             document.getElementById('user-greeting').innerText = `Olá, ${user.name.split(' ')[0]}`;
-
             initDashboard();
         }
 
         function checkSession() {
-            const sessionEmail = sessionStorage.getItem('ifinance_active_session');
-            if (sessionEmail) {
-                const users = JSON.parse(localStorage.getItem(USERS_DB) || '[]');
-                const user = users.find(u => u.email === sessionEmail);
+            const email = sessionStorage.getItem('ifinance_session');
+            if (email) {
+                const users = JSON.parse(localStorage.getItem(DB_NAME) || '[]');
+                const user = users.find(u => u.email === email);
                 if (user) login(user);
             }
         }
 
-        function logout() {
-            sessionStorage.removeItem('ifinance_active_session');
-            location.reload();
-        }
-
-        // DASHBOARD INTELIGENTE
+        // DASHBOARD
         function initDashboard() {
             setupMask('amountDisplay');
             setupMask('calcValueDisplay');
@@ -420,10 +354,10 @@
             const val = rawValues.amountDisplay;
             if (val <= 0) return toast('Informe um valor!', 'warning');
 
-            const desc = document.getElementById('desc').value.trim() || 'LANÇAMENTO SEM NOME';
+            const desc = document.getElementById('desc').value.trim() || 'LANÇAMENTO';
             const type = document.getElementById('type').value;
 
-            const transaction = {
+            const tx = {
                 id: Date.now(),
                 text: desc,
                 amount: type === 'expense' ? -val : val,
@@ -431,10 +365,9 @@
                 monthYear: new Date().toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' })
             };
 
-            currentUser.transactions.unshift(transaction);
+            currentUser.transactions.unshift(tx);
             save();
             
-            // Limpa inputs
             document.getElementById('desc').value = '';
             rawValues.amountDisplay = 0;
             document.getElementById('amountDisplay').value = formatCurrency(0);
@@ -442,66 +375,43 @@
             populateMonthFilter();
             renderTransactions();
             updateChart();
-            toast('Lançamento realizado!', 'success');
+            toast('Adicionado!', 'success');
         }
 
         function renderTransactions() {
             const list = document.getElementById('transaction-list');
             const filter = document.getElementById('filterMonth').value;
-            
             let filtered = currentUser.transactions;
-            if (filter !== 'all') {
-                filtered = filtered.filter(t => t.monthYear === filter);
-            }
+            if (filter && filter !== 'all') filtered = filtered.filter(t => t.monthYear === filter);
 
             list.innerHTML = '';
-            
             filtered.forEach(t => {
-                const isExpense = t.amount < 0;
+                const isExp = t.amount < 0;
                 const li = document.createElement('li');
-                li.className = 'transaction-item flex items-center justify-between p-4 bg-white mb-1';
+                li.className = 'flex items-center justify-between p-4 hover:bg-slate-50 transition-all';
                 li.innerHTML = `
                     <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center ${isExpense ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'}">
-                            <i class="fa-solid ${isExpense ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center ${isExp ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'}">
+                            <i class="fa-solid ${isExp ? 'fa-minus' : 'fa-plus'}"></i>
                         </div>
                         <div>
-                            <p class="text-[11px] font-black uppercase leading-tight">${t.text}</p>
-                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">${t.date}</p>
+                            <p class="text-[10px] font-black uppercase">${t.text}</p>
+                            <p class="text-[8px] font-bold text-slate-400">${t.date}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="text-xs font-black ${isExpense ? 'text-red-600' : 'text-emerald-600'} ${isGhostMode ? 'blur-val' : ''}">
-                            ${formatCurrency(t.amount)}
-                        </span>
-                        <button onclick="deleteTx(${t.id})" class="text-slate-200 hover:text-red-400 transition-all">
-                            <i class="fa-solid fa-trash-can text-[10px]"></i>
-                        </button>
+                        <span class="text-xs font-black ${isExp ? 'text-red-600' : 'text-emerald-600'} ${isGhostMode ? 'blur-val' : ''}">${formatCurrency(t.amount)}</span>
+                        <button onclick="deleteTx(${t.id})" class="text-slate-200 hover:text-red-500"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
                     </div>
                 `;
                 list.appendChild(li);
             });
-
             updateSummary(filtered);
         }
 
         function deleteTx(id) {
-            Swal.fire({
-                title: 'Excluir?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#2563eb',
-                cancelButtonColor: '#f1f5f9',
-                confirmButtonText: 'Sim',
-                cancelButtonText: 'Não'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    currentUser.transactions = currentUser.transactions.filter(t => t.id !== id);
-                    save();
-                    renderTransactions();
-                    updateChart();
-                }
-            });
+            currentUser.transactions = currentUser.transactions.filter(t => t.id !== id);
+            save(); renderTransactions(); updateChart();
         }
 
         function updateSummary(txs) {
@@ -512,24 +422,74 @@
             document.getElementById('balance').innerText = formatCurrency(bal);
             document.getElementById('incomes').innerText = formatCurrency(inc);
             document.getElementById('expenses').innerText = formatCurrency(exp);
-
-            // Efeito visual no saldo
-            const balEl = document.getElementById('balance');
-            balEl.classList.toggle('text-red-600', bal < 0);
-            balEl.classList.toggle('text-slate-900', bal >= 0);
             
             if (isGhostMode) {
-                balEl.classList.add('blur-val');
+                document.getElementById('balance').classList.add('blur-val');
                 document.getElementById('incomes').classList.add('blur-val');
                 document.getElementById('expenses').classList.add('blur-val');
             } else {
-                balEl.classList.remove('blur-val');
+                document.getElementById('balance').classList.remove('blur-val');
                 document.getElementById('incomes').classList.remove('blur-val');
                 document.getElementById('expenses').classList.remove('blur-val');
             }
         }
 
-        // GRÁFICO INTELIGENTE (CHART.JS)
+        // CÂMBIO
+        function populateCurrencySelectors() {
+            const currencies = ['BRL', 'USD', 'EUR', 'GBP', 'JPY'];
+            const from = document.getElementById('calcFrom');
+            const to = document.getElementById('calcTo');
+            from.innerHTML = ''; to.innerHTML = '';
+            currencies.forEach(c => {
+                from.innerHTML += `<option value="${c}">${c}</option>`;
+                to.innerHTML += `<option value="${c}">${c}</option>`;
+            });
+            from.value = currentUser.currency;
+            to.value = 'USD';
+            from.onchange = updateConversionPreview;
+            to.onchange = updateConversionPreview;
+        }
+
+        function updateConversionPreview() {
+            const val = rawValues.calcValueDisplay;
+            if(val <= 0) {
+                document.getElementById('conv-result').innerText = "Informe um valor";
+                return;
+            }
+            const from = document.getElementById('calcFrom').value;
+            const to = document.getElementById('calcTo').value;
+            
+            // Converte para BRL primeiro (base) e depois para destino
+            const valInBrl = val * exchangeRates[from];
+            const finalVal = valInBrl / exchangeRates[to];
+            
+            document.getElementById('conv-result').innerText = `Resultado: ${to} ${finalVal.toFixed(2)}`;
+        }
+
+        function lancarCambio() {
+            const val = rawValues.calcValueDisplay;
+            if (val <= 0) return toast('Informe um valor!', 'warning');
+            
+            const from = document.getElementById('calcFrom').value;
+            const to = document.getElementById('calcTo').value;
+            
+            const valInBrl = val * exchangeRates[from];
+            const finalVal = valInBrl / exchangeRates[to];
+
+            currentUser.transactions.unshift({
+                id: Date.now(),
+                text: `CÂMBIO: ${from} > ${to}`,
+                amount: -val,
+                date: new Date().toLocaleDateString('pt-BR'),
+                monthYear: new Date().toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' })
+            });
+            
+            save(); renderTransactions(); updateChart();
+            toast('Conversão Lançada!', 'success');
+            switchTab('home');
+        }
+
+        // GRÁFICO
         function initChart() {
             const ctx = document.getElementById('mainChart').getContext('2d');
             mainChart = new Chart(ctx, {
@@ -539,64 +499,30 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
-                    scales: {
-                        y: { display: false },
-                        x: { grid: { display: false }, ticks: { font: { size: 8, weight: 'bold' } } }
-                    },
-                    elements: { point: { radius: 0 } }
+                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 8 } } } }
                 }
             });
         }
 
         function updateChart() {
-            if (mainChart) {
-                mainChart.data = getChartData();
-                mainChart.update();
-            }
+            if (mainChart) { mainChart.data = getChartData(); mainChart.update(); }
         }
 
         function getChartData() {
             const months = [];
             for (let i = 5; i >= 0; i--) {
-                const d = new Date();
-                d.setMonth(d.getMonth() - i);
+                const d = new Date(); d.setMonth(d.getMonth() - i);
                 months.push(d.toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' }));
             }
-
-            const data = months.map(m => {
-                return currentUser.transactions
-                    .filter(t => t.monthYear === m)
-                    .reduce((a, b) => a + b.amount, 0);
-            });
-
-            return {
-                labels: months.map(m => m.split('/')[0]),
-                datasets: [{
-                    data: data,
-                    borderColor: '#2563eb',
-                    borderWidth: 3,
-                    tension: 0.4,
-                    fill: true,
-                    backgroundColor: 'rgba(37, 99, 235, 0.05)'
-                }]
-            };
+            const data = months.map(m => currentUser.transactions.filter(t => t.monthYear === m).reduce((a, b) => a + b.amount, 0));
+            return { labels: months.map(m => m.split('/')[0]), datasets: [{ data, borderColor: '#2563eb', tension: 0.4, fill: true, backgroundColor: 'rgba(37, 99, 235, 0.05)' }] };
         }
 
-        // UTILITÁRIOS
-        function formatCurrency(val) {
-            return new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: currentUser ? currentUser.currency : 'BRL'
-            }).format(val);
-        }
-
+        // UTILS
         function save() {
-            let users = JSON.parse(localStorage.getItem(USERS_DB) || '[]');
+            let users = JSON.parse(localStorage.getItem(DB_NAME) || '[]');
             const idx = users.findIndex(u => u.email === currentUser.email);
-            if (idx !== -1) {
-                users[idx] = currentUser;
-                localStorage.setItem(USERS_DB, JSON.stringify(users));
-            }
+            if (idx !== -1) { users[idx] = currentUser; localStorage.setItem(DB_NAME, JSON.stringify(users)); }
         }
 
         function switchTab(tab) {
@@ -616,130 +542,28 @@
             renderTransactions();
         }
 
-        function toast(text, icon) {
-            Swal.fire({
-                text: text,
-                icon: icon,
-                toast: true,
-                position: 'top',
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                customClass: { popup: 'rounded-2xl font-bold' }
-            });
+        function logout() { sessionStorage.removeItem('ifinance_session'); location.reload(); }
+
+        function limparTudo() {
+            if(confirm("Deseja apagar tudo?")) {
+                currentUser.transactions = []; save(); renderTransactions(); updateChart();
+            }
         }
 
         function populateMonthFilter() {
-            const select = document.getElementById('filterMonth');
-            const months = [...new Set(currentUser.transactions.map(t => t.monthYear))];
-            const current = select.value;
-            select.innerHTML = '<option value="all">TODOS OS MESES</option>';
-            months.sort().reverse().forEach(m => {
-                const opt = document.createElement('option');
-                opt.value = m;
-                opt.innerText = m;
-                select.appendChild(opt);
-            });
-            select.value = current;
-        }
-
-        function populateCurrencySelectors() {
-            const currencies = ['BRL', 'USD', 'EUR', 'GBP', 'JPY'];
-            const from = document.getElementById('calcFrom');
-            const to = document.getElementById('calcTo');
-            from.innerHTML = ''; to.innerHTML = '';
-            currencies.forEach(c => {
-                from.innerHTML += `<option value="${c}">${c}</option>`;
-                to.innerHTML += `<option value="${c}">${c}</option>`;
-            });
-            from.value = currentUser.currency;
-            to.value = 'USD';
-        }
-
-        function exportData() {
-            const data = JSON.stringify(currentUser.transactions, null, 2);
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `ifinance_backup_${new Date().toLocaleDateString()}.json`;
-            a.click();
-            toast('Backup gerado!', 'success');
-        }
-
-        function limparTudo() {
-            Swal.fire({
-                title: 'Apagar tudo?',
-                text: 'Seus dados serão perdidos permanentemente.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                confirmButtonText: 'Sim, apagar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    currentUser.transactions = [];
-                    save();
-                    renderTransactions();
-                    updateChart();
-                    toast('Dados apagados!', 'success');
-                }
+            const s = document.getElementById('filterMonth');
+            const m = [...new Set(currentUser.transactions.map(t => t.monthYear))];
+            s.innerHTML = '<option value="all">TODOS</option>';
+            m.sort().reverse().forEach(x => {
+                const o = document.createElement('option'); o.value = x; o.innerText = x; s.appendChild(o);
             });
         }
 
-        function prepararRendaMensal() {
-            Swal.fire({
-                title: 'Lançar Renda Mensal',
-                input: 'number',
-                inputLabel: 'Valor do seu salário/renda',
-                inputPlaceholder: '0.00',
-                showCancelButton: true,
-                confirmButtonText: 'Lançar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.value) {
-                    const val = parseFloat(result.value);
-                    currentUser.transactions.unshift({
-                        id: Date.now(),
-                        text: 'RENDA MENSAL',
-                        amount: val,
-                        date: new Date().toLocaleDateString('pt-BR'),
-                        monthYear: new Date().toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' })
-                    });
-                    save();
-                    renderTransactions();
-                    updateChart();
-                    toast('Renda lançada!', 'success');
-                }
-            });
+        function toast(text, icon) {
+            Swal.fire({ text, icon, toast: true, position: 'top', showConfirmButton: false, timer: 2000 });
         }
 
-        function lancarCambio() {
-            const val = rawValues.calcValueDisplay;
-            if (val <= 0) return toast('Informe um valor!', 'warning');
-            const from = document.getElementById('calcFrom').value;
-            const to = document.getElementById('calcTo').value;
-            
-            // Simulação de câmbio inteligente
-            toast(`Conversão de ${from} para ${to} lançada!`, 'success');
-            
-            currentUser.transactions.unshift({
-                id: Date.now(),
-                text: `CÂMBIO: ${from} > ${to}`,
-                amount: -val,
-                date: new Date().toLocaleDateString('pt-BR'),
-                monthYear: new Date().toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' })
-            });
-            save();
-            renderTransactions();
-            updateChart();
-            switchTab('home');
-        }
-
-        // Inicia o sistema
-        window.onload = () => {
-            checkSession();
-        };
+        window.onload = checkSession;
     </script>
 </body>
 </html>
