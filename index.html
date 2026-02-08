@@ -175,7 +175,7 @@
 
                 <div class="card-inner p-6 premium-shadow">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                        <input type="text" id="desc" placeholder="DESCRIÇÃO" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none">
+                        <input type="text" id="desc" placeholder="DESCRIÇÃO (OPCIONAL)" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none">
                         <input type="text" id="amountDisplay" placeholder="0,00" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-blue-600 outline-none">
                         <select id="type" class="w-full bg-slate-50 p-4 rounded-xl font-black text-[10px] text-slate-500 uppercase appearance-none outline-none">
                             <option value="expense">Saída (-)</option>
@@ -213,8 +213,7 @@
 
         <section id="tab-insights" class="hidden p-4 fade-in-up">
             <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Financial <span class="text-blue-600">Insights</span></h2>
-            <div id="insights-container" class="max-w-xl mx-auto space-y-4 pb-24">
-                </div>
+            <div id="insights-container" class="max-w-xl mx-auto space-y-4 pb-24"></div>
         </section>
 
         <section id="tab-viagem" class="hidden p-4 text-center fade-in-up">
@@ -388,32 +387,15 @@
             updateInsights(inc, exp);
         }
 
-        // LÓGICA DA NOVA ABA INSIGHTS
         function updateInsights(inc, exp) {
             const container = document.getElementById('insights-container');
+            if(!container) return;
             const percentUsed = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
             const remaining = inc - exp;
-            
             container.innerHTML = `
-                <div class="card-inner p-6 insight-card premium-shadow">
-                    <p class="text-[8px] font-black text-blue-600 uppercase mb-2">Saúde do Orçamento</p>
-                    <h3 class="font-black text-sm mb-1">Você comprometeu ${percentUsed}% da sua renda.</h3>
-                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-3">
-                        <div class="bg-blue-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div>
-                    </div>
-                </div>
-
-                <div class="card-inner p-6 insight-card premium-shadow border-l-emerald-500">
-                    <p class="text-[8px] font-black text-emerald-500 uppercase mb-2">Disponibilidade Real</p>
-                    <h3 class="font-black text-sm">Seu saldo líquido atual é de ${formatCurrency(remaining)}.</h3>
-                    <p class="text-[9px] text-slate-400 mt-2">Isso é o que você tem livre após todos os lançamentos.</p>
-                </div>
-
-                <div class="card-inner p-6 insight-card premium-shadow border-l-slate-900">
-                    <p class="text-[8px] font-black text-slate-900 uppercase mb-2">Média de Lançamentos</p>
-                    <h3 class="font-black text-sm">Você realizou ${currentUser.transactions.length} operações.</h3>
-                    <p class="text-[9px] text-slate-400 mt-2">Mantenha a constância para um controle de elite.</p>
-                </div>
+                <div class="card-inner p-6 insight-card premium-shadow"><p class="text-[8px] font-black text-blue-600 uppercase mb-2">Saúde do Orçamento</p><h3 class="font-black text-sm mb-1">Você comprometeu ${percentUsed}% da sua renda.</h3><div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-3"><div class="bg-blue-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div></div></div>
+                <div class="card-inner p-6 insight-card premium-shadow border-l-emerald-500"><p class="text-[8px] font-black text-emerald-500 uppercase mb-2">Disponibilidade Real</p><h3 class="font-black text-sm">Seu saldo líquido atual é de ${formatCurrency(remaining)}.</h3><p class="text-[9px] text-slate-400 mt-2">Isso é o que você tem livre após todos os lançamentos.</p></div>
+                <div class="card-inner p-6 insight-card premium-shadow border-l-slate-900"><p class="text-[8px] font-black text-slate-900 uppercase mb-2">Média de Lançamentos</p><h3 class="font-black text-sm">Você realizou ${currentUser.transactions.length} operações.</h3><p class="text-[9px] text-slate-400 mt-2">Mantenha a constância para um controle de elite.</p></div>
             `;
         }
 
@@ -439,14 +421,29 @@
             });
         }
 
+        // FUNÇÃO ADD CORRIGIDA PARA ACEITAR DESCRIÇÃO VAZIA
         function addTransaction() {
-            const desc = document.getElementById('desc').value.toUpperCase();
+            const descInput = document.getElementById('desc').value.trim();
             const val = rawValues.amountDisplay;
-            if (!desc || val === 0) return;
+            if (val === 0) return; // Só bloqueia se o valor for zero
+
+            // Se a descrição estiver vazia, usa o traço " — "
+            const finalDesc = descInput === "" ? " — " : descInput.toUpperCase();
+            
             const finalVal = (document.getElementById('type').value === 'expense') ? -val : val;
-            currentUser.transactions.push({ id: Date.now(), text: desc, amount: finalVal, date: new Date().toLocaleDateString('pt-BR') });
-            save(); renderTransactions();
-            document.getElementById('desc').value = ''; rawValues.amountDisplay = 0;
+            
+            currentUser.transactions.push({ 
+                id: Date.now(), 
+                text: finalDesc, 
+                amount: finalVal, 
+                date: new Date().toLocaleDateString('pt-BR') 
+            });
+            
+            save(); 
+            renderTransactions();
+            
+            document.getElementById('desc').value = ''; 
+            rawValues.amountDisplay = 0;
             document.getElementById('amountDisplay').value = formatCurrency(0);
         }
 
