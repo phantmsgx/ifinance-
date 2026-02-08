@@ -89,6 +89,13 @@
         .btn-gradient { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
         .anim-fade { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Estilo do botão de Renda Rápida */
+        .btn-income-quick {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
     </style>
 </head>
 <body>
@@ -116,14 +123,6 @@
                         <option value="JPY">🇯🇵 JPY - Iene Japonês</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                </div>
-                <div class="bg-white p-5 rounded-[30px] border-2 border-blue-50 text-left shadow-inner">
-                    <p class="text-[9px] font-black text-blue-600 uppercase mb-1">Renda Mensal (Salário)</p>
-                    <input type="text" id="salaryInput" placeholder="0,00" class="w-full bg-transparent border-b border-blue-100 py-1 font-black text-2xl outline-none text-blue-900">
-                    <div class="mt-3 flex gap-2">
-                        <i class="fa-solid fa-shield-halved text-blue-400 text-[10px] mt-1"></i>
-                        <p class="text-[8px] text-slate-400 leading-tight font-medium">Solicitamos sua renda mensal para calcular automaticamente seu saldo inicial e gerar metas de gastos baseadas no seu perfil financeiro.</p>
-                    </div>
                 </div>
             </div>
 
@@ -159,6 +158,12 @@
                         <h2 class="summary-text text-red-600" id="expenses">0,00</h2>
                     </div>
                 </div>
+
+                <button onclick="prepararRendaMensal()" class="w-full btn-income-quick p-4 rounded-[25px] flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest shadow-sm">
+                    <i class="fa-solid fa-hand-holding-dollar text-lg"></i>
+                    Lançar Renda do Mês
+                </button>
+
                 <div class="card-inner p-6 premium-shadow">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                         <input type="text" id="desc" placeholder="DESCRIÇÃO" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none">
@@ -170,6 +175,7 @@
                         <button onclick="addTransaction()" class="btn-action btn-gradient text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest">Confirmar</button>
                     </div>
                 </div>
+
                 <div class="card-inner p-6 premium-shadow">
                     <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
                     <button onclick="limparTudo()" class="w-full text-center py-4 text-[8px] text-red-200 font-black uppercase tracking-[0.5em] mt-2">Limpar Base de Dados</button>
@@ -228,52 +234,52 @@
 
         const restaurantesDB = {
             'BRL': [
-                {nome: 'A CASA DO PORCO', cidade: 'SP', tipo: 'CONCEITUAL', icone: '🐷', desc: 'Melhor do Brasil, focado na carne suína.'},
-                {nome: 'D.O.M', cidade: 'SP', tipo: 'AMAZÔNICO', icone: '🌿', desc: 'Alta gastronomia pelo chef Alex Atala.'},
-                {nome: 'LASAI', cidade: 'RJ', tipo: 'ORGÂNICO', icone: '🥕', desc: 'Ingredientes colhidos no próprio dia.'},
-                {nome: 'MANÍ', cidade: 'SP', tipo: 'CONTEMPORÂNEO', icone: '🥣', desc: 'A sofisticação da chef Helena Rizzo.'},
-                {nome: 'MARIUS DEGUSTARE', cidade: 'RJ', tipo: 'EXCLUSIVO', icone: '🥩', desc: 'Churrasco nobre em ambiente temático épico.'}
+                {nome: 'A CASA DO PORCO', cidade: 'SP', tipo: 'CONCEITUAL', icone: '🐷', desc: 'Focado na carne suína.'},
+                {nome: 'D.O.M', cidade: 'SP', tipo: 'AMAZÔNICO', icone: '🌿', desc: 'Alta gastronomia Amazônica.'},
+                {nome: 'LASAI', cidade: 'RJ', tipo: 'ORGÂNICO', icone: '🥕', desc: 'Ingredientes colhidos no dia.'},
+                {nome: 'MANÍ', cidade: 'SP', tipo: 'CONTEMPORÂNEO', icone: '🥣', desc: 'A sofisticação de Helena Rizzo.'},
+                {nome: 'MARIUS DEGUSTARE', cidade: 'RJ', tipo: 'EXCLUSIVO', icone: '🥩', desc: 'Ambiente temático épico.'}
             ],
             'USD': [
-                {nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'PEIXES', icone: '🐟', desc: 'O ápice dos frutos do mar mundial.'},
-                {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'A fatia mais lendária de Manhattan.'},
-                {nome: 'PETER LUGER', cidade: 'BROOKLYN', tipo: 'STEAKHOUSE', icone: '🥩', desc: 'O bife mais famoso dos EUA desde 1887.'},
-                {nome: 'NOBU MALIBU', cidade: 'LA', tipo: 'FUSION', icone: '🍣', desc: 'Ponto de encontro da elite de Hollywood.'},
-                {nome: 'KATZ\'S DELI', cidade: 'NY', tipo: 'DELI', icone: '🥪', desc: 'O sanduíche de pastrami definitivo.'}
+                {nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'PEIXES', icone: '🐟', desc: 'O ápice dos frutos do mar.'},
+                {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'Fatia lendária de Manhattan.'},
+                {nome: 'PETER LUGER', cidade: 'BROOKLYN', tipo: 'STEAKHOUSE', icone: '🥩', desc: 'Famoso desde 1887.'},
+                {nome: 'NOBU MALIBU', cidade: 'LA', tipo: 'FUSION', icone: '🍣', desc: 'Elite de Hollywood.'},
+                {nome: 'KATZ\'S DELI', cidade: 'NY', tipo: 'DELI', icone: '🥪', desc: 'Pastrami definitivo.'}
             ],
             'EUR': [
-                {nome: 'STEIRERECK', cidade: 'VIENA', tipo: 'MODERNO', icone: '🇦🇹', desc: 'Localizado no coração do Stadtpark.'},
-                {nome: 'HOFBRÄUHAUS', cidade: 'MUNICH', tipo: 'HISTÓRICO', icone: '🍺', desc: 'A cervejaria mais famosa do planeta.'},
-                {nome: 'TICKET BAR', cidade: 'BARCELONA', tipo: 'TAPAS', icone: '🥘', desc: 'Inovação extrema em pequenas porções.'},
-                {nome: 'OSTERIA FRANCESCANA', cidade: 'MODENA', tipo: 'ARTE', icone: '🎨', desc: 'Massimo Bottura redefine a Itália.'},
-                {nome: 'NOMA', cidade: 'COPENHAGUE', tipo: 'NÓRDICO', icone: '🌲', desc: 'Frequentemente eleito o nº 1 do mundo.'}
+                {nome: 'STEIRERECK', cidade: 'VIENA', tipo: 'MODERNO', icone: '🇦🇹', desc: 'Coração do Stadtpark.'},
+                {nome: 'HOFBRÄUHAUS', cidade: 'MUNICH', tipo: 'HISTÓRICO', icone: '🍺', desc: 'Cervejaria mais famosa.'},
+                {nome: 'TICKET BAR', cidade: 'BARCELONA', tipo: 'TAPAS', icone: '🥘', desc: 'Inovação extrema.'},
+                {nome: 'OSTERIA FRANCESCANA', cidade: 'MODENA', tipo: 'ARTE', icone: '🎨', desc: 'Massimo Bottura.'},
+                {nome: 'NOMA', cidade: 'COPENHAGUE', tipo: 'NÓRDICO', icone: '🌲', desc: 'Frequentemente nº 1 do mundo.'}
             ],
             'ITA': [
-                {nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin da capital.'},
-                {nome: 'DA VITTORIO', cidade: 'BERGAMO', tipo: 'FAMILIAR', icone: '🍝', desc: 'Tradição italiana elevada ao máximo.'},
-                {nome: 'TRATTORIA BAFFETTO', cidade: 'ROMA', tipo: 'PIZZA', icone: '🇮🇹', desc: 'Fila constante pela massa mais fina de Roma.'},
-                {nome: 'ANTICA PESA', cidade: 'ROMA', tipo: 'HISTÓRICO', icone: '🍷', desc: 'Onde celebridades jantam no Trastevere.'},
-                {nome: 'LANGHOSTERIA', cidade: 'MILÃO', tipo: 'FASHION', icone: '🦞', desc: 'O melhor peixe fresco do norte da Itália.'}
+                {nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin.'},
+                {nome: 'DA VITTORIO', cidade: 'BERGAMO', tipo: 'FAMILIAR', icone: '🍝', desc: 'Tradição italiana elevada.'},
+                {nome: 'TRATTORIA BAFFETTO', cidade: 'ROMA', tipo: 'PIZZA', icone: '🇮🇹', desc: 'Massa mais fina de Roma.'},
+                {nome: 'ANTICA PESA', cidade: 'ROMA', tipo: 'HISTÓRICO', icone: '🍷', desc: 'Jantar no Trastevere.'},
+                {nome: 'LANGHOSTERIA', cidade: 'MILÃO', tipo: 'FASHION', icone: '🦞', desc: 'Melhor peixe fresco do norte.'}
             ],
             'FRA': [
-                {nome: 'LE MEURICE', cidade: 'PARIS', tipo: 'PALÁCIO', icone: '🥐', desc: 'Ambiente real com menu de Alain Ducasse.'},
-                {nome: 'SEPTIME', cidade: 'PARIS', tipo: 'NEO-BISTRO', icone: '🍷', desc: 'O mais concorrido e moderno de Paris.'},
-                {nome: 'MIRAZUR', cidade: 'MENTON', tipo: 'RIVIERA', icone: '🌊', desc: 'Cozinha inspirada no mar e jardins.'},
-                {nome: 'L\'AMI LOUIS', cidade: 'PARIS', tipo: 'BISTRO', icone: '🦆', desc: 'Conhecido como o bistrô mais famoso do mundo.'},
-                {nome: 'CIEL DE PARIS', cidade: 'PARIS', tipo: 'VISTA', icone: '🗼', desc: 'Jantar no topo da Torre Montparnasse.'}
+                {nome: 'LE MEURICE', cidade: 'PARIS', tipo: 'PALÁCIO', icone: '🥐', desc: 'Ambiente real Alain Ducasse.'},
+                {nome: 'SEPTIME', cidade: 'PARIS', tipo: 'NEO-BISTRO', icone: '🍷', desc: 'O mais concorrido de Paris.'},
+                {nome: 'MIRAZUR', cidade: 'MENTON', tipo: 'RIVIERA', icone: '🌊', desc: 'Mar e jardins.'},
+                {nome: 'L\'AMI LOUIS', cidade: 'PARIS', tipo: 'BISTRO', icone: '🦆', desc: 'Bistrô mais famoso do mundo.'},
+                {nome: 'CIEL DE PARIS', cidade: 'PARIS', tipo: 'VISTA', icone: '🗼', desc: 'Topo da Torre Montparnasse.'}
             ],
             'JPN': [
-                {nome: 'SUKIYABASHI JIRO', cidade: 'TOKYO', tipo: 'SUSHI', icone: '🍣', desc: 'A lenda viva de Jiro Ono.'},
-                {nome: 'NARISAWA', cidade: 'TOKYO', tipo: 'ECO', icone: '🌲', desc: 'Pratos que respeitam a natureza japonesa.'},
-                {nome: 'ICHIRAN RAMEN', cidade: 'TOKYO', tipo: 'RAMEN', icone: '🍜', desc: 'A experiência definitiva de ramen.'},
-                {nome: 'KOBE BEEF KAISEKI', cidade: 'KOBE', tipo: 'WAGYU', icone: '🐂', desc: 'A carne mais cara e macia do mundo.'},
-                {nome: 'DEN', cidade: 'TOKYO', tipo: 'CRIATIVO', icone: '🍱', desc: 'Humor e técnica impecável na cozinha.'}
+                {nome: 'SUKIYABASHI JIRO', cidade: 'TOKYO', tipo: 'SUSHI', icone: '🍣', desc: 'Lenda de Jiro Ono.'},
+                {nome: 'NARISAWA', cidade: 'TOKYO', tipo: 'ECO', icone: '🌲', desc: 'Respeito à natureza.'},
+                {nome: 'ICHIRAN RAMEN', cidade: 'TOKYO', tipo: 'RAMEN', icone: '🍜', desc: 'Ramen definitivo.'},
+                {nome: 'KOBE BEEF KAISEKI', cidade: 'KOBE', tipo: 'WAGYU', icone: '🐂', desc: 'Carne mais macia do mundo.'},
+                {nome: 'DEN', cidade: 'TOKYO', tipo: 'CRIATIVO', icone: '🍱', desc: 'Humor e técnica impecável.'}
             ]
         };
 
         let isRegisterMode = false;
         let currentUser = null;
-        let rawValues = { amountDisplay: 0, salaryInput: 0, calcValueDisplay: 0 };
+        let rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
 
         function populateCurrencySelectors() {
             const from = document.getElementById('fromCurrency');
@@ -298,7 +304,6 @@
         }
 
         function getContextCurrency(id) {
-            if(id === 'salaryInput') return document.getElementById('userCurrencyInput').value;
             if(id === 'calcValueDisplay') return document.getElementById('fromCurrency').value;
             return currentUser ? currentUser.currency : 'BRL';
         }
@@ -308,12 +313,21 @@
             return val.toLocaleString('pt-BR', { style: 'currency', currency: c });
         }
 
+        // NOVA FUNÇÃO: Prepara os campos para lançar a renda
+        function prepararRendaMensal() {
+            const meses = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+            const mesAtual = meses[new Date().getMonth()];
+            document.getElementById('desc').value = `SALÁRIO / RENDA - ${mesAtual}`;
+            document.getElementById('type').value = 'income';
+            document.getElementById('amountDisplay').focus();
+        }
+
         function handleAuth() {
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value.trim();
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
-                const newUser = { name: name.toUpperCase(), pass, currency: document.getElementById('userCurrencyInput').value, salary: rawValues.salaryInput, transactions: [] };
+                const newUser = { name: name.toUpperCase(), pass, currency: document.getElementById('userCurrencyInput').value, transactions: [] };
                 localStorage.setItem(`user_${email}`, JSON.stringify(newUser));
                 alert("Conta VIP criada!"); toggleAuthMode();
             } else {
@@ -321,10 +335,6 @@
                 if (saved && JSON.parse(saved).pass === pass) {
                     currentUser = { ...JSON.parse(saved), email };
                     localStorage.setItem('iFinance_session', email);
-                    if (currentUser.transactions.length === 0 && currentUser.salary > 0) {
-                        currentUser.transactions.push({ id: Date.now(), text: "SALÁRIO MENSAL", amount: currentUser.salary, date: new Date().toLocaleDateString('pt-BR') });
-                        save();
-                    }
                     entrarApp();
                 } else { alert("Acesso negado."); }
             }
@@ -347,7 +357,7 @@
                 const res = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
                 const data = await res.json();
                 atualizarConversao(parseFloat(data[`${from}${to}`].bid));
-            } catch { document.getElementById('calcResultDisplay').innerText = "Erro na rede"; }
+            } catch { document.getElementById('calcResultDisplay').innerText = "Erro rede"; }
         }
 
         function atualizarConversao(rate) {
@@ -435,7 +445,7 @@
 
         function limparTudo() { if(confirm("Apagar tudo?")) { localStorage.clear(); logout(); } }
 
-        window.onload = () => { populateCurrencySelectors(); applyMask('salaryInput'); checkSession(); };
+        window.onload = () => { populateCurrencySelectors(); checkSession(); };
     </script>
 </body>
 </html>
