@@ -90,7 +90,6 @@
         .anim-fade { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* Estilo do botão de Renda Rápida */
         .btn-income-quick {
             background: #f0fdf4;
             color: #16a34a;
@@ -188,7 +187,11 @@
                 <h2 class="font-black text-xl uppercase tracking-tighter">Câmbio Inteligente</h2>
                 <div class="flex items-center justify-between gap-3">
                     <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-black text-xs outline-none"></select>
-                    <div class="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-md"><i class="fa-solid fa-right-left text-sm"></i></div>
+                    
+                    <button onclick="inverterMoedas()" class="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-md hover:bg-blue-700 transition-all">
+                        <i class="fa-solid fa-right-left text-sm"></i>
+                    </button>
+                    
                     <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-black text-xs outline-none"></select>
                 </div>
                 <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-5 rounded-2xl font-black text-4xl text-center text-blue-600 outline-none shadow-inner">
@@ -291,6 +294,16 @@
             from.value = "USD"; to.value = "BRL";
         }
 
+        // NOVA FUNÇÃO: Inverte as moedas e recalcula
+        function inverterMoedas() {
+            const from = document.getElementById('fromCurrency');
+            const to = document.getElementById('toCurrency');
+            const temp = from.value;
+            from.value = to.value;
+            to.value = temp;
+            buscarCotacao();
+        }
+
         function applyMask(id) {
             const el = document.getElementById(id);
             if(!el) return;
@@ -313,7 +326,6 @@
             return val.toLocaleString('pt-BR', { style: 'currency', currency: c });
         }
 
-        // NOVA FUNÇÃO: Prepara os campos para lançar a renda
         function prepararRendaMensal() {
             const meses = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
             const mesAtual = meses[new Date().getMonth()];
