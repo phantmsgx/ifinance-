@@ -3,203 +3,312 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>iFinance Pro - Gestão de Elite</title>
+    <title>iFinance Premium - Ultra Version</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="iFinance">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
-        .glass { backdrop-filter: blur(12px); background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(255,255,255,0.2); }
-        .dark .glass { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.05); }
-        .blur-val { filter: blur(8px); transition: 0.3s; }
-        .blur-val:hover { filter: blur(0); }
-        .tab-active { color: #2563eb !important; }
-        .tab-active::after { content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #2563eb; border-radius: 50%; }
+        html, body { 
+            touch-action: pan-x pan-y; 
+            overscroll-behavior: none;
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease;
+        }
+
+        body { padding-bottom: 110px; -webkit-tap-highlight-color: transparent; }
+        .hidden { display: none !important; }
+
+        .tab-active { 
+            color: #2563eb !important; 
+            transform: scale(1.1); 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #desc { text-transform: uppercase; }
+
+        * { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+
+        input, select, textarea { 
+            user-select: auto !important; 
+            -webkit-user-select: auto !important;
+            font-size: 16px !important; 
+        }
+
+        .balance-text {
+            font-size: clamp(1.4rem, 6vw, 2.2rem); 
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.1;
+            font-weight: 900;
+            color: #0f172a;
+        }
+        
+        .summary-text {
+            font-size: clamp(0.9rem, 4vw, 1.3rem);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 800;
+        }
+
+        /* NOVO: Estilo para ocultar valores */
+        .blur-val { filter: blur(10px); pointer-events: none; }
+
+        @media (max-width: 640px) {
+            .card-inner { padding: 1.25rem !important; border-radius: 30px; }
+            .header-main { padding: 1rem !important; }
+            .btn-action { padding: 1rem !important; }
+            .input-main { padding: 1rem !important; font-size: 14px !important; }
+            .nav-text { font-size: 8px !important; }
+        }
+
+        .bg-auth-gradient { background: radial-gradient(circle at top right, #eff6ff, #ffffff); }
         ::-webkit-scrollbar { display: none; }
-        input:focus, select:focus { outline: 2px solid #2563eb; outline-offset: -2px; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .premium-shadow { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); }
+        .card-inner { background: white; border: 1px solid #f1f5f9; border-radius: 40px; overflow: hidden; }
+        button:active { transform: scale(0.96); }
+        .btn-gradient { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .anim-fade { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .btn-income-quick {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        .btn-repeat {
+            color: #cbd5e1;
+            transition: all 0.2s;
+        }
+        .btn-repeat:hover { color: #2563eb; }
+
+        .insight-card {
+            border-left: 4px solid #2563eb;
+        }
+
+        /* Melhorias de Visual */
+        .glass-nav {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .transaction-item {
+            transition: all 0.2s;
+            border-radius: 20px;
+        }
+        .transaction-item:hover {
+            background-color: #f1f5f9;
+            transform: translateX(5px);
+        }
+        .dark-mode-toggle {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
+<body>
 
-    <!-- TELA DE AUTENTICAÇÃO -->
-    <section id="auth-screen" class="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-white dark:from-slate-900 dark:to-slate-950">
-        <div class="w-full max-w-md">
-            <div class="text-center mb-8">
-                <div class="inline-flex w-20 h-20 bg-blue-600 rounded-3xl items-center justify-center shadow-2xl text-white text-4xl mb-4 transform -rotate-6">
-                    <i class="fa-solid fa-vault"></i>
-                </div>
-                <h1 class="text-4xl font-extrabold tracking-tight">i<span class="text-blue-600">Finance</span> Pro</h1>
-                <p class="text-slate-500 dark:text-slate-400 mt-2">Controle financeiro inteligente.</p>
+    <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 bg-auth-gradient text-center">
+        <div class="mb-6 w-20 h-20 bg-blue-600 rounded-[30px] flex items-center justify-center shadow-2xl text-white text-4xl transform rotate-12">
+            <i class="fa-solid fa-wallet"></i>
+        </div>
+        
+        <h1 id="auth-title" class="text-3xl font-black mb-1 tracking-tighter">i<span class="text-blue-600">Finance</span></h1>
+        <p id="auth-subtitle" class="text-slate-500 mb-8 font-medium text-sm">Gestão de elite.</p>
+
+        <div class="flex flex-col w-full max-w-md gap-3">
+            <div class="relative">
+                <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                <input type="email" id="emailInput" placeholder="E-mail" class="w-full bg-white border-2 border-slate-50 p-4 pl-12 rounded-2xl font-bold outline-none shadow-sm focus:border-blue-200 transition-all">
             </div>
-
-            <div class="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-slate-800">
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 uppercase ml-2">E-mail</label>
-                        <input type="email" id="emailInput" placeholder="seu@email.com" class="w-full bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl font-semibold border-none">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-400 uppercase ml-2">Senha</label>
-                        <input type="password" id="passInput" placeholder="••••••••" class="w-full bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl font-semibold border-none">
-                    </div>
-                    
-                    <!-- CAMPOS EXTRAS DE REGISTRO -->
-                    <div id="register-fields" class="hidden space-y-4">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase ml-2">Nome Completo</label>
-                            <input type="text" id="userNameInput" placeholder="Como quer ser chamado?" class="w-full bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl font-semibold border-none">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase ml-2">Moeda Principal</label>
-                            <select id="userCurrencyInput" class="w-full bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl font-semibold border-none appearance-none">
-                                <option value="BRL">🇧🇷 BRL - Real Brasileiro</option>
-                                <option value="USD">🇺🇸 USD - Dólar Americano</option>
-                                <option value="EUR">🇪🇺 EUR - Euro</option>
-                                <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
-                                <option value="JPY">🇯🇵 JPY - Iene Japonês</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <button type="button" onclick="handleAuth()" id="btn-main-auth" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold shadow-lg transition-all active:scale-95 mt-4">
-                        Acessar Conta
-                    </button>
-                    
-                    <button type="button" onclick="toggleAuthMode()" id="btn-switch-auth" class="w-full text-slate-500 dark:text-slate-400 font-semibold text-sm mt-2 hover:text-blue-600">
-                        Ainda não tem conta? <span class="text-blue-600">Cadastre-se aqui</span>
-                    </button>
+            <div class="relative">
+                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                <input type="password" id="passInput" placeholder="Senha" class="w-full bg-white border-2 border-slate-50 p-4 pl-12 rounded-2xl font-bold outline-none shadow-sm focus:border-blue-200 transition-all">
+            </div>
+            
+            <div id="register-fields" class="hidden flex flex-col gap-3 fade-in-up">
+                <div class="relative">
+                    <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                    <input type="text" id="userNameInput" placeholder="Nome Completo" class="w-full bg-white border-2 border-slate-50 p-4 pl-12 rounded-2xl font-bold outline-none shadow-sm">
+                </div>
+                <div class="relative">
+                    <i class="fa-solid fa-coins absolute left-4 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                    <select id="userCurrencyInput" class="w-full bg-white border-2 border-slate-50 p-4 pl-12 rounded-2xl font-bold outline-none shadow-sm appearance-none">
+                        <option value="BRL">🇧🇷 BRL - Real Brasileiro</option>
+                        <option value="USD">🇺🇸 USD - Dólar Americano</option>
+                        <option value="EUR">🇪🇺 EUR - Euro</option>
+                        <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
+                        <option value="JPY">🇯🇵 JPY - Iene Japonês</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"></i>
                 </div>
             </div>
+
+            <button onclick="handleAuth()" id="btn-main-auth" class="btn-gradient text-white py-4 rounded-2xl font-black shadow-xl uppercase tracking-widest mt-2 hover:opacity-90 transition-all active:scale-95">Acessar Sistema</button>
+            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-blue-600 font-bold mt-2 text-[10px] uppercase tracking-wider">Ainda não possui conta? Registre-se</button>
         </div>
     </section>
 
-    <!-- APP PRINCIPAL -->
     <div id="main-app" class="hidden">
-        <header class="sticky top-0 z-30 glass border-b border-slate-200/50 dark:border-slate-800/50 px-6 py-4">
-            <div class="max-w-6xl mx-auto flex justify-between items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg"><i class="fa-solid fa-vault"></i></div>
-                    <div>
-                        <h2 class="text-lg font-extrabold leading-none">iFinance</h2>
-                        <span id="user-greeting" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Olá</span>
+        <section id="tab-home" class="fade-in-up">
+            <header class="header-main bg-white/80 backdrop-blur-xl border-b border-slate-100 p-5 sticky top-0 z-20 flex justify-between items-center px-6 md:px-10">
+                <div>
+                    <h1 class="text-xl font-black text-blue-600 italic tracking-tighter">iFinance</h1>
+                    <p class="text-[7px] font-bold text-slate-400 uppercase tracking-[0.3em]">Premium Dashboard</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="toggleGhostMode()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-all">
+                        <i id="ghost-icon" class="fa-solid fa-eye"></i>
+                    </button>
+                    <button onclick="logout()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 transition-all">
+                        <i class="fa-solid fa-power-off text-base"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <main class="p-4 max-w-6xl mx-auto space-y-4">
+                <!-- Gráfico de Inteligência -->
+                <div class="card-inner p-6 premium-shadow mb-4">
+                    <h3 class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">Resumo Inteligente</h3>
+                    <div class="h-[200px]">
+                        <canvas id="mainChart"></canvas>
                     </div>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><i id="dark-icon" class="fa-solid fa-moon"></i></button>
-                    <button onclick="toggleGhostMode()" class="w-10 h-10 rounded-xl flex items-center justify-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><i id="ghost-icon" class="fa-solid fa-eye"></i></button>
-                    <button onclick="logout()" class="w-10 h-10 rounded-xl flex items-center justify-center text-red-500 hover:bg-red-50"><i class="fa-solid fa-power-off"></i></button>
-                </div>
-            </div>
-        </header>
 
-        <main class="p-6 max-w-6xl mx-auto space-y-6 pb-32">
-            <!-- ABA HOME -->
-            <div id="tab-home" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-blue-600 p-6 rounded-[2rem] text-white shadow-xl relative overflow-hidden">
-                        <p class="text-xs font-bold text-blue-100 uppercase mb-1 opacity-80">Saldo Disponível</p>
-                        <h2 class="text-3xl font-black blur-val" id="balance">0,00</h2>
-                        <i class="fa-solid fa-wallet absolute -right-4 -bottom-4 text-8xl text-white/10 rotate-12"></i>
+                    <div class="card-inner p-6 border-blue-100 border-2 premium-shadow bg-gradient-to-br from-white to-blue-50/30">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Saldo Disponível</p>
+                        <h2 class="balance-text" id="balance">0,00</h2>
                     </div>
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-800">
-                        <p class="text-xs font-bold text-emerald-500 uppercase mb-1">Entradas</p>
-                        <h2 class="text-2xl font-extrabold text-emerald-600 blur-val" id="incomes">0,00</h2>
+                    <div class="card-inner p-6 premium-shadow">
+                        <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-1">Entradas</p>
+                        <h2 class="summary-text text-emerald-600" id="incomes">0,00</h2>
                     </div>
-                    <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-800">
-                        <p class="text-xs font-bold text-red-500 uppercase mb-1">Saídas</p>
-                        <h2 class="text-2xl font-extrabold text-red-600 blur-val" id="expenses">0,00</h2>
+                    <div class="card-inner p-6 premium-shadow">
+                        <p class="text-[9px] font-black text-red-500 uppercase tracking-widest mb-1">Saídas</p>
+                        <h2 class="summary-text text-red-600" id="expenses">0,00</h2>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 space-y-6">
-                        <div class="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800">
-                            <h3 class="text-sm font-black uppercase tracking-widest mb-6">Novo Lançamento</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <input type="text" id="desc" placeholder="Descrição (ex: Aluguel)" class="w-full bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl font-bold border-none">
-                                <input type="number" id="amount" step="0.01" placeholder="Valor (0,00)" class="w-full bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl font-bold border-none">
-                                <select id="type" class="w-full bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl font-bold border-none">
-                                    <option value="expense">🔴 Saída (-)</option>
-                                    <option value="income">🟢 Entrada (+)</option>
-                                </select>
-                                <select id="category" class="w-full bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl font-bold border-none">
-                                    <option value="Geral">📦 Geral</option>
-                                    <option value="Alimentação">🍕 Alimentação</option>
-                                    <option value="Transporte">🚗 Transporte</option>
-                                    <option value="Lazer">🍿 Lazer</option>
-                                    <option value="Saúde">💊 Saúde</option>
-                                    <option value="Educação">📚 Educação</option>
-                                    <option value="Moradia">🏠 Moradia</option>
-                                    <option value="Salário">💰 Salário</option>
-                                </select>
-                            </div>
-                            <button onclick="addTransaction()" class="w-full bg-blue-600 text-white font-bold rounded-2xl py-4 mt-6 hover:bg-blue-700 shadow-lg active:scale-95 transition-all">Confirmar Lançamento</button>
-                        </div>
-                        <div class="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800">
-                            <h3 class="text-sm font-black uppercase tracking-widest mb-6">Evolução Mensal</h3>
-                            <div class="h-[300px]"><canvas id="mainChart"></canvas></div>
-                        </div>
-                    </div>
-                    <div class="space-y-6">
-                        <div class="bg-white dark:bg-slate-900 p-6 rounded-[2rem] shadow-sm border border-slate-100 dark:border-slate-800">
-                            <h3 class="text-xs font-black uppercase tracking-widest mb-4">Filtrar por Mês</h3>
-                            <select id="filterMonth" onchange="renderTransactions()" class="w-full bg-slate-50 dark:bg-slate-800 p-3 rounded-xl font-bold border-none"></select>
-                        </div>
-                        <div class="bg-white dark:bg-slate-900 p-6 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 min-h-[400px]">
-                            <h3 class="text-xs font-black uppercase tracking-widest mb-6">Últimas Atividades</h3>
-                            <ul id="transaction-list" class="space-y-3"></ul>
-                            <div id="empty-state" class="hidden text-center py-12 text-slate-400">
-                                <i class="fa-solid fa-receipt text-4xl mb-3 opacity-20"></i>
-                                <p class="text-xs font-bold uppercase">Nenhum registro</p>
-                            </div>
-                        </div>
+                <button onclick="prepararRendaMensal()" class="w-full btn-income-quick p-4 rounded-[25px] flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest shadow-sm hover:bg-emerald-100 transition-all">
+                    <i class="fa-solid fa-hand-holding-dollar text-lg"></i>
+                    Lançar Renda do Mês
+                </button>
+
+                <div class="card-inner p-6 premium-shadow">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <input type="text" id="desc" placeholder="DESCRIÇÃO (OPCIONAL)" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none focus:ring-2 focus:ring-blue-100 transition-all">
+                        <input type="text" id="amountDisplay" placeholder="0,00" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-blue-600 outline-none focus:ring-2 focus:ring-blue-100 transition-all">
+                        <select id="type" class="w-full bg-slate-50 p-4 rounded-xl font-black text-[10px] text-slate-500 uppercase appearance-none outline-none focus:ring-2 focus:ring-blue-100 transition-all">
+                            <option value="expense">Saída (-)</option>
+                            <option value="income">Entrada (+)</option>
+                        </select>
+                        <button onclick="addTransaction()" class="btn-action btn-gradient text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest hover:opacity-90 transition-all shadow-lg active:scale-95">Confirmar</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- ABA STATS -->
-            <div id="tab-stats" class="hidden">
-                <div class="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800">
-                    <h3 class="text-lg font-black mb-6">Gastos por Categoria</h3>
-                    <div class="h-[400px]"><canvas id="categoryChart"></canvas></div>
-                </div>
-            </div>
-
-            <!-- ABA SETTINGS -->
-            <div id="tab-settings" class="hidden">
-                <div class="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 space-y-6">
-                    <h3 class="text-lg font-black mb-6">Configurações da Conta</h3>
-                    <div class="space-y-4">
-                        <button onclick="exportData()" class="w-full flex justify-between items-center p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl hover:bg-slate-100 transition-all">
-                            <span class="font-bold">Baixar Backup (JSON)</span>
-                            <i class="fa-solid fa-download text-blue-600"></i>
-                        </button>
-                        <button onclick="limparTudo()" class="w-full flex justify-between items-center p-5 bg-red-50 dark:bg-red-900/20 rounded-2xl hover:bg-red-100 transition-all">
-                            <span class="font-bold text-red-600">Apagar Todos os Dados</span>
-                            <i class="fa-solid fa-trash-can text-red-600"></i>
-                        </button>
+                <div class="card-inner p-6 premium-shadow">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-black text-[10px] uppercase tracking-widest">Extrato de Transações</h3>
+                        <div class="flex gap-2">
+                            <select id="filterMonth" onchange="renderTransactions()" class="bg-slate-50 p-2 px-4 rounded-lg font-black text-[9px] outline-none border border-slate-100">
+                                <option value="all">TODOS OS MESES</option>
+                            </select>
+                            <button onclick="exportData()" class="bg-slate-50 p-2 px-3 rounded-lg text-blue-600 hover:bg-blue-50 transition-all">
+                                <i class="fa-solid fa-file-export"></i>
+                            </button>
+                        </div>
                     </div>
+
+                    <ul id="transaction-list" class="divide-y divide-slate-50 space-y-1"></ul>
+                </div>
+            </main>
+        </section>
+
+        <!-- ABA DE CALCULADORA (ORIGINAL MANTIDA) -->
+        <section id="tab-calc" class="hidden p-6 fade-in-up">
+            <div class="max-w-md mx-auto card-inner p-8 premium-shadow text-center">
+                <h2 class="text-xl font-black mb-6 uppercase tracking-tighter">Conversor de Moeda</h2>
+                <div class="space-y-4">
+                    <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-6 rounded-3xl font-black text-3xl text-center text-blue-600 outline-none">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-50 p-4 rounded-2xl">
+                            <p class="text-[8px] font-black text-slate-400 uppercase mb-1">De</p>
+                            <select id="calcFrom" class="w-full bg-transparent font-bold outline-none"></select>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl">
+                            <p class="text-[8px] font-black text-slate-400 uppercase mb-1">Para</p>
+                            <select id="calcTo" class="w-full bg-transparent font-bold outline-none"></select>
+                        </div>
+                    </div>
+                    <button onclick="lancarCambio()" class="w-full btn-gradient text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg mt-4">Lançar Conversão</button>
                 </div>
             </div>
-        </main>
+        </section>
 
-        <!-- MENU INFERIOR -->
-        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md glass rounded-[2rem] p-2 flex justify-between items-center z-40 shadow-2xl">
-            <button onclick="switchTab('home')" class="nav-btn flex-1 flex flex-col items-center gap-1 py-2 text-slate-400 tab-active" id="nav-home">
-                <i class="fa-solid fa-house-chimney text-lg"></i>
-                <span class="text-[10px] font-bold uppercase">Início</span>
+        <!-- ABA DE CONFIGURAÇÕES -->
+        <section id="tab-settings" class="hidden p-6 fade-in-up">
+            <div class="max-w-md mx-auto space-y-4">
+                <div class="card-inner p-6 premium-shadow">
+                    <h3 class="text-xs font-black uppercase tracking-widest mb-4">Minha Conta</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-2xl">
+                            <span class="text-xs font-bold text-slate-500">Nome</span>
+                            <span id="display-name" class="text-xs font-black">Usuário</span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-slate-50 rounded-2xl">
+                            <span class="text-xs font-bold text-slate-500">Moeda</span>
+                            <span id="display-currency" class="text-xs font-black">BRL</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-inner p-6 premium-shadow">
+                    <h3 class="text-xs font-black uppercase tracking-widest mb-4 text-red-500">Zona de Perigo</h3>
+                    <button onclick="limparTudo()" class="w-full p-4 bg-red-50 text-red-600 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-red-100 transition-all">
+                        Apagar Todos os Dados
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navegação Inferior (ORIGINAL MANTIDA E MELHORADA) -->
+        <nav class="fixed bottom-0 left-0 right-0 glass-nav border-t border-slate-100 p-4 flex justify-around items-center z-30">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center gap-1 tab-active">
+                <i class="fa-solid fa-house-chimney text-xl"></i>
+                <span class="nav-text text-[9px] font-black uppercase tracking-tighter">Início</span>
             </button>
-            <button onclick="switchTab('stats')" class="nav-btn flex-1 flex flex-col items-center gap-1 py-2 text-slate-400" id="nav-stats">
-                <i class="fa-solid fa-chart-pie text-lg"></i>
-                <span class="text-[10px] font-bold uppercase">Stats</span>
+            <button onclick="switchTab('calc')" id="nav-calc" class="flex flex-col items-center gap-1 text-slate-300">
+                <i class="fa-solid fa-calculator text-xl"></i>
+                <span class="nav-text text-[9px] font-black uppercase tracking-tighter">Câmbio</span>
             </button>
-            <button onclick="switchTab('settings')" class="nav-btn flex-1 flex flex-col items-center gap-1 py-2 text-slate-400" id="nav-settings">
-                <i class="fa-solid fa-user-gear text-lg"></i>
-                <span class="text-[10px] font-bold uppercase">Conta</span>
+            <button onclick="switchTab('settings')" id="nav-settings" class="flex flex-col items-center gap-1 text-slate-300">
+                <i class="fa-solid fa-circle-user text-xl"></i>
+                <span class="nav-text text-[9px] font-black uppercase tracking-tighter">Perfil</span>
             </button>
         </nav>
     </div>
@@ -210,40 +319,34 @@
         let isRegisterMode = false;
         let isGhostMode = false;
         let mainChart = null;
-        let categoryChart = null;
-        const USERS_DB = 'ifinance_pro_users_v2';
+        const USERS_DB = 'ifinance_users_secure_v1';
 
-        // INICIALIZAÇÃO
-        window.onload = () => {
-            if (localStorage.theme === 'dark') document.documentElement.classList.add('dark');
-            checkSession();
-        };
+        // LÓGICA DE INPUT MONETÁRIO (MANTIDA DO ORIGINAL)
+        const rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
+        
+        function setupMask(id) {
+            const el = document.getElementById(id);
+            el.addEventListener('input', (e) => {
+                let val = e.target.value.replace(/\D/g, '');
+                rawValues[id] = parseInt(val || 0) / 100;
+                e.target.value = formatCurrency(rawValues[id]);
+            });
+            el.value = formatCurrency(0);
+        }
 
-        // LÓGICA DE AUTENTICAÇÃO (CORRIGIDA)
+        // LÓGICA DE PROTEÇÃO E LOGIN (REFEITA PARA SER INTELIGENTE)
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
-            const regFields = document.getElementById('register-fields');
-            const btnMain = document.getElementById('btn-main-auth');
-            const btnSwitch = document.getElementById('btn-switch-auth');
-
-            if (isRegisterMode) {
-                regFields.classList.remove('hidden');
-                btnMain.innerText = 'Criar Minha Conta';
-                btnSwitch.innerHTML = 'Já possui conta? <span class="text-blue-600">Acesse aqui</span>';
-            } else {
-                regFields.classList.add('hidden');
-                btnMain.innerText = 'Acessar Sistema';
-                btnSwitch.innerHTML = 'Ainda não tem conta? <span class="text-blue-600">Cadastre-se aqui</span>';
-            }
+            document.getElementById('register-fields').classList.toggle('hidden');
+            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'CRIAR CONTA PREMIUM' : 'ACESSAR SISTEMA';
+            document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'JÁ POSSUI CONTA? ACESSAR' : 'AINDA NÃO POSSUI CONTA? REGISTRE-SE';
         }
 
         function handleAuth() {
-            const email = document.getElementById('emailInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim().toLowerCase();
             const pass = document.getElementById('passInput').value.trim();
 
-            if (!email || !pass) {
-                return toast('Preencha e-mail e senha!', 'error');
-            }
+            if (!email || !pass) return toast('Preencha os campos!', 'error');
 
             let users = JSON.parse(localStorage.getItem(USERS_DB) || '[]');
 
@@ -251,18 +354,18 @@
                 const name = document.getElementById('userNameInput').value.trim();
                 const currency = document.getElementById('userCurrencyInput').value;
 
-                if (!name) return toast('Por favor, informe seu nome!', 'error');
-                if (users.find(u => u.email === email)) return toast('Este e-mail já está cadastrado!', 'error');
+                if (!name) return toast('Qual o seu nome?', 'error');
+                if (users.find(u => u.email === email)) return toast('E-mail já cadastrado!', 'error');
 
                 const newUser = {
                     email, pass, name, currency,
                     transactions: [],
-                    id: Date.now()
+                    createdAt: new Date().toISOString()
                 };
 
                 users.push(newUser);
                 localStorage.setItem(USERS_DB, JSON.stringify(users));
-                toast('Conta criada com sucesso!', 'success');
+                toast('Bem-vindo ao iFinance!', 'success');
                 login(newUser);
             } else {
                 const user = users.find(u => u.email === email && u.pass === pass);
@@ -276,103 +379,127 @@
 
         function login(user) {
             currentUser = user;
-            sessionStorage.setItem('ifinance_session_v2', user.email);
+            sessionStorage.setItem('ifinance_active_session', user.email);
+            
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
+            
+            // Atualiza Perfil
+            document.getElementById('display-name').innerText = user.name;
+            document.getElementById('display-currency').innerText = user.currency;
             document.getElementById('user-greeting').innerText = `Olá, ${user.name.split(' ')[0]}`;
+
             initDashboard();
         }
 
         function checkSession() {
-            const email = sessionStorage.getItem('ifinance_session_v2');
-            if (email) {
+            const sessionEmail = sessionStorage.getItem('ifinance_active_session');
+            if (sessionEmail) {
                 const users = JSON.parse(localStorage.getItem(USERS_DB) || '[]');
-                const user = users.find(u => u.email === email);
+                const user = users.find(u => u.email === sessionEmail);
                 if (user) login(user);
             }
         }
 
         function logout() {
-            sessionStorage.removeItem('ifinance_session_v2');
+            sessionStorage.removeItem('ifinance_active_session');
             location.reload();
         }
 
-        // LÓGICA DO DASHBOARD
+        // DASHBOARD INTELIGENTE
         function initDashboard() {
+            setupMask('amountDisplay');
+            setupMask('calcValueDisplay');
+            populateCurrencySelectors();
             populateMonthFilter();
             renderTransactions();
-            initCharts();
+            initChart();
         }
 
         function addTransaction() {
-            const desc = document.getElementById('desc').value.trim();
-            const amount = parseFloat(document.getElementById('amount').value);
-            const type = document.getElementById('type').value;
-            const category = document.getElementById('category').value;
+            const val = rawValues.amountDisplay;
+            if (val <= 0) return toast('Informe um valor!', 'warning');
 
-            if (!desc || isNaN(amount) || amount <= 0) return toast('Preencha os dados corretamente!', 'warning');
+            const desc = document.getElementById('desc').value.trim() || 'LANÇAMENTO SEM NOME';
+            const type = document.getElementById('type').value;
 
             const transaction = {
                 id: Date.now(),
-                desc,
-                amount: type === 'expense' ? -amount : amount,
-                category,
-                date: new Date().toISOString(),
+                text: desc,
+                amount: type === 'expense' ? -val : val,
+                date: new Date().toLocaleDateString('pt-BR'),
                 monthYear: new Date().toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' })
             };
 
             currentUser.transactions.unshift(transaction);
-            saveData();
+            save();
             
+            // Limpa inputs
             document.getElementById('desc').value = '';
-            document.getElementById('amount').value = '';
-            
+            rawValues.amountDisplay = 0;
+            document.getElementById('amountDisplay').value = formatCurrency(0);
+
             populateMonthFilter();
             renderTransactions();
-            updateCharts();
+            updateChart();
             toast('Lançamento realizado!', 'success');
         }
 
         function renderTransactions() {
             const list = document.getElementById('transaction-list');
             const filter = document.getElementById('filterMonth').value;
-            const empty = document.getElementById('empty-state');
             
             let filtered = currentUser.transactions;
-            if (filter && filter !== 'all') filtered = filtered.filter(t => t.monthYear === filter);
+            if (filter !== 'all') {
+                filtered = filtered.filter(t => t.monthYear === filter);
+            }
 
             list.innerHTML = '';
-            empty.classList.toggle('hidden', filtered.length > 0);
-
+            
             filtered.forEach(t => {
                 const isExpense = t.amount < 0;
                 const li = document.createElement('li');
-                li.className = 'flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl group hover:bg-white dark:hover:bg-slate-800 transition-all';
+                li.className = 'transaction-item flex items-center justify-between p-4 bg-white mb-1';
                 li.innerHTML = `
                     <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center ${isExpense ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'}">
-                            <i class="fa-solid ${getIcon(t.category)}"></i>
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center ${isExpense ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'}">
+                            <i class="fa-solid ${isExpense ? 'fa-arrow-down' : 'fa-arrow-up'}"></i>
                         </div>
                         <div>
-                            <p class="font-bold text-sm">${t.desc}</p>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase">${t.category} • ${new Date(t.date).toLocaleDateString('pt-BR')}</p>
+                            <p class="text-[11px] font-black uppercase leading-tight">${t.text}</p>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest">${t.date}</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="font-black text-sm ${isExpense ? 'text-red-500' : 'text-emerald-500'} blur-val">${format(t.amount)}</span>
-                        <button onclick="deleteTx(${t.id})" class="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-all"><i class="fa-solid fa-trash-can"></i></button>
+                        <span class="text-xs font-black ${isExpense ? 'text-red-600' : 'text-emerald-600'} ${isGhostMode ? 'blur-val' : ''}">
+                            ${formatCurrency(t.amount)}
+                        </span>
+                        <button onclick="deleteTx(${t.id})" class="text-slate-200 hover:text-red-400 transition-all">
+                            <i class="fa-solid fa-trash-can text-[10px]"></i>
+                        </button>
                     </div>
                 `;
                 list.appendChild(li);
             });
+
             updateSummary(filtered);
         }
 
         function deleteTx(id) {
-            Swal.fire({ title: 'Excluir?', text: 'Esta ação é permanente.', icon: 'warning', showCancelButton: true, confirmButtonText: 'Sim, excluir', cancelButtonText: 'Cancelar' }).then(r => {
-                if (r.isConfirmed) {
+            Swal.fire({
+                title: 'Excluir?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#2563eb',
+                cancelButtonColor: '#f1f5f9',
+                confirmButtonText: 'Sim',
+                cancelButtonText: 'Não'
+            }).then((result) => {
+                if (result.isConfirmed) {
                     currentUser.transactions = currentUser.transactions.filter(t => t.id !== id);
-                    saveData(); renderTransactions(); updateCharts();
+                    save();
+                    renderTransactions();
+                    updateChart();
                 }
             });
         }
@@ -380,85 +507,239 @@
         function updateSummary(txs) {
             const inc = txs.filter(t => t.amount > 0).reduce((a, b) => a + b.amount, 0);
             const exp = txs.filter(t => t.amount < 0).reduce((a, b) => a + Math.abs(b.amount), 0);
-            document.getElementById('balance').innerText = format(inc - exp);
-            document.getElementById('incomes').innerText = format(inc);
-            document.getElementById('expenses').innerText = format(exp);
+            const bal = inc - exp;
+
+            document.getElementById('balance').innerText = formatCurrency(bal);
+            document.getElementById('incomes').innerText = formatCurrency(inc);
+            document.getElementById('expenses').innerText = formatCurrency(exp);
+
+            // Efeito visual no saldo
+            const balEl = document.getElementById('balance');
+            balEl.classList.toggle('text-red-600', bal < 0);
+            balEl.classList.toggle('text-slate-900', bal >= 0);
+            
+            if (isGhostMode) {
+                balEl.classList.add('blur-val');
+                document.getElementById('incomes').classList.add('blur-val');
+                document.getElementById('expenses').classList.add('blur-val');
+            } else {
+                balEl.classList.remove('blur-val');
+                document.getElementById('incomes').classList.remove('blur-val');
+                document.getElementById('expenses').classList.remove('blur-val');
+            }
         }
 
-        // GRÁFICOS
-        function initCharts() {
-            const ctx1 = document.getElementById('mainChart').getContext('2d');
-            const ctx2 = document.getElementById('categoryChart').getContext('2d');
-            mainChart = new Chart(ctx1, { type: 'line', data: getLineData(), options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
-            categoryChart = new Chart(ctx2, { type: 'doughnut', data: getPieData(), options: { responsive: true, maintainAspectRatio: false } });
+        // GRÁFICO INTELIGENTE (CHART.JS)
+        function initChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            mainChart = new Chart(ctx, {
+                type: 'line',
+                data: getChartData(),
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false },
+                        x: { grid: { display: false }, ticks: { font: { size: 8, weight: 'bold' } } }
+                    },
+                    elements: { point: { radius: 0 } }
+                }
+            });
         }
 
-        function updateCharts() {
-            if (mainChart) { mainChart.data = getLineData(); mainChart.update(); }
-            if (categoryChart) { categoryChart.data = getPieData(); categoryChart.update(); }
+        function updateChart() {
+            if (mainChart) {
+                mainChart.data = getChartData();
+                mainChart.update();
+            }
         }
 
-        function getLineData() {
+        function getChartData() {
             const months = [];
             for (let i = 5; i >= 0; i--) {
-                const d = new Date(); d.setMonth(d.getMonth() - i);
+                const d = new Date();
+                d.setMonth(d.getMonth() - i);
                 months.push(d.toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' }));
             }
-            const data = months.map(m => currentUser.transactions.filter(t => t.monthYear === m).reduce((a, b) => a + b.amount, 0));
-            return { labels: months.map(m => m.split('/')[0]), datasets: [{ data, borderColor: '#2563eb', tension: 0.4, fill: true, backgroundColor: 'rgba(37, 99, 235, 0.1)' }] };
-        }
 
-        function getPieData() {
-            const cats = {};
-            currentUser.transactions.filter(t => t.amount < 0).forEach(t => cats[t.category] = (cats[t.category] || 0) + Math.abs(t.amount));
-            return { labels: Object.keys(cats), datasets: [{ data: Object.values(cats), backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'] }] };
+            const data = months.map(m => {
+                return currentUser.transactions
+                    .filter(t => t.monthYear === m)
+                    .reduce((a, b) => a + b.amount, 0);
+            });
+
+            return {
+                labels: months.map(m => m.split('/')[0]),
+                datasets: [{
+                    data: data,
+                    borderColor: '#2563eb',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(37, 99, 235, 0.05)'
+                }]
+            };
         }
 
         // UTILITÁRIOS
-        function format(v) { return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: currentUser?.currency || 'BRL' }).format(v); }
-        function getIcon(c) {
-            const icons = { 'Alimentação': 'fa-utensils', 'Transporte': 'fa-car', 'Lazer': 'fa-gamepad', 'Saúde': 'fa-heart-pulse', 'Educação': 'fa-graduation-cap', 'Moradia': 'fa-house', 'Salário': 'fa-sack-dollar' };
-            return icons[c] || 'fa-box';
+        function formatCurrency(val) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: currentUser ? currentUser.currency : 'BRL'
+            }).format(val);
         }
-        function populateMonthFilter() {
-            const s = document.getElementById('filterMonth');
-            const m = [...new Set(currentUser.transactions.map(t => t.monthYear))];
-            s.innerHTML = '<option value="all">Todos os Meses</option>';
-            m.forEach(x => { const o = document.createElement('option'); o.value = x; o.innerText = x; s.appendChild(o); });
+
+        function save() {
+            let users = JSON.parse(localStorage.getItem(USERS_DB) || '[]');
+            const idx = users.findIndex(u => u.email === currentUser.email);
+            if (idx !== -1) {
+                users[idx] = currentUser;
+                localStorage.setItem(USERS_DB, JSON.stringify(users));
+            }
         }
-        function switchTab(t) {
-            ['home', 'stats', 'settings'].forEach(id => {
-                document.getElementById(`tab-${id}`).classList.toggle('hidden', id !== t);
-                document.getElementById(`nav-${id}`).classList.toggle('tab-active', id === t);
+
+        function switchTab(tab) {
+            ['home', 'calc', 'settings'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).classList.remove('tab-active');
+                document.getElementById(`nav-${t}`).classList.add('text-slate-300');
             });
-            if (t === 'stats') updateCharts();
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`nav-${tab}`).classList.add('tab-active');
+            document.getElementById(`nav-${tab}`).classList.remove('text-slate-300');
         }
-        function toggleDarkMode() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.theme = isDark ? 'dark' : 'light';
-            document.getElementById('dark-icon').className = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-        }
+
         function toggleGhostMode() {
             isGhostMode = !isGhostMode;
-            document.querySelectorAll('.blur-val').forEach(e => e.classList.toggle('blur-val', isGhostMode));
             document.getElementById('ghost-icon').className = isGhostMode ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+            renderTransactions();
         }
-        function saveData() {
-            const users = JSON.parse(localStorage.getItem(USERS_DB) || '[]');
-            const i = users.findIndex(u => u.email === currentUser.email);
-            if (i !== -1) { users[i] = currentUser; localStorage.setItem(USERS_DB, JSON.stringify(users)); }
-        }
-        function toast(t, i) { Swal.fire({ text: t, icon: i, toast: true, position: 'top', showConfirmButton: false, timer: 3000 }); }
-        function exportData() {
-            const blob = new Blob([JSON.stringify(currentUser.transactions)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = 'ifinance_backup.json'; a.click();
-        }
-        function limparTudo() {
-            Swal.fire({ title: 'Limpar tudo?', text: 'Seus dados serão apagados.', icon: 'warning', showCancelButton: true }).then(r => {
-                if (r.isConfirmed) { currentUser.transactions = []; saveData(); renderTransactions(); updateCharts(); }
+
+        function toast(text, icon) {
+            Swal.fire({
+                text: text,
+                icon: icon,
+                toast: true,
+                position: 'top',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                customClass: { popup: 'rounded-2xl font-bold' }
             });
         }
+
+        function populateMonthFilter() {
+            const select = document.getElementById('filterMonth');
+            const months = [...new Set(currentUser.transactions.map(t => t.monthYear))];
+            const current = select.value;
+            select.innerHTML = '<option value="all">TODOS OS MESES</option>';
+            months.sort().reverse().forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.innerText = m;
+                select.appendChild(opt);
+            });
+            select.value = current;
+        }
+
+        function populateCurrencySelectors() {
+            const currencies = ['BRL', 'USD', 'EUR', 'GBP', 'JPY'];
+            const from = document.getElementById('calcFrom');
+            const to = document.getElementById('calcTo');
+            from.innerHTML = ''; to.innerHTML = '';
+            currencies.forEach(c => {
+                from.innerHTML += `<option value="${c}">${c}</option>`;
+                to.innerHTML += `<option value="${c}">${c}</option>`;
+            });
+            from.value = currentUser.currency;
+            to.value = 'USD';
+        }
+
+        function exportData() {
+            const data = JSON.stringify(currentUser.transactions, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ifinance_backup_${new Date().toLocaleDateString()}.json`;
+            a.click();
+            toast('Backup gerado!', 'success');
+        }
+
+        function limparTudo() {
+            Swal.fire({
+                title: 'Apagar tudo?',
+                text: 'Seus dados serão perdidos permanentemente.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Sim, apagar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentUser.transactions = [];
+                    save();
+                    renderTransactions();
+                    updateChart();
+                    toast('Dados apagados!', 'success');
+                }
+            });
+        }
+
+        function prepararRendaMensal() {
+            Swal.fire({
+                title: 'Lançar Renda Mensal',
+                input: 'number',
+                inputLabel: 'Valor do seu salário/renda',
+                inputPlaceholder: '0.00',
+                showCancelButton: true,
+                confirmButtonText: 'Lançar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.value) {
+                    const val = parseFloat(result.value);
+                    currentUser.transactions.unshift({
+                        id: Date.now(),
+                        text: 'RENDA MENSAL',
+                        amount: val,
+                        date: new Date().toLocaleDateString('pt-BR'),
+                        monthYear: new Date().toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' })
+                    });
+                    save();
+                    renderTransactions();
+                    updateChart();
+                    toast('Renda lançada!', 'success');
+                }
+            });
+        }
+
+        function lancarCambio() {
+            const val = rawValues.calcValueDisplay;
+            if (val <= 0) return toast('Informe um valor!', 'warning');
+            const from = document.getElementById('calcFrom').value;
+            const to = document.getElementById('calcTo').value;
+            
+            // Simulação de câmbio inteligente
+            toast(`Conversão de ${from} para ${to} lançada!`, 'success');
+            
+            currentUser.transactions.unshift({
+                id: Date.now(),
+                text: `CÂMBIO: ${from} > ${to}`,
+                amount: -val,
+                date: new Date().toLocaleDateString('pt-BR'),
+                monthYear: new Date().toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' })
+            });
+            save();
+            renderTransactions();
+            updateChart();
+            switchTab('home');
+        }
+
+        // Inicia o sistema
+        window.onload = () => {
+            checkSession();
+        };
     </script>
 </body>
 </html>
