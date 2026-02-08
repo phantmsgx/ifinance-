@@ -95,6 +95,13 @@
             color: #16a34a;
             border: 1px solid #bbf7d0;
         }
+
+        /* Estilo para o botão de repetir gasto */
+        .btn-repeat {
+            color: #cbd5e1;
+            transition: all 0.2s;
+        }
+        .btn-repeat:hover { color: #2563eb; }
     </style>
 </head>
 <body>
@@ -294,7 +301,6 @@
             from.value = "USD"; to.value = "BRL";
         }
 
-        // NOVA FUNÇÃO: Inverte as moedas e recalcula
         function inverterMoedas() {
             const from = document.getElementById('fromCurrency');
             const to = document.getElementById('toCurrency');
@@ -391,6 +397,19 @@
         function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
         function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
 
+        // NOVA FUNÇÃO: Repetir gasto recorrente
+        function repetirTransacao(text, amount) {
+            if(confirm(`Deseja lançar "${text}" novamente hoje?`)) {
+                currentUser.transactions.push({ 
+                    id: Date.now(), 
+                    text: text, 
+                    amount: amount, 
+                    date: new Date().toLocaleDateString('pt-BR') 
+                });
+                save(); renderTransactions();
+            }
+        }
+
         function renderTransactions() {
             const list = document.getElementById('transaction-list');
             list.innerHTML = '';
@@ -399,8 +418,17 @@
                 if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
                 const li = document.createElement('li');
                 li.className = "flex justify-between items-center py-4 anim-fade";
-                li.innerHTML = `<div><p class="font-black text-[10px] text-slate-700">${t.text}</p><p class="text-[7px] text-slate-300 uppercase">${t.date}</p></div>
-                                <p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'}">${formatCurrency(t.amount)}</p>`;
+                li.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <button onclick="repetirTransacao('${t.text}', ${t.amount})" class="btn-repeat text-sm">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                        <div>
+                            <p class="font-black text-[10px] text-slate-700">${t.text}</p>
+                            <p class="text-[7px] text-slate-300 uppercase">${t.date}</p>
+                        </div>
+                    </div>
+                    <p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'}">${formatCurrency(t.amount)}</p>`;
                 list.appendChild(li);
             });
             document.getElementById('balance').innerText = formatCurrency(inc - exp);
@@ -457,7 +485,7 @@
 
         function limparTudo() { if(confirm("Apagar tudo?")) { localStorage.clear(); logout(); } }
 
-        window.onload = () => { populateCurrencySelectors(); checkSession(); };
+        window.onload = () => { populateCurrencySelectors(); applyMask('amountDisplay'); applyMask('calcValueDisplay'); checkSession(); };
     </script>
 </body>
 </html>
