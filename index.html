@@ -114,13 +114,9 @@
                         <option value="EUR">🇪🇺 EUR - Euro</option>
                         <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
                         <option value="JPY">🇯🇵 JPY - Iene Japonês</option>
-                        <option value="CHF">🇨🇭 CHF - Franco Suíço</option>
-                        <option value="AUD">🇦🇺 AUD - Dólar Australiano</option>
-                        <option value="CAD">🇨🇦 CAD - Dólar Canadense</option>
                     </select>
                     <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-400"></i>
                 </div>
-
                 <div class="bg-white p-5 rounded-[30px] border-2 border-blue-50 text-left shadow-inner">
                     <p class="text-[9px] font-black text-blue-600 uppercase mb-1">Renda Mensal (Salário)</p>
                     <input type="text" id="salaryInput" placeholder="0,00" class="w-full bg-transparent border-b border-blue-100 py-1 font-black text-2xl outline-none text-blue-900">
@@ -163,7 +159,6 @@
                         <h2 class="summary-text text-red-600" id="expenses">0,00</h2>
                     </div>
                 </div>
-
                 <div class="card-inner p-6 premium-shadow">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                         <input type="text" id="desc" placeholder="DESCRIÇÃO" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none">
@@ -175,7 +170,6 @@
                         <button onclick="addTransaction()" class="btn-action btn-gradient text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest">Confirmar</button>
                     </div>
                 </div>
-
                 <div class="card-inner p-6 premium-shadow">
                     <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
                     <button onclick="limparTudo()" class="w-full text-center py-4 text-[8px] text-red-200 font-black uppercase tracking-[0.5em] mt-2">Limpar Base de Dados</button>
@@ -186,14 +180,10 @@
         <section id="tab-cambio" class="hidden p-4 fade-in-up">
              <div class="max-w-xl mx-auto card-inner p-8 premium-shadow space-y-6 mt-4 text-center">
                 <h2 class="font-black text-xl uppercase tracking-tighter">Câmbio Inteligente</h2>
-                <div class="flex flex-col gap-3">
-                    <div class="flex items-center justify-between gap-3">
-                        <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-black text-xs outline-none no-scrollbar">
-                            </select>
-                        <div class="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-md"><i class="fa-solid fa-right-left text-sm"></i></div>
-                        <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-black text-xs outline-none no-scrollbar">
-                            </select>
-                    </div>
+                <div class="flex items-center justify-between gap-3">
+                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-black text-xs outline-none"></select>
+                    <div class="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-md"><i class="fa-solid fa-right-left text-sm"></i></div>
+                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-black text-xs outline-none"></select>
                 </div>
                 <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-5 rounded-2xl font-black text-4xl text-center text-blue-600 outline-none shadow-inner">
                 <div class="bg-slate-900 p-8 rounded-[35px] text-white">
@@ -234,38 +224,50 @@
     </div>
 
     <script>
-        // LISTA DE MOEDAS MUNDIAIS (ADICIONADA)
-        const allCurrencies = {
-            "BRL": "Real Brasileiro", "USD": "Dólar Americano", "EUR": "Euro", "GBP": "Libra Esterlina", "JPY": "Iene Japonês",
-            "AUD": "Dólar Australiano", "CAD": "Dólar Canadense", "CHF": "Franco Suíço", "CNY": "Yuan Chinês", "ARS": "Peso Argentino",
-            "TRY": "Lira Turca", "PYG": "Guarani Paraguaio", "UYU": "Peso Uruguaio", "CLP": "Peso Chileno", "MXN": "Peso Mexicano",
-            "RUB": "Rublo Russo", "INR": "Rupia Indiana", "ZAR": "Rand Sul-Africano", "AED": "Dirham Emirados", "ILS": "Shekel Israelense",
-            "BTC": "Bitcoin", "ETH": "Ethereum"
-            // A API AwesomeAPI suporta centenas de outros que podem ser adicionados aqui.
-        };
+        const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "AUD":"Dólar Aus", "CAD":"Dólar Can", "CHF":"Suíço", "ARS":"Peso Arg", "BTC":"Bitcoin" };
 
         const restaurantesDB = {
             'BRL': [
-                {nome: 'A CASA DO PORCO', cidade: 'SÃO PAULO', tipo: 'COZINHA CONCEITUAL', icone: '🐷', desc: 'Focado na carne suína, um dos melhores do mundo.'},
-                {nome: 'D.O.M', cidade: 'SÃO PAULO', tipo: 'ALTA GASTRONOMIA', icone: '🌿', desc: 'Chef Alex Atala com ingredientes amazônicos.'},
-                {nome: 'MARIUS DEGUSTARE', cidade: 'RIO', tipo: 'CHURRASCO', icone: '🥩', desc: 'Experiência temática em Copacabana.'}
+                {nome: 'A CASA DO PORCO', cidade: 'SP', tipo: 'CONCEITUAL', icone: '🐷', desc: 'Melhor do Brasil, focado na carne suína.'},
+                {nome: 'D.O.M', cidade: 'SP', tipo: 'AMAZÔNICO', icone: '🌿', desc: 'Alta gastronomia pelo chef Alex Atala.'},
+                {nome: 'LASAI', cidade: 'RJ', tipo: 'ORGÂNICO', icone: '🥕', desc: 'Ingredientes colhidos no próprio dia.'},
+                {nome: 'MANÍ', cidade: 'SP', tipo: 'CONTEMPORÂNEO', icone: '🥣', desc: 'A sofisticação da chef Helena Rizzo.'},
+                {nome: 'MARIUS DEGUSTARE', cidade: 'RJ', tipo: 'EXCLUSIVO', icone: '🥩', desc: 'Churrasco nobre em ambiente temático épico.'}
             ],
             'USD': [
-                {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'A fatia mais famosa de Manhattan.'},
-                {nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'FRUTOS DO MAR', icone: '🐟', desc: 'Elegância e perfeição absoluta.'}
+                {nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'PEIXES', icone: '🐟', desc: 'O ápice dos frutos do mar mundial.'},
+                {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'A fatia mais lendária de Manhattan.'},
+                {nome: 'PETER LUGER', cidade: 'BROOKLYN', tipo: 'STEAKHOUSE', icone: '🥩', desc: 'O bife mais famoso dos EUA desde 1887.'},
+                {nome: 'NOBU MALIBU', cidade: 'LA', tipo: 'FUSION', icone: '🍣', desc: 'Ponto de encontro da elite de Hollywood.'},
+                {nome: 'KATZ\'S DELI', cidade: 'NY', tipo: 'DELI', icone: '🥪', desc: 'O sanduíche de pastrami definitivo.'}
             ],
             'EUR': [
-                {nome: 'HOFBRÄUHAUS', cidade: 'MUNICH', tipo: 'CERVEJARIA', icone: '🍺', desc: 'Fundada em 1589.'},
-                {nome: 'TICKET BAR', cidade: 'BARCELONA', tipo: 'TAPAS', icone: '🥘', desc: 'Conceito inovador Adrià.'}
+                {nome: 'STEIRERECK', cidade: 'VIENA', tipo: 'MODERNO', icone: '🇦🇹', desc: 'Localizado no coração do Stadtpark.'},
+                {nome: 'HOFBRÄUHAUS', cidade: 'MUNICH', tipo: 'HISTÓRICO', icone: '🍺', desc: 'A cervejaria mais famosa do planeta.'},
+                {nome: 'TICKET BAR', cidade: 'BARCELONA', tipo: 'TAPAS', icone: '🥘', desc: 'Inovação extrema em pequenas porções.'},
+                {nome: 'OSTERIA FRANCESCANA', cidade: 'MODENA', tipo: 'ARTE', icone: '🎨', desc: 'Massimo Bottura redefine a Itália.'},
+                {nome: 'NOMA', cidade: 'COPENHAGUE', tipo: 'NÓRDICO', icone: '🌲', desc: 'Frequentemente eleito o nº 1 do mundo.'}
             ],
             'ITA': [
-                {nome: 'TRATTORIA BAFFETTO', cidade: 'ROMA', tipo: 'PIZZARIA', icone: '🇮🇹', desc: 'A preferida dos locais em Roma.'}
+                {nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin da capital.'},
+                {nome: 'DA VITTORIO', cidade: 'BERGAMO', tipo: 'FAMILIAR', icone: '🍝', desc: 'Tradição italiana elevada ao máximo.'},
+                {nome: 'TRATTORIA BAFFETTO', cidade: 'ROMA', tipo: 'PIZZA', icone: '🇮🇹', desc: 'Fila constante pela massa mais fina de Roma.'},
+                {nome: 'ANTICA PESA', cidade: 'ROMA', tipo: 'HISTÓRICO', icone: '🍷', desc: 'Onde celebridades jantam no Trastevere.'},
+                {nome: 'LANGHOSTERIA', cidade: 'MILÃO', tipo: 'FASHION', icone: '🦞', desc: 'O melhor peixe fresco do norte da Itália.'}
             ],
             'FRA': [
-                {nome: 'LE MEURICE', cidade: 'PARIS', tipo: 'PALÁCIO', icone: '🥐', desc: 'A majestade de Alain Ducasse.'}
+                {nome: 'LE MEURICE', cidade: 'PARIS', tipo: 'PALÁCIO', icone: '🥐', desc: 'Ambiente real com menu de Alain Ducasse.'},
+                {nome: 'SEPTIME', cidade: 'PARIS', tipo: 'NEO-BISTRO', icone: '🍷', desc: 'O mais concorrido e moderno de Paris.'},
+                {nome: 'MIRAZUR', cidade: 'MENTON', tipo: 'RIVIERA', icone: '🌊', desc: 'Cozinha inspirada no mar e jardins.'},
+                {nome: 'L\'AMI LOUIS', cidade: 'PARIS', tipo: 'BISTRO', icone: '🦆', desc: 'Conhecido como o bistrô mais famoso do mundo.'},
+                {nome: 'CIEL DE PARIS', cidade: 'PARIS', tipo: 'VISTA', icone: '🗼', desc: 'Jantar no topo da Torre Montparnasse.'}
             ],
             'JPN': [
-                {nome: 'SUKIYABASHI JIRO', cidade: 'TOKYO', tipo: 'SUSHI', icone: '🍣', desc: 'O mestre Jiro Ono e sua arte.'}
+                {nome: 'SUKIYABASHI JIRO', cidade: 'TOKYO', tipo: 'SUSHI', icone: '🍣', desc: 'A lenda viva de Jiro Ono.'},
+                {nome: 'NARISAWA', cidade: 'TOKYO', tipo: 'ECO', icone: '🌲', desc: 'Pratos que respeitam a natureza japonesa.'},
+                {nome: 'ICHIRAN RAMEN', cidade: 'TOKYO', tipo: 'RAMEN', icone: '🍜', desc: 'A experiência definitiva de ramen.'},
+                {nome: 'KOBE BEEF KAISEKI', cidade: 'KOBE', tipo: 'WAGYU', icone: '🐂', desc: 'A carne mais cara e macia do mundo.'},
+                {nome: 'DEN', cidade: 'TOKYO', tipo: 'CRIATIVO', icone: '🍱', desc: 'Humor e técnica impecável na cozinha.'}
             ]
         };
 
@@ -277,13 +279,10 @@
             const from = document.getElementById('fromCurrency');
             const to = document.getElementById('toCurrency');
             Object.keys(allCurrencies).forEach(code => {
-                const opt1 = new Option(`${code} - ${allCurrencies[code]}`, code);
-                const opt2 = new Option(`${code} - ${allCurrencies[code]}`, code);
-                from.add(opt1);
-                to.add(opt2);
+                from.add(new Option(`${code} - ${allCurrencies[code]}`, code));
+                to.add(new Option(`${code} - ${allCurrencies[code]}`, code));
             });
-            from.value = "USD";
-            to.value = "BRL";
+            from.value = "USD"; to.value = "BRL";
         }
 
         function applyMask(id) {
@@ -306,11 +305,7 @@
 
         function formatCurrency(val, curr) {
             const c = curr || (currentUser ? currentUser.currency : 'BRL');
-            try {
-                return val.toLocaleString('pt-BR', { style: 'currency', currency: c });
-            } catch {
-                return `${c} ${val.toFixed(2)}`;
-            }
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: c });
         }
 
         function handleAuth() {
@@ -351,11 +346,8 @@
             try {
                 const res = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
                 const data = await res.json();
-                const rate = parseFloat(data[`${from}${to}`].bid);
-                atualizarConversao(rate);
-            } catch { 
-                document.getElementById('calcResultDisplay').innerText = "Par Indisponível";
-            }
+                atualizarConversao(parseFloat(data[`${from}${to}`].bid));
+            } catch { document.getElementById('calcResultDisplay').innerText = "Erro na rede"; }
         }
 
         function atualizarConversao(rate) {
@@ -374,18 +366,9 @@
             }
         }
 
-        window.onload = () => { 
-            populateCurrencySelectors();
-            applyMask('salaryInput'); 
-            checkSession(); 
-        };
+        function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
+        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
 
-        // FUNÇÕES PADRÃO MANTIDAS
-        function toggleAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'CRIAR CONTA' : 'ACESSAR';
-        }
         function renderTransactions() {
             const list = document.getElementById('transaction-list');
             list.innerHTML = '';
@@ -394,7 +377,7 @@
                 if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
                 const li = document.createElement('li');
                 li.className = "flex justify-between items-center py-4 anim-fade";
-                li.innerHTML = `<div><p class="font-black text-[10px]">${t.text}</p><p class="text-[7px] text-slate-300 uppercase">${t.date}</p></div>
+                li.innerHTML = `<div><p class="font-black text-[10px] text-slate-700">${t.text}</p><p class="text-[7px] text-slate-300 uppercase">${t.date}</p></div>
                                 <p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'}">${formatCurrency(t.amount)}</p>`;
                 list.appendChild(li);
             });
@@ -402,8 +385,7 @@
             document.getElementById('incomes').innerText = formatCurrency(inc);
             document.getElementById('expenses').innerText = formatCurrency(exp);
         }
-        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
-        function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
+
         function switchTab(tab) {
             ['home', 'cambio', 'viagem'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
@@ -412,23 +394,7 @@
             document.getElementById(`tab-${tab}`).classList.remove('hidden');
             document.getElementById(`nav-${tab}`).classList.add('tab-active');
         }
-        function addTransaction() {
-            const desc = document.getElementById('desc').value.toUpperCase();
-            const val = rawValues.amountDisplay;
-            if (!desc || val === 0) return;
-            const finalVal = (document.getElementById('type').value === 'expense') ? -val : val;
-            currentUser.transactions.push({ id: Date.now(), text: desc, amount: finalVal, date: new Date().toLocaleDateString('pt-BR') });
-            save(); renderTransactions();
-            document.getElementById('desc').value = '';
-            rawValues.amountDisplay = 0;
-            document.getElementById('amountDisplay').value = formatCurrency(0);
-        }
-        function lancarCambio() {
-            const val = rawValues.calcValueDisplay;
-            if(val <= 0) return;
-            currentUser.transactions.push({ id: Date.now(), text: `CÂMBIO REALIZADO`, amount: -val, date: new Date().toLocaleDateString('pt-BR') });
-            save(); renderTransactions(); switchTab('home');
-        }
+
         function setGuide(reg) {
             const container = document.getElementById('restaurant-list');
             container.innerHTML = '';
@@ -441,7 +407,35 @@
                 container.appendChild(div);
             });
         }
+
+        function addTransaction() {
+            const desc = document.getElementById('desc').value.toUpperCase();
+            const val = rawValues.amountDisplay;
+            if (!desc || val === 0) return;
+            const finalVal = (document.getElementById('type').value === 'expense') ? -val : val;
+            currentUser.transactions.push({ id: Date.now(), text: desc, amount: finalVal, date: new Date().toLocaleDateString('pt-BR') });
+            save(); renderTransactions();
+            document.getElementById('desc').value = '';
+            rawValues.amountDisplay = 0;
+            document.getElementById('amountDisplay').value = formatCurrency(0);
+        }
+
+        function lancarCambio() {
+            const val = rawValues.calcValueDisplay;
+            if(val <= 0) return;
+            currentUser.transactions.push({ id: Date.now(), text: `CÂMBIO REALIZADO`, amount: -val, date: new Date().toLocaleDateString('pt-BR') });
+            save(); renderTransactions(); switchTab('home');
+        }
+
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('register-fields').classList.toggle('hidden');
+            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'CRIAR CONTA' : 'ACESSAR';
+        }
+
         function limparTudo() { if(confirm("Apagar tudo?")) { localStorage.clear(); logout(); } }
+
+        window.onload = () => { populateCurrencySelectors(); applyMask('salaryInput'); checkSession(); };
     </script>
 </body>
 </html>
