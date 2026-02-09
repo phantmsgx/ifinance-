@@ -15,20 +15,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* TEMA DEEP NIGHT - CORES E VIDA */
-        :root {
-            --bg-deep: #09090b;
-            --accent-purple: #7c3aed;
-            --glass-bg: rgba(24, 24, 27, 0.8);
-            --border-light: rgba(255, 255, 255, 0.1);
-        }
-
         html, body { 
             touch-action: pan-x pan-y; 
             overscroll-behavior: none;
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-deep); /* Fundo Preto Profundo */
-            color: #ffffff;
+            background-color: #f8fafc;
+            color: #0f172a;
             margin: 0;
             padding: 0;
             height: 100%;
@@ -36,22 +28,11 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Ambient Lights (As manchas de luz no fundo) */
-        body::before {
-            content: "";
-            position: fixed;
-            top: -10%; left: -10%;
-            width: 50%; height: 50%;
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
-            z-index: -1;
-            pointer-events: none;
-        }
-
         body { padding-bottom: 110px; -webkit-tap-highlight-color: transparent; }
         .hidden { display: none !important; }
 
         .tab-active { 
-            color: var(--accent-purple) !important; 
+            color: #2563eb !important; 
             transform: scale(1.1); 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
@@ -64,9 +45,6 @@
             user-select: auto !important; 
             -webkit-user-select: auto !important;
             font-size: 16px !important; 
-            background: rgba(255, 255, 255, 0.03) !important;
-            border: 1px solid var(--border-light) !important;
-            color: white !important;
         }
 
         .balance-text {
@@ -76,8 +54,7 @@
             text-overflow: ellipsis;
             line-height: 1.1;
             font-weight: 900;
-            color: #ffffff;
-            text-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+            color: #0f172a;
         }
         
         .summary-text {
@@ -88,19 +65,8 @@
             font-weight: 800;
         }
 
-        /* Glassmorphism nos Cards */
-        .card-inner { 
-            background: var(--glass-bg); 
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border-light); 
-            border-radius: 40px; 
-            overflow: hidden; 
-        }
-
-        .premium-shadow { box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
-
         /* Estilo para ocultar valores */
-        .blur-val { filter: blur(12px); pointer-events: none; }
+        .blur-val { filter: blur(10px); pointer-events: none; }
 
         @media (max-width: 640px) {
             .card-inner { padding: 1.25rem !important; border-radius: 30px; }
@@ -110,7 +76,7 @@
             .nav-text { font-size: 8px !important; }
         }
 
-        .bg-auth-gradient { background: var(--bg-deep); }
+        .bg-auth-gradient { background: radial-gradient(circle at top right, #eff6ff, #ffffff); }
         ::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -120,80 +86,75 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        .premium-shadow { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); }
+        .card-inner { background: white; border: 1px solid #f1f5f9; border-radius: 40px; overflow: hidden; }
         button:active { transform: scale(0.96); }
-        .btn-gradient { background: linear-gradient(135deg, #7c3aed, #5b21b6); } /* Roxo Vivo */
+        .btn-gradient { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
         .anim-fade { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
         .btn-income-quick {
-            background: rgba(16, 185, 129, 0.1);
-            color: #10b981;
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
         }
 
         .btn-repeat {
-            color: #4b5563;
+            color: #cbd5e1;
             transition: all 0.2s;
         }
-        .btn-repeat:hover { color: var(--accent-purple); }
+        .btn-repeat:hover { color: #2563eb; }
 
         .insight-card {
-            border-left: 4px solid var(--accent-purple);
-        }
-
-        /* Nav Transparente e Viva */
-        nav {
-            background: rgba(9, 9, 11, 0.8) !important;
-            backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border-light) !important;
+            border-left: 4px solid #2563eb;
         }
     </style>
 </head>
 <body>
 
     <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 bg-auth-gradient text-center">
-        <div class="mb-6 w-20 h-20 bg-purple-600 rounded-[30px] flex items-center justify-center shadow-[0_0_30px_rgba(124,58,237,0.5)] text-white text-4xl transform rotate-12">
+        <div class="mb-6 w-20 h-20 bg-blue-600 rounded-[30px] flex items-center justify-center shadow-2xl text-white text-4xl transform rotate-12">
             <i class="fa-solid fa-wallet"></i>
         </div>
         
-        <h1 id="auth-title" class="text-3xl font-black mb-1 tracking-tighter text-white">i<span class="text-purple-500">Finance</span></h1>
-        <p id="auth-subtitle" class="text-zinc-500 mb-8 font-medium text-sm">Gestão de elite.</p>
+        <h1 id="auth-title" class="text-3xl font-black mb-1 tracking-tighter">i<span class="text-blue-600">Finance</span></h1>
+        <p id="auth-subtitle" class="text-slate-500 mb-8 font-medium text-sm">Gestão de elite.</p>
 
         <div class="flex flex-col w-full max-w-md gap-3">
-            <input type="email" id="emailInput" placeholder="E-mail" class="p-4 rounded-2xl font-bold outline-none shadow-sm focus:border-purple-500/50 transition-all">
-            <input type="password" id="passInput" placeholder="Senha" class="p-4 rounded-2xl font-bold outline-none shadow-sm focus:border-purple-500/50 transition-all">
+            <input type="email" id="emailInput" placeholder="E-mail" class="bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm focus:border-blue-200 transition-all">
+            <input type="password" id="passInput" placeholder="Senha" class="bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm focus:border-blue-200 transition-all">
             
             <div id="register-fields" class="hidden flex flex-col gap-3 fade-in-up">
-                <input type="text" id="userNameInput" placeholder="Nome Completo" class="p-4 rounded-2xl font-bold outline-none shadow-sm">
+                <input type="text" id="userNameInput" placeholder="Nome Completo" class="bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm">
                 <div class="relative">
-                    <select id="userCurrencyInput" class="w-full p-4 rounded-2xl font-bold outline-none shadow-sm appearance-none">
+                    <select id="userCurrencyInput" class="w-full bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm appearance-none">
                         <option value="BRL">🇧🇷 BRL - Real Brasileiro</option>
                         <option value="USD">🇺🇸 USD - Dólar Americano</option>
                         <option value="EUR">🇪🇺 EUR - Euro</option>
                         <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
                         <option value="JPY">🇯🇵 JPY - Iene Japonês</option>
                     </select>
-                    <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+                    <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-400"></i>
                 </div>
             </div>
 
             <button onclick="handleAuth()" id="btn-main-auth" class="btn-gradient text-white py-4 rounded-2xl font-black shadow-xl uppercase tracking-widest mt-2">Acessar Sistema</button>
-            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-purple-400 font-bold mt-2 text-[10px]">Ainda não possui conta? Registre-se</button>
+            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-blue-600 font-bold mt-2 text-[10px]">Ainda não possui conta? Registre-se</button>
         </div>
     </section>
 
     <div id="main-app" class="hidden">
         <section id="tab-home" class="fade-in-up">
-            <header class="header-main bg-zinc-950/50 backdrop-blur-xl border-b border-white/5 p-5 sticky top-0 z-20 flex justify-between items-center px-6 md:px-10">
+            <header class="header-main bg-white/80 backdrop-blur-xl border-b border-slate-100 p-5 sticky top-0 z-20 flex justify-between items-center px-6 md:px-10">
                 <div>
-                    <h1 class="text-xl font-black text-purple-500 italic tracking-tighter">iFinance</h1>
-                    <p class="text-[7px] font-bold text-zinc-500 uppercase tracking-[0.3em]">Premium Dashboard</p>
+                    <h1 class="text-xl font-black text-blue-600 italic tracking-tighter">iFinance</h1>
+                    <p class="text-[7px] font-bold text-slate-400 uppercase tracking-[0.3em]">Premium Dashboard</p>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="toggleGhostMode()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-zinc-400">
+                    <button onclick="toggleGhostMode()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
                         <i id="ghost-icon" class="fa-solid fa-eye"></i>
                     </button>
-                    <button onclick="logout()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-zinc-400 hover:text-red-500 transition-all">
+                    <button onclick="logout()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 transition-all">
                         <i class="fa-solid fa-power-off text-base"></i>
                     </button>
                 </div>
@@ -201,17 +162,17 @@
             
             <main class="p-4 max-w-6xl mx-auto space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="card-inner p-6 border-purple-500/20 border-2 premium-shadow bg-gradient-to-br from-purple-500/10 to-transparent">
-                        <p class="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1">Saldo Disponível</p>
+                    <div class="card-inner p-6 border-blue-100 border-2 premium-shadow bg-gradient-to-br from-white to-blue-50/30">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Saldo Disponível</p>
                         <h2 class="balance-text" id="balance">0,00</h2>
                     </div>
                     <div class="card-inner p-6 premium-shadow">
-                        <p class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1">Entradas</p>
-                        <h2 class="summary-text text-emerald-500" id="incomes">0,00</h2>
+                        <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-1">Entradas</p>
+                        <h2 class="summary-text text-emerald-600" id="incomes">0,00</h2>
                     </div>
                     <div class="card-inner p-6 premium-shadow">
-                        <p class="text-[9px] font-black text-red-400 uppercase tracking-widest mb-1">Saídas</p>
-                        <h2 class="summary-text text-red-500" id="expenses">0,00</h2>
+                        <p class="text-[9px] font-black text-red-500 uppercase tracking-widest mb-1">Saídas</p>
+                        <h2 class="summary-text text-red-600" id="expenses">0,00</h2>
                     </div>
                 </div>
 
@@ -222,9 +183,9 @@
 
                 <div class="card-inner p-6 premium-shadow">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                        <input type="text" id="desc" placeholder="DESCRIÇÃO (OPCIONAL)" class="input-main w-full p-4 rounded-xl font-black text-xs outline-none">
-                        <input type="text" id="amountDisplay" placeholder="0,00" class="input-main w-full p-4 rounded-xl font-black text-lg text-center text-purple-400 outline-none">
-                        <select id="type" class="w-full p-4 rounded-xl font-black text-[10px] text-zinc-400 uppercase appearance-none outline-none">
+                        <input type="text" id="desc" placeholder="DESCRIÇÃO (OPCIONAL)" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none">
+                        <input type="text" id="amountDisplay" placeholder="0,00" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-blue-600 outline-none">
+                        <select id="type" class="w-full bg-slate-50 p-4 rounded-xl font-black text-[10px] text-slate-500 uppercase appearance-none outline-none">
                             <option value="expense">Saída (-)</option>
                             <option value="income">Entrada (+)</option>
                         </select>
@@ -234,17 +195,17 @@
 
                 <div class="card-inner p-6 premium-shadow">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-black text-[10px] uppercase tracking-widest text-zinc-400">Extrato</h3>
-                        <select id="filterMonth" onchange="renderTransactions()" class="bg-white/5 p-2 rounded-lg font-black text-[9px] text-white outline-none">
+                        <h3 class="font-black text-[10px] uppercase tracking-widest">Extrato</h3>
+                        <select id="filterMonth" onchange="renderTransactions()" class="bg-slate-50 p-2 rounded-lg font-black text-[9px] outline-none">
                             <option value="all">TODOS OS MESES</option>
                         </select>
                     </div>
 
-                    <ul id="transaction-list" class="divide-y divide-white/5"></ul>
+                    <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
                     
                     <div class="flex gap-2 mt-4">
-                        <button onclick="exportData()" class="flex-1 text-center py-4 text-[8px] bg-white/5 rounded-xl text-zinc-400 font-black uppercase tracking-widest">Backup Dados</button>
-                        <button onclick="limparTudo()" class="flex-1 text-center py-4 text-[8px] bg-red-500/10 rounded-xl text-red-400/50 font-black uppercase tracking-[0.5em]">Limpar Base</button>
+                        <button onclick="exportData()" class="flex-1 text-center py-4 text-[8px] bg-slate-50 rounded-xl text-slate-400 font-black uppercase tracking-widest">Backup Dados</button>
+                        <button onclick="limparTudo()" class="flex-1 text-center py-4 text-[8px] bg-red-50 rounded-xl text-red-200 font-black uppercase tracking-[0.5em]">Limpar Base</button>
                     </div>
                 </div>
             </main>
@@ -252,17 +213,17 @@
 
         <section id="tab-cambio" class="hidden p-4 fade-in-up">
              <div class="max-w-xl mx-auto card-inner p-8 premium-shadow space-y-6 mt-4 text-center">
-                <h2 class="font-black text-xl uppercase tracking-tighter text-white">Câmbio Inteligente</h2>
+                <h2 class="font-black text-xl uppercase tracking-tighter">Câmbio Inteligente</h2>
                 <div class="flex items-center justify-between gap-3">
-                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full p-4 rounded-2xl font-black text-xs outline-none"></select>
-                    <button onclick="inverterMoedas()" class="bg-purple-600 w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-md">
+                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-black text-xs outline-none"></select>
+                    <button onclick="inverterMoedas()" class="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-md hover:bg-blue-700 transition-all">
                         <i class="fa-solid fa-right-left text-sm"></i>
                     </button>
-                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full p-4 rounded-2xl font-black text-xs outline-none"></select>
+                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-black text-xs outline-none"></select>
                 </div>
-                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full p-5 rounded-2xl font-black text-4xl text-center text-purple-400 outline-none">
-                <div class="bg-zinc-950 p-8 rounded-[35px] text-white border border-white/5">
-                    <p class="text-purple-400 text-[8px] font-black uppercase mb-1">Resultado Estimado</p>
+                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-5 rounded-2xl font-black text-4xl text-center text-blue-600 outline-none shadow-inner">
+                <div class="bg-slate-900 p-8 rounded-[35px] text-white">
+                    <p class="text-blue-400 text-[8px] font-black uppercase mb-1">Resultado Estimado</p>
                     <h3 class="text-4xl font-black tracking-tighter" id="calcResultDisplay">0,00</h3>
                 </div>
                 <button onclick="lancarCambio()" class="w-full btn-gradient text-white font-black p-4 rounded-2xl uppercase text-[10px] tracking-widest">Lançar no Saldo</button>
@@ -270,34 +231,37 @@
         </section>
 
         <section id="tab-insights" class="hidden p-4 fade-in-up">
-            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Financial <span class="text-purple-500">Insights</span></h2>
+            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Financial <span class="text-blue-600">Insights</span></h2>
             <div id="insights-container" class="max-w-xl mx-auto space-y-4 pb-24"></div>
         </section>
 
         <section id="tab-viagem" class="hidden p-4 text-center fade-in-up">
             <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter">VIP Guide</h2>
             <div class="flex gap-2 overflow-x-auto pb-4 mb-4 no-scrollbar">
-                <button onclick="setGuide('BRL')" class="bg-zinc-900 border border-white/10 px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase text-white">🇧🇷 Brasil</button>
-                <button onclick="setGuide('USD')" class="bg-zinc-900 border border-white/10 px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase text-white">🇺🇸 EUA</button>
-                <button onclick="setGuide('EUR')" class="bg-zinc-900 border border-white/10 px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase text-white">🇪🇺 Europa</button>
+                <button onclick="setGuide('BRL')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇧🇷 Brasil</button>
+                <button onclick="setGuide('USD')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇺🇸 EUA</button>
+                <button onclick="setGuide('EUR')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇪🇺 Europa</button>
+                <button onclick="setGuide('ITA')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇮🇹 Itália</button>
+                <button onclick="setGuide('FRA')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇫🇷 França</button>
+                <button onclick="setGuide('JPN')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇯🇵 Japão</button>
             </div>
             <div id="restaurant-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20 max-w-5xl mx-auto"></div>
         </section>
 
-        <nav class="fixed bottom-0 left-0 right-0 py-5 flex justify-around shadow-2xl z-50">
+        <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 py-5 flex justify-around shadow-2xl z-50">
             <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center tab-active">
                 <i class="fa-solid fa-wallet text-xl"></i>
                 <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Carteira</span>
             </button>
-            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-zinc-600">
+            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-slate-300">
                 <i class="fa-solid fa-money-bill-transfer text-xl"></i>
                 <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Câmbio</span>
             </button>
-            <button onclick="switchTab('insights')" id="nav-insights" class="flex flex-col items-center text-zinc-600">
+            <button onclick="switchTab('insights')" id="nav-insights" class="flex flex-col items-center text-slate-300">
                 <i class="fa-solid fa-chart-pie text-xl"></i>
                 <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Insights</span>
             </button>
-            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-zinc-600">
+            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-slate-300">
                 <i class="fa-solid fa-utensils text-xl"></i>
                 <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Guia VIP</span>
             </button>
@@ -305,7 +269,6 @@
     </div>
 
     <script>
-        // ... (Seu script continua exatamente como você enviou)
         const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "AUD":"Dólar Aus", "CAD":"Dólar Can", "CHF":"Suíço", "ARS":"Peso Arg", "BTC":"Bitcoin" };
 
         const restaurantesDB = {
@@ -374,11 +337,12 @@
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('auth-title').innerHTML = isRegisterMode ? 'Nova Conta' : 'i<span class="text-purple-600">Finance</span>';
+            document.getElementById('auth-title').innerHTML = isRegisterMode ? 'Nova Conta' : 'i<span class="text-blue-600">Finance</span>';
             document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Registrar e Acessar' : 'Acessar Sistema';
             document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já possui conta? Entre agora' : 'Ainda não possui conta? Registre-se';
         }
 
+        // --- SUA FUNÇÃO handleAuth INTEGRADA COM SUCESSO ---
         function handleAuth() {
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value.trim();
@@ -423,30 +387,6 @@
             populateCurrencySelectors();
             populateMonthFilter();
             renderTransactions(); setGuide('BRL');
-        }
-
-        // Funções adicionais necessárias para o funcionamento que você enviou:
-        function addTransaction() {
-            const desc = document.getElementById('desc').value || "SEM DESCRIÇÃO";
-            const amount = rawValues.amountDisplay;
-            const type = document.getElementById('type').value;
-
-            if(amount === 0) return alert("Insira um valor.");
-
-            currentUser.transactions.push({
-                id: Date.now(),
-                text: desc.toUpperCase(),
-                amount: type === 'income' ? amount : -amount,
-                date: new Date().toLocaleDateString('pt-BR'),
-                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
-            });
-
-            save();
-            renderTransactions();
-            populateMonthFilter();
-            document.getElementById('desc').value = '';
-            document.getElementById('amountDisplay').value = '';
-            rawValues.amountDisplay = 0;
         }
 
         async function buscarCotacao() {
@@ -495,16 +435,7 @@
                 
                 const blurClass = ghostMode ? 'blur-val' : '';
 
-                li.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <button onclick="repetirTransacao('${t.text}', ${t.amount})" class="btn-repeat text-sm"><i class="fa-solid fa-rotate"></i></button>
-                        <div>
-                            <p class="font-black text-[10px] text-zinc-300">${t.text}</p>
-                            <p class="text-[7px] text-zinc-500 uppercase">${t.date}</p>
-                        </div>
-                    </div>
-                    <p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}">${formatCurrency(t.amount)}</p>
-                `;
+                li.innerHTML = `<div class="flex items-center gap-3"><button onclick="repetirTransacao('${t.text}', ${t.amount})" class="btn-repeat text-sm"><i class="fa-solid fa-rotate"></i></button><div><p class="font-black text-[10px] text-slate-700">${t.text}</p><p class="text-[7px] text-slate-300 uppercase">${t.date}</p></div></div><p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}">${formatCurrency(t.amount)}</p>`;
                 list.appendChild(li);
             });
 
@@ -512,8 +443,15 @@
             document.getElementById('incomes').innerText = formatCurrency(inc);
             document.getElementById('expenses').innerText = formatCurrency(exp);
 
-            const balanceEl = document.getElementById('balance');
-            ghostMode ? balanceEl.classList.add('blur-val') : balanceEl.classList.remove('blur-val');
+            if(ghostMode) {
+                document.getElementById('balance').classList.add('blur-val');
+                document.getElementById('incomes').classList.add('blur-val');
+                document.getElementById('expenses').classList.add('blur-val');
+            } else {
+                document.getElementById('balance').classList.remove('blur-val');
+                document.getElementById('incomes').classList.remove('blur-val');
+                document.getElementById('expenses').classList.remove('blur-val');
+            }
 
             updateInsights(inc, exp);
         }
@@ -558,17 +496,8 @@
             const percentUsed = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
             const remaining = inc - exp;
             container.innerHTML = `
-                <div class="card-inner p-6 insight-card premium-shadow">
-                    <p class="text-[8px] font-black text-purple-400 uppercase mb-2">Saúde do Orçamento</p>
-                    <h3 class="font-black text-sm mb-1 text-white">Você comprometeu ${percentUsed}% da sua renda.</h3>
-                    <div class="w-full bg-white/5 h-2 rounded-full mt-3">
-                        <div class="bg-purple-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div>
-                    </div>
-                </div>
-                <div class="card-inner p-6 insight-card premium-shadow border-l-emerald-500">
-                    <p class="text-[8px] font-black text-emerald-500 uppercase mb-2">Disponibilidade Real</p>
-                    <h3 class="font-black text-sm text-white">Seu saldo líquido: ${formatCurrency(remaining)}.</h3>
-                </div>
+                <div class="card-inner p-6 insight-card premium-shadow"><p class="text-[8px] font-black text-blue-600 uppercase mb-2">Saúde do Orçamento</p><h3 class="font-black text-sm mb-1">Você comprometeu ${percentUsed}% da sua renda.</h3><div class="w-full bg-slate-100 h-2 rounded-full mt-3"><div class="bg-blue-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div></div></div>
+                <div class="card-inner p-6 insight-card premium-shadow border-l-emerald-500"><p class="text-[8px] font-black text-emerald-500 uppercase mb-2">Disponibilidade Real</p><h3 class="font-black text-sm">Seu saldo líquido: ${formatCurrency(remaining)}.</h3></div>
             `;
         }
 
@@ -576,11 +505,10 @@
             ['home', 'cambio', 'viagem', 'insights'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).classList.remove('tab-active');
-                document.getElementById(`nav-${t}`).classList.add('text-zinc-600');
+                document.getElementById(`nav-${t}`).classList.add('text-slate-300');
             });
             document.getElementById(`tab-${tab}`).classList.remove('hidden');
             document.getElementById(`nav-${tab}`).classList.add('tab-active');
-            document.getElementById(`nav-${tab}`).classList.remove('text-zinc-600');
         }
 
         function setGuide(reg) {
@@ -589,25 +517,52 @@
             (restaurantesDB[reg] || []).forEach(r => {
                 const div = document.createElement('div');
                 div.className = "card-inner p-5 text-left premium-shadow fade-in-up";
-                div.innerHTML = `
-                    <div class="text-2xl mb-3">${r.icone}</div>
-                    <h4 class="font-black text-[11px] text-white">${r.nome}</h4>
-                    <p class="text-[8px] font-bold text-purple-400 uppercase mb-2">${r.cidade} • ${r.tipo}</p>
-                    <p class="text-[9px] text-zinc-500">${r.desc}</p>
-                `;
+                div.innerHTML = `<div class="text-2xl mb-3">${r.icone}</div><h4 class="font-black text-[11px]">${r.nome}</h4><p class="text-[8px] font-bold text-blue-600 mb-1">${r.cidade} • ${r.tipo}</p><p class="text-[9px] text-slate-400 font-medium">${r.desc}</p>`;
                 container.appendChild(div);
             });
         }
 
-        // Auto-login session
+        function addTransaction() {
+            const descInput = document.getElementById('desc').value.trim();
+            const val = rawValues.amountDisplay;
+            if (val === 0) return;
+            const finalDesc = descInput === "" ? " — " : descInput.toUpperCase();
+            const finalVal = (document.getElementById('type').value === 'expense') ? -val : val;
+            
+            currentUser.transactions.push({ 
+                id: Date.now(), 
+                text: finalDesc, 
+                amount: finalVal, 
+                date: new Date().toLocaleDateString('pt-BR'),
+                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
+            });
+            
+            save(); populateMonthFilter(); renderTransactions();
+            document.getElementById('desc').value = ''; rawValues.amountDisplay = 0;
+            document.getElementById('amountDisplay').value = formatCurrency(0);
+        }
+
+        function lancarCambio() {
+            const val = rawValues.calcValueDisplay; if(val <= 0) return;
+            const resText = document.getElementById('calcResultDisplay').innerText;
+            const from = document.getElementById('fromCurrency').value;
+            const to = document.getElementById('toCurrency').value;
+            
+            currentUser.transactions.push({
+                id: Date.now(),
+                text: `CÂMBIO: ${from} ➔ ${to}`,
+                amount: parseFloat(resText.replace(/[^\d,-]/g, '').replace(',', '.')),
+                date: new Date().toLocaleDateString('pt-BR'),
+                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
+            });
+            save(); renderTransactions(); switchTab('home');
+        }
+
         window.onload = () => {
-            const session = localStorage.getItem('iFinance_session');
-            if(session) {
-                const saved = localStorage.getItem(`user_${session}`);
-                if(saved) {
-                    currentUser = { ...JSON.parse(saved), email: session };
-                    entrarApp();
-                }
+            const savedEmail = localStorage.getItem('iFinance_session');
+            if (savedEmail) {
+                const userData = localStorage.getItem(`user_${savedEmail}`);
+                if (userData) { currentUser = { ...JSON.parse(userData), email: savedEmail }; entrarApp(); }
             }
         };
     </script>
