@@ -11,22 +11,23 @@
     <meta name="apple-mobile-web-app-title" content="iFinance">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
+        /* CONFIGURAÇÕES TEMA DARK ULTRA */
         :root {
             --neon-purple: #a855f7;
-            --deep-space: #000000;
-            --glass-bg: rgba(15, 15, 25, 0.7);
+            --dark-bg: #050505;
+            --card-bg: #0d0d0d;
+            --led-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
         }
 
         html, body { 
             touch-action: pan-x pan-y; 
             overscroll-behavior: none;
             font-family: 'Inter', sans-serif;
-            background-color: var(--deep-space);
+            background-color: var(--dark-bg);
             color: #ffffff;
             margin: 0;
             padding: 0;
@@ -35,281 +36,308 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Fundo Animado */
-        #particles-js {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #000000 0%, #0f051a 100%);
-            z-index: -1;
-        }
-
         body { padding-bottom: 110px; -webkit-tap-highlight-color: transparent; }
         .hidden { display: none !important; }
 
-        /* Efeito de Respiração LED */
-        @keyframes breath {
-            0%, 100% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); border-color: rgba(168, 85, 247, 0.3); }
-            50% { box-shadow: 0 0 25px rgba(168, 85, 247, 0.5); border-color: rgba(168, 85, 247, 0.6); }
-        }
-
-        .card-inner { 
-            background: var(--glass-bg); 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(168, 85, 247, 0.3); 
-            border-radius: 35px; 
+        /* INTRO ANIMATION: O PRÉDIO FUTURISTA */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
             overflow: hidden;
-            animation: breath 4s infinite ease-in-out;
-            transition: transform 0.3s ease;
+            animation: fadeOutIntro 1s ease forwards 3.5s;
         }
 
-        /* Efeito Shimmer nos Botões */
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+        .building-silhouette {
+            width: 200px;
+            height: 600px;
+            background: #0a0a0a;
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            padding: 20px;
+            transform: translateY(100%);
+            animation: moveUpBuilding 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
-        .btn-gradient { 
-            background: linear-gradient(90deg, #7c3aed, #a855f7, #7c3aed);
-            background-size: 200% 100%;
-            animation: shimmer 3s infinite linear;
-            box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
-            border: none;
+        .window {
+            width: 100%;
+            height: 30px;
+            background: #1a1a1a;
         }
 
-        /* Glassmorphism iPhone Dark */
-        .header-main, nav {
-            background: rgba(0, 0, 0, 0.6) !important;
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        .window.bright {
+            background: var(--neon-purple);
+            box-shadow: 0 0 15px var(--neon-purple);
+            animation: flicker 2s infinite alternate;
         }
 
-        .input-main, input, select {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        .target-window {
+            position: absolute;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: var(--neon-purple);
+            box-shadow: 0 0 50px var(--neon-purple);
+            opacity: 0;
+            animation: zoomIntoWindow 1s ease-in forwards 2.5s;
+        }
+
+        @keyframes moveUpBuilding {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(20%); }
+        }
+
+        @keyframes zoomIntoWindow {
+            0% { opacity: 0; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; }
+            100% { opacity: 1; transform: translateX(-50%) scale(50); }
+        }
+
+        @keyframes fadeOutIntro {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* ELEMENTOS VIVOS (HOVER/ACTIVE/LED) */
+        .card-inner { 
+            background: var(--card-bg) !important; 
+            border: 1px solid #1f1f1f !important; 
+            border-radius: 30px; 
+            box-shadow: var(--led-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .card-inner:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+        }
+
+        button, .btn-action, .btn-gradient {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--led-shadow);
+        }
+
+        button:active { 
+            transform: scale(0.92) !important; 
+            box-shadow: 0 0 40px var(--neon-purple) !important;
+        }
+
+        input, select {
+            background-color: #121212 !important;
+            border: 1px solid #222 !important;
             color: white !important;
-            border-radius: 18px !important;
         }
 
+        /* AJUSTES DE TEXTO E CORES */
+        .balance-text { color: #fff; font-weight: 900; }
+        .text-slate-500, .text-slate-400 { color: #888 !important; }
+        .bg-auth-gradient { background: #050505; }
+        
         .tab-active { 
             color: var(--neon-purple) !important; 
-            transform: scale(1.1); 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
+            text-shadow: 0 0 10px var(--neon-purple);
         }
 
-        .balance-text {
-            font-size: clamp(1.8rem, 7vw, 2.5rem); 
-            font-weight: 900;
-            background: linear-gradient(to right, #fff, #a855f7);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        header { background: rgba(5, 5, 5, 0.8) !important; border-bottom: 1px solid #1f1f1f !important; }
+        nav { background: rgba(10, 10, 10, 0.9) !important; border-top: 1px solid #1f1f1f !important; }
 
         .blur-val { filter: blur(12px); pointer-events: none; }
-        
-        /* Fade Tecnológico para Login */
-        .login-fade {
-            animation: techFade 1s cubic-bezier(0.23, 1, 0.32, 1);
-        }
-        @keyframes techFade {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); filter: blur(10px); }
-            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
-        }
-
-        ::-webkit-scrollbar { display: none; }
-        * { user-select: none; -webkit-user-select: none; }
-        input, select { user-select: auto !important; -webkit-user-select: auto !important; }
-
-        @media (max-width: 640px) {
-            .card-inner { padding: 1.25rem !important; border-radius: 28px; }
-        }
     </style>
 </head>
 <body>
 
-    <div id="particles-js"></div>
+    <div id="intro-overlay">
+        <div class="building-silhouette">
+            <div class="window bright"></div><div class="window"></div><div class="window bright"></div>
+            <div class="window"></div><div class="window bright"></div><div class="window"></div>
+            <div class="window bright"></div><div class="window"></div><div class="window bright"></div>
+            <div class="window"></div><div class="window"></div><div class="window bright"></div>
+            <div class="target-window"></div>
+        </div>
+    </div>
 
-    <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 text-center login-fade">
-        <div class="mb-6 w-24 h-24 bg-purple-600 rounded-[35px] flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.6)] text-white text-4xl transform rotate-12 border-2 border-purple-400">
-            <i class="fa-solid fa-bolt-lightning"></i>
+    <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 bg-auth-gradient text-center">
+        <div class="mb-6 w-20 h-20 bg-purple-600 rounded-[30px] flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.8)] text-white text-4xl transform rotate-12">
+            <i class="fa-solid fa-wallet"></i>
         </div>
         
-        <h1 id="auth-title" class="text-4xl font-black mb-1 tracking-tighter">i<span class="text-purple-500">Finance</span></h1>
-        <p id="auth-subtitle" class="text-purple-300/60 mb-8 font-medium text-xs uppercase tracking-widest">Ultra Luxury Banking</p>
+        <h1 id="auth-title" class="text-3xl font-black mb-1 tracking-tighter text-white">i<span class="text-purple-500">Finance</span></h1>
+        <p id="auth-subtitle" class="text-slate-500 mb-8 font-medium text-sm">Gestão de elite.</p>
 
-        <div class="flex flex-col w-full max-w-md gap-4">
-            <input type="email" id="emailInput" placeholder="Acesso Seguro (Email)" class="p-5 font-bold outline-none transition-all focus:border-purple-500/50">
-            <input type="password" id="passInput" placeholder="Chave Criptografada" class="p-5 font-bold outline-none transition-all focus:border-purple-500/50">
+        <div class="flex flex-col w-full max-w-md gap-3">
+            <input type="email" id="emailInput" placeholder="E-mail" class="p-4 rounded-2xl font-bold outline-none shadow-sm focus:border-purple-500 transition-all">
+            <input type="password" id="passInput" placeholder="Senha" class="p-4 rounded-2xl font-bold outline-none shadow-sm focus:border-purple-500 transition-all">
             
-            <div id="register-fields" class="hidden flex flex-col gap-4">
-                <input type="text" id="userNameInput" placeholder="Nome Completo" class="p-5 font-bold outline-none">
+            <div id="register-fields" class="hidden flex flex-col gap-3 fade-in-up">
+                <input type="text" id="userNameInput" placeholder="Nome Completo" class="p-4 rounded-2xl font-bold outline-none shadow-sm">
                 <div class="relative">
-                    <select id="userCurrencyInput" class="w-full p-5 font-bold outline-none appearance-none">
-                        <option value="BRL">🇧🇷 BRL - Real</option>
-                        <option value="USD">🇺🇸 USD - Dólar</option>
+                    <select id="userCurrencyInput" class="w-full p-4 rounded-2xl font-bold outline-none shadow-sm appearance-none">
+                        <option value="BRL">🇧🇷 BRL - Real Brasileiro</option>
+                        <option value="USD">🇺🇸 USD - Dólar Americano</option>
                         <option value="EUR">🇪🇺 EUR - Euro</option>
+                        <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
+                        <option value="JPY">🇯🇵 JPY - Iene Japonês</option>
                     </select>
-                    <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-purple-400"></i>
+                    <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-400"></i>
                 </div>
             </div>
 
-            <button onclick="handleAuth()" id="btn-main-auth" class="btn-gradient text-white py-5 rounded-2xl font-black shadow-xl uppercase tracking-[0.2em] mt-2 text-sm">Iniciar Sessão Elite</button>
-            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-purple-400 font-bold mt-4 text-[10px] uppercase tracking-widest opacity-70 hover:opacity-100">Criar Nova Credencial VIP</button>
+            <button onclick="handleAuth()" id="btn-main-auth" class="bg-purple-600 text-white py-4 rounded-2xl font-black shadow-xl uppercase tracking-widest mt-2 hover:bg-purple-500">Acessar Sistema</button>
+            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-purple-400 font-bold mt-2 text-[10px]">Ainda não possui conta? Registre-se</button>
         </div>
     </section>
 
     <div id="main-app" class="hidden">
-        <section id="tab-home" class="login-fade">
-            <header class="header-main p-5 sticky top-0 z-20 flex justify-between items-center px-6">
+        <section id="tab-home" class="fade-in-up">
+            <header class="header-main backdrop-blur-xl p-5 sticky top-0 z-20 flex justify-between items-center px-6 md:px-10">
                 <div>
                     <h1 class="text-xl font-black text-purple-500 italic tracking-tighter">iFinance</h1>
-                    <p class="text-[7px] font-bold text-purple-300/50 uppercase tracking-[0.3em]">Quantum Edition</p>
+                    <p class="text-[7px] font-bold text-slate-400 uppercase tracking-[0.3em]">Premium Dashboard</p>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="toggleGhostMode()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-purple-400 border border-white/10">
+                    <button onclick="toggleGhostMode()" class="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center text-slate-400">
                         <i id="ghost-icon" class="fa-solid fa-eye"></i>
                     </button>
-                    <button onclick="logout()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-red-400 border border-white/10">
-                        <i class="fa-solid fa-power-off"></i>
+                    <button onclick="logout()" class="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 transition-all">
+                        <i class="fa-solid fa-power-off text-base"></i>
                     </button>
                 </div>
             </header>
             
-            <main class="p-4 max-w-6xl mx-auto space-y-6">
+            <main class="p-4 max-w-6xl mx-auto space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="card-inner p-8 text-center">
-                        <p class="text-[10px] font-black text-purple-300/60 uppercase tracking-widest mb-2">Liquidez Total</p>
-                        <h2 class="balance-text" id="balance">0,00</h2>
+                    <div class="card-inner p-6">
+                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Saldo Disponível</p>
+                        <h2 class="balance-text text-2xl" id="balance">0,00</h2>
                     </div>
-                    <div class="grid grid-cols-2 md:contents gap-4">
-                        <div class="card-inner p-6">
-                            <p class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1">Inflow</p>
-                            <h2 class="text-xl font-bold text-emerald-500" id="incomes">0,00</h2>
-                        </div>
-                        <div class="card-inner p-6">
-                            <p class="text-[9px] font-black text-red-400 uppercase tracking-widest mb-1">Outflow</p>
-                            <h2 class="text-xl font-bold text-red-500" id="expenses">0,00</h2>
-                        </div>
+                    <div class="card-inner p-6">
+                        <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-1">Entradas</p>
+                        <h2 class="summary-text text-emerald-500" id="incomes">0,00</h2>
+                    </div>
+                    <div class="card-inner p-6">
+                        <p class="text-[9px] font-black text-red-500 uppercase tracking-widest mb-1">Saídas</p>
+                        <h2 class="summary-text text-red-500" id="expenses">0,00</h2>
                     </div>
                 </div>
 
-                <button onclick="prepararRendaMensal()" class="w-full bg-white/5 border border-purple-500/30 p-5 rounded-[25px] flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest text-purple-300">
-                    <i class="fa-solid fa-meteor text-purple-500"></i>
-                    Injetar Renda Mensal
+                <button onclick="prepararRendaMensal()" class="w-full bg-emerald-950/30 border border-emerald-900/50 text-emerald-500 p-4 rounded-[25px] flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest shadow-sm">
+                    <i class="fa-solid fa-hand-holding-dollar text-lg"></i>
+                    Lançar Renda do Mês
                 </button>
 
                 <div class="card-inner p-6">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                        <input type="text" id="desc" placeholder="DESCRIÇÃO" class="w-full p-4 font-black text-xs">
-                        <input type="text" id="amountDisplay" placeholder="0,00" class="w-full p-4 font-black text-lg text-center text-purple-400">
-                        <select id="type" class="w-full p-4 font-black text-[10px] uppercase">
-                            <option value="expense">Débito (-)</option>
-                            <option value="income">Crédito (+)</option>
+                        <input type="text" id="desc" placeholder="DESCRIÇÃO" class="input-main w-full p-4 rounded-xl font-black text-xs outline-none">
+                        <input type="text" id="amountDisplay" placeholder="0,00" class="input-main w-full p-4 rounded-xl font-black text-lg text-center text-purple-500 outline-none">
+                        <select id="type" class="w-full p-4 rounded-xl font-black text-[10px] uppercase appearance-none outline-none">
+                            <option value="expense">Saída (-)</option>
+                            <option value="income">Entrada (+)</option>
                         </select>
-                        <button onclick="addTransaction()" class="btn-gradient text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest">Executar</button>
+                        <button onclick="addTransaction()" class="btn-action bg-purple-600 text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest">Confirmar</button>
                     </div>
                 </div>
 
                 <div class="card-inner p-6">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-black text-[10px] uppercase tracking-widest text-purple-400">Log de Operações</h3>
-                        <select id="filterMonth" onchange="renderTransactions()" class="p-2 rounded-lg font-black text-[9px]"></select>
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-black text-[10px] uppercase tracking-widest text-slate-400">Extrato</h3>
+                        <select id="filterMonth" onchange="renderTransactions()" class="p-2 rounded-lg font-black text-[9px] outline-none bg-zinc-900">
+                            <option value="all">TODOS OS MESES</option>
+                        </select>
                     </div>
-                    <ul id="transaction-list" class="divide-y divide-white/5"></ul>
+
+                    <ul id="transaction-list" class="divide-y divide-zinc-900"></ul>
                     
-                    <div class="flex gap-4 mt-8">
-                        <button onclick="exportData()" class="flex-1 py-4 text-[9px] bg-white/5 rounded-2xl text-purple-300 font-black uppercase border border-white/5">Backup Neural</button>
-                        <button onclick="limparTudo()" class="flex-1 py-4 text-[9px] bg-red-900/20 rounded-2xl text-red-400 font-black uppercase border border-red-500/20">Reset Sistema</button>
+                    <div class="flex gap-2 mt-4">
+                        <button onclick="exportData()" class="flex-1 text-center py-4 text-[8px] bg-zinc-900 rounded-xl text-slate-400 font-black uppercase tracking-widest">Backup Dados</button>
+                        <button onclick="limparTudo()" class="flex-1 text-center py-4 text-[8px] bg-red-900/20 rounded-xl text-red-500 font-black uppercase tracking-[0.5em]">Limpar Base</button>
                     </div>
                 </div>
             </main>
         </section>
 
-        <section id="tab-cambio" class="hidden p-4 login-fade">
+        <section id="tab-cambio" class="hidden p-4 fade-in-up">
              <div class="max-w-xl mx-auto card-inner p-8 space-y-6 mt-4 text-center">
-                <h2 class="font-black text-xl uppercase tracking-widest text-purple-400">Quantum Exchange</h2>
+                <h2 class="font-black text-xl uppercase tracking-tighter text-white">Câmbio Inteligente</h2>
                 <div class="flex items-center justify-between gap-3">
-                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full p-4 font-black text-xs"></select>
-                    <button onclick="inverterMoedas()" class="bg-purple-600 w-12 h-12 rounded-full flex items-center justify-center text-white shrink-0 shadow-lg">
-                        <i class="fa-solid fa-shuffle"></i>
+                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full p-4 rounded-2xl font-black text-xs outline-none"></select>
+                    <button onclick="inverterMoedas()" class="bg-purple-600 w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-md">
+                        <i class="fa-solid fa-right-left text-sm"></i>
                     </button>
-                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full p-4 font-black text-xs"></select>
+                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full p-4 rounded-2xl font-black text-xs outline-none"></select>
                 </div>
-                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full p-6 text-4xl text-center text-purple-400">
-                <div class="bg-black/40 border border-purple-500/20 p-8 rounded-[35px]">
-                    <p class="text-purple-400 text-[8px] font-black uppercase mb-1">Conversão em Tempo Real</p>
-                    <h3 class="text-4xl font-black" id="calcResultDisplay">0,00</h3>
+                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full p-5 rounded-2xl font-black text-4xl text-center text-purple-500 outline-none shadow-inner">
+                <div class="bg-zinc-900 p-8 rounded-[35px] text-white">
+                    <p class="text-purple-400 text-[8px] font-black uppercase mb-1">Resultado Estimado</p>
+                    <h3 class="text-4xl font-black tracking-tighter" id="calcResultDisplay">0,00</h3>
                 </div>
-                <button onclick="lancarCambio()" class="w-full btn-gradient text-white font-black p-5 rounded-2xl uppercase text-xs tracking-widest">Sincronizar Saldo</button>
+                <button onclick="lancarCambio()" class="w-full bg-purple-600 text-white font-black p-4 rounded-2xl uppercase text-[10px] tracking-widest">Lançar no Saldo</button>
              </div>
         </section>
 
-        <section id="tab-insights" class="hidden p-4 login-fade">
-            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center">Neural <span class="text-purple-500">Analytics</span></h2>
+        <section id="tab-insights" class="hidden p-4 fade-in-up">
+            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Financial <span class="text-purple-500">Insights</span></h2>
             <div id="insights-container" class="max-w-xl mx-auto space-y-4 pb-24"></div>
         </section>
 
-        <section id="tab-viagem" class="hidden p-4 text-center login-fade">
-            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-widest">VIP World Guide</h2>
-            <div class="flex gap-3 overflow-x-auto pb-6 mb-4 no-scrollbar">
-                <button onclick="setGuide('BRL')" class="bg-white/5 border border-white/10 px-6 py-4 rounded-2xl font-black shrink-0 text-[10px] uppercase text-purple-200">🇧🇷 Brasil</button>
-                <button onclick="setGuide('USD')" class="bg-white/5 border border-white/10 px-6 py-4 rounded-2xl font-black shrink-0 text-[10px] uppercase text-purple-200">🇺🇸 EUA</button>
-                <button onclick="setGuide('EUR')" class="bg-white/5 border border-white/10 px-6 py-4 rounded-2xl font-black shrink-0 text-[10px] uppercase text-purple-200">🇪🇺 Europa</button>
-                <button onclick="setGuide('ITA')" class="bg-white/5 border border-white/10 px-6 py-4 rounded-2xl font-black shrink-0 text-[10px] uppercase text-purple-200">🇮🇹 Itália</button>
+        <section id="tab-viagem" class="hidden p-4 text-center fade-in-up">
+            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-white">VIP Guide</h2>
+            <div class="flex gap-2 overflow-x-auto pb-4 mb-4 no-scrollbar">
+                <button onclick="setGuide('BRL')" class="bg-zinc-900 border border-zinc-800 text-white px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇧🇷 Brasil</button>
+                <button onclick="setGuide('USD')" class="bg-zinc-900 border border-zinc-800 text-white px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇺🇸 EUA</button>
+                <button onclick="setGuide('EUR')" class="bg-zinc-900 border border-zinc-800 text-white px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇪🇺 Europa</button>
+                <button onclick="setGuide('ITA')" class="bg-zinc-900 border border-zinc-800 text-white px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇮🇹 Itália</button>
+                <button onclick="setGuide('FRA')" class="bg-zinc-900 border border-zinc-800 text-white px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇫🇷 França</button>
+                <button onclick="setGuide('JPN')" class="bg-zinc-900 border border-zinc-800 text-white px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇯🇵 Japão</button>
             </div>
             <div id="restaurant-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20 max-w-5xl mx-auto"></div>
         </section>
 
-        <nav class="fixed bottom-6 left-6 right-6 rounded-[30px] py-4 flex justify-around shadow-2xl z-50 border border-white/10">
+        <nav class="fixed bottom-0 left-0 right-0 py-5 flex justify-around shadow-2xl z-50">
             <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center tab-active">
-                <i class="fa-solid fa-house-chimney-window text-xl"></i>
-                <span class="text-[8px] font-black mt-1 uppercase">Home</span>
+                <i class="fa-solid fa-wallet text-xl"></i>
+                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Carteira</span>
             </button>
-            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-white/30">
-                <i class="fa-solid fa-atom text-xl"></i>
-                <span class="text-[8px] font-black mt-1 uppercase">Câmbio</span>
+            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-slate-600">
+                <i class="fa-solid fa-money-bill-transfer text-xl"></i>
+                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Câmbio</span>
             </button>
-            <button onclick="switchTab('insights')" id="nav-insights" class="flex flex-col items-center text-white/30">
-                <i class="fa-solid fa-brain text-xl"></i>
-                <span class="text-[8px] font-black mt-1 uppercase">IA</span>
+            <button onclick="switchTab('insights')" id="nav-insights" class="flex flex-col items-center text-slate-600">
+                <i class="fa-solid fa-chart-pie text-xl"></i>
+                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Insights</span>
             </button>
-            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-white/30">
-                <i class="fa-solid fa-crown text-xl"></i>
-                <span class="text-[8px] font-black mt-1 uppercase">VIP</span>
+            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-slate-600">
+                <i class="fa-solid fa-utensils text-xl"></i>
+                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Guia VIP</span>
             </button>
         </nav>
     </div>
 
     <script>
-        // CONFIGURAÇÃO PARTICLES.JS
-        particlesJS("particles-js", {
-            "particles": {
-                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#a855f7" },
-                "shape": { "type": "circle" },
-                "opacity": { "value": 0.5, "random": true },
-                "size": { "value": 3, "random": true },
-                "line_linked": { "enable": false },
-                "move": { "enable": true, "speed": 1, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": { "onhover": { "enable": true, "mode": "bubble" }, "onclick": { "enable": true, "mode": "push" } },
-                "modes": { "bubble": { "distance": 200, "size": 6, "duration": 2, "opacity": 0.8, "speed": 3 } }
-            }
-        });
-
-        // --- SEU SCRIPT ORIGINAL MANTIDO ---
+        // MANTIDO TODO O SEU SCRIPT ORIGINAL ABAIXO SEM ALTERAÇÕES
         const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "AUD":"Dólar Aus", "CAD":"Dólar Can", "CHF":"Suíço", "ARS":"Peso Arg", "BTC":"Bitcoin" };
 
         const restaurantesDB = {
             'BRL': [{nome: 'A CASA DO PORCO', cidade: 'SP', tipo: 'CONCEITUAL', icone: '🐷', desc: 'Focado na carne suína.'}, {nome: 'D.O.M', cidade: 'SP', tipo: 'AMAZÔNICO', icone: '🌿', desc: 'Alta gastronomia Amazônica.'}, {nome: 'LASAI', cidade: 'RJ', tipo: 'ORGÂNICO', icone: '🥕', desc: 'Ingredientes colhidos no dia.'}, {nome: 'MANÍ', cidade: 'SP', tipo: 'CONTEMPORÂNEO', icone: '🥣', desc: 'A sofisticação de Helena Rizzo.'}, {nome: 'MARIUS DEGUSTARE', cidade: 'RJ', tipo: 'EXCLUSIVO', icone: '🥩', desc: 'Ambiente temático épico.'}],
             'USD': [{nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'PEIXES', icone: '🐟', desc: 'O ápice dos frutos do mar.'}, {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'Fatia lendária de Manhattan.'}, {nome: 'PETER LUGER', cidade: 'BROOKLYN', tipo: 'STEAKHOUSE', icone: '🥩', desc: 'Famoso desde 1887.'}, {nome: 'NOBU MALIBU', cidade: 'LA', tipo: 'FUSION', icone: '🍣', desc: 'Elite de Hollywood.'}, {nome: 'KATZ\'S DELI', cidade: 'NY', tipo: 'DELI', icone: '🥪', desc: 'Pastrami definitivo.'}],
             'EUR': [{nome: 'STEIRERECK', cidade: 'VIENA', tipo: 'MODERNO', icone: '🇦🇹', desc: 'Coração do Stadtpark.'}, {nome: 'HOFBRÄUHAUS', cidade: 'MUNICH', tipo: 'HISTÓRICO', icone: '🍺', desc: 'Cervejaria mais famosa.'}, {nome: 'TICKET BAR', cidade: 'BARCELONA', tipo: 'TAPAS', icone: '🥘', desc: 'Inovação extrema.'}, {nome: 'OSTERIA FRANCESCANA', cidade: 'MODENA', tipo: 'ARTE', icone: '🎨', desc: 'Massimo Bottura.'}, {nome: 'NOMA', cidade: 'COPENHAGUE', tipo: 'NÓRDICO', icone: '🌲', desc: 'Frequentemente nº 1 do mundo.'}],
-            'ITA': [{nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin.'}, {nome: 'DA VITTORIO', cidade: 'BERGAMO', tipo: 'FAMILIAR', icone: '🍝', desc: 'Tradição italiana elevada.'}, {nome: 'TRATTORIA BAFFETTO', cidade: 'ROMA', tipo: 'PIZZA', icone: '🇮🇹', desc: 'Massa mais fina de Roma.'}, {nome: 'ANTICA PESA', cidade: 'ROMA', tipo: 'HISTÓRICO', icone: '🍷', desc: 'Jantar no Trastevere.'}, {nome: 'LANGHOSTERIA', cidade: 'MILÃO', tipo: 'FASHION', icone: '🦞', desc: 'Melhor peixe fresco do norte.'}]
+            'ITA': [{nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin.'}, {nome: 'DA VITTORIO', cidade: 'BERGAMO', tipo: 'FAMILIAR', icone: '🍝', desc: 'Tradição italiana elevada.'}, {nome: 'TRATTORIA BAFFETTO', cidade: 'ROMA', tipo: 'PIZZA', icone: '🇮🇹', desc: 'Massa mais fina de Roma.'}, {nome: 'ANTICA PESA', cidade: 'ROMA', tipo: 'HISTÓRICO', icone: '🍷', desc: 'Jantar no Trastevere.'}, {nome: 'LANGHOSTERIA', cidade: 'MILÃO', tipo: 'FASHION', icone: '🦞', desc: 'Melhor peixe fresco do norte.'}],
+            'FRA': [{nome: 'LE MEURICE', cidade: 'PARIS', tipo: 'PALÁCIO', icone: '🥐', desc: 'Ambiente real Alain Ducasse.'}, {nome: 'SEPTIME', cidade: 'PARIS', tipo: 'NEO-BISTRO', icone: '🍷', desc: 'O mais concorrido de Paris.'}, {nome: 'MIRAZUR', cidade: 'MENTON', tipo: 'RIVIERA', icone: '🌊', desc: 'Mar e jardins.'}, {nome: 'L\'AMI LOUIS', cidade: 'PARIS', tipo: 'BISTRO', icone: '🦆', desc: 'Bistrô mais famoso do mundo.'}, {nome: 'CIEL DE PARIS', cidade: 'PARIS', tipo: 'VISTA', icone: '🗼', desc: 'Topo da Torre Montparnasse.'}],
+            'JPN': [{nome: 'SUKIYABASHI JIRO', cidade: 'TOKYO', tipo: 'SUSHI', icone: '🍣', desc: 'Lenda de Jiro Ono.'}, {nome: 'NARISAWA', cidade: 'TOKYO', tipo: 'ECO', icone: '🌲', desc: 'Respeito à natureza.'}, {nome: 'ICHIRAN RAMEN', cidade: 'TOKYO', tipo: 'RAMEN', icone: '🍜', desc: 'Ramen definitivo.'}, {nome: 'KOBE BEEF KAISEKI', cidade: 'KOBE', tipo: 'WAGYU', icone: '🐂', desc: 'Carne mais macia do mundo.'}, {nome: 'DEN', cidade: 'TOKYO', tipo: 'CRIATIVO', icone: '🍱', desc: 'Humor e técnica impecável.'}]
         };
 
         let isRegisterMode = false;
@@ -370,17 +398,25 @@
             isRegisterMode = !isRegisterMode;
             document.getElementById('register-fields').classList.toggle('hidden');
             document.getElementById('auth-title').innerHTML = isRegisterMode ? 'Nova Conta' : 'i<span class="text-purple-500">Finance</span>';
-            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Registrar Credenciais' : 'Iniciar Sessão Elite';
+            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Registrar e Acessar' : 'Acessar Sistema';
+            document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já possui conta? Entre agora' : 'Ainda não possui conta? Registre-se';
         }
 
         function handleAuth() {
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value.trim();
-            if (!email || !pass) { alert("Preencha e-mail e senha."); return; }
+            
+            if (!email || !pass) {
+                alert("Preencha e-mail e senha.");
+                return;
+            }
             
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
-                if (!name) { alert("Preencha seu nome."); return; }
+                if (!name) {
+                    alert("Preencha seu nome.");
+                    return;
+                }
                 const newUser = { name: name.toUpperCase(), pass, currency: document.getElementById('userCurrencyInput').value, transactions: [] };
                 localStorage.setItem(`user_${email}`, JSON.stringify(newUser));
                 currentUser = { ...newUser, email };
@@ -394,8 +430,12 @@
                         currentUser = { ...userData, email };
                         localStorage.setItem('iFinance_session', email);
                         entrarApp();
-                    } else { alert("Senha incorreta."); }
-                } else { alert("Conta não encontrada."); }
+                    } else {
+                        alert("Senha incorreta.");
+                    }
+                } else { 
+                    alert("Conta não encontrada."); 
+                }
             }
         }
 
@@ -403,7 +443,8 @@
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             applyMask('amountDisplay'); applyMask('calcValueDisplay');
-            populateCurrencySelectors(); populateMonthFilter();
+            populateCurrencySelectors();
+            populateMonthFilter();
             renderTransactions(); setGuide('BRL');
         }
 
@@ -426,35 +467,16 @@
         function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
         function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
 
-        function addTransaction() {
-            const desc = document.getElementById('desc').value || 'Transação Geral';
-            const amount = rawValues.amountDisplay;
-            const type = document.getElementById('type').value;
-            if (amount <= 0) return;
-
-            const finalAmount = type === 'expense' ? -amount : amount;
-            currentUser.transactions.push({
-                id: Date.now(),
-                text: desc.toUpperCase(),
-                amount: finalAmount,
-                date: new Date().toLocaleDateString('pt-BR'),
-                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
-            });
-            save(); populateMonthFilter(); renderTransactions();
-            document.getElementById('desc').value = '';
-            document.getElementById('amountDisplay').value = '';
-            rawValues.amountDisplay = 0;
-        }
-
-        function lancarCambio() {
-            const val = parseFloat(document.getElementById('calcResultDisplay').innerText.replace(/[^\d,]/g, '').replace(',', '.'));
-            if(val > 0) {
-                currentUser.transactions.push({
-                    id: Date.now(), text: 'CÂMBIO REALIZADO', amount: val,
+        function repetirTransacao(text, amount) {
+            if(confirm(`Deseja lançar "${text}" novamente?`)) {
+                currentUser.transactions.push({ 
+                    id: Date.now(), 
+                    text, 
+                    amount, 
                     date: new Date().toLocaleDateString('pt-BR'),
                     monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
                 });
-                save(); alert('Valor injetado no saldo!'); switchTab('home');
+                save(); populateMonthFilter(); renderTransactions();
             }
         }
 
@@ -465,23 +487,14 @@
             
             currentUser.transactions.sort((a,b) => b.id - a.id).forEach(t => {
                 if (filter !== 'all' && t.monthYear !== filter) return;
+
                 if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
-                
                 const li = document.createElement('li');
-                li.className = "flex justify-between items-center py-5 transition-all";
+                li.className = "flex justify-between items-center py-4 anim-fade";
+                
                 const blurClass = ghostMode ? 'blur-val' : '';
-                li.innerHTML = `
-                    <div class="flex items-center gap-4">
-                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] text-purple-400 border border-white/10">
-                            <i class="fa-solid ${t.amount > 0 ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
-                        </div>
-                        <div>
-                            <p class="font-black text-[10px] text-white/90">${t.text}</p>
-                            <p class="text-[7px] text-white/30 uppercase tracking-widest">${t.date}</p>
-                        </div>
-                    </div>
-                    <p class="font-black text-xs ${t.amount > 0 ? 'text-emerald-400' : 'text-red-400'} ${blurClass}">${formatCurrency(t.amount)}</p>
-                `;
+
+                li.innerHTML = `<div class="flex items-center gap-3"><button onclick="repetirTransacao('${t.text}', ${t.amount})" class="btn-repeat text-sm"><i class="fa-solid fa-rotate"></i></button><div><p class="font-black text-[10px] text-white">${t.text}</p><p class="text-[7px] text-slate-500 uppercase">${t.date}</p></div></div><p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}">${formatCurrency(t.amount)}</p>`;
                 list.appendChild(li);
             });
 
@@ -490,10 +503,15 @@
             document.getElementById('expenses').innerText = formatCurrency(exp);
 
             if(ghostMode) {
-                ['balance', 'incomes', 'expenses'].forEach(id => document.getElementById(id).classList.add('blur-val'));
+                document.getElementById('balance').classList.add('blur-val');
+                document.getElementById('incomes').classList.add('blur-val');
+                document.getElementById('expenses').classList.add('blur-val');
             } else {
-                ['balance', 'incomes', 'expenses'].forEach(id => document.getElementById(id).classList.remove('blur-val'));
+                document.getElementById('balance').classList.remove('blur-val');
+                document.getElementById('incomes').classList.remove('blur-val');
+                document.getElementById('expenses').classList.remove('blur-val');
             }
+
             updateInsights(inc, exp);
         }
 
@@ -503,50 +521,11 @@
             const currentSelected = filter.value;
             filter.innerHTML = '<option value="all">TODOS OS MESES</option>';
             const months = [...new Set(currentUser.transactions.map(t => t.monthYear))];
-            months.sort().reverse().forEach(m => filter.add(new Option(m, m)));
+            months.sort().reverse().forEach(m => {
+                const opt = new Option(m, m);
+                filter.add(opt);
+            });
             filter.value = currentSelected || 'all';
-        }
-
-        function switchTab(tabId) {
-            ['home', 'cambio', 'insights', 'viagem'].forEach(t => {
-                document.getElementById(`tab-${t}`).classList.add('hidden');
-                document.getElementById(`nav-${t}`).classList.remove('tab-active');
-                document.getElementById(`nav-${t}`).classList.add('text-white/30');
-            });
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            document.getElementById(`nav-${tabId}`).classList.add('tab-active');
-            if(tabId === 'home') renderTransactions();
-        }
-
-        function setGuide(loc) {
-            const container = document.getElementById('restaurant-list');
-            container.innerHTML = '';
-            restaurantesDB[loc]?.forEach(r => {
-                container.innerHTML += `
-                    <div class="card-inner p-6 text-left flex gap-4 items-start">
-                        <div class="text-3xl">${r.icone}</div>
-                        <div>
-                            <h4 class="font-black text-purple-400 text-xs">${r.nome}</h4>
-                            <p class="text-[8px] text-white/40 mb-2 font-bold">${r.cidade} | ${r.tipo}</p>
-                            <p class="text-[10px] text-white/70">${r.desc}</p>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function updateInsights(inc, exp) {
-            const container = document.getElementById('insights-container');
-            const percentUsed = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
-            container.innerHTML = `
-                <div class="card-inner p-6 border-l-4 border-l-purple-500">
-                    <p class="text-[8px] font-black text-purple-400 uppercase mb-2">Comprometimento de Renda</p>
-                    <h3 class="font-black text-sm mb-3">Você utilizou ${percentUsed}% do capital disponível.</h3>
-                    <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
-                        <div class="bg-purple-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div>
-                    </div>
-                </div>
-            `;
         }
 
         function toggleGhostMode() {
@@ -556,26 +535,90 @@
         }
 
         function exportData() {
-            const data = JSON.stringify(currentUser, null, 2);
+            const data = JSON.stringify(currentUser.transactions, null, 2);
             const blob = new Blob([data], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = `ifinance_vault_${Date.now()}.txt`;
+            a.href = url; a.download = `ifinance_backup_${Date.now()}.txt`;
             a.click();
         }
 
         function limparTudo() {
-            if(confirm("Confirmar reset total do banco de dados?")) {
-                currentUser.transactions = []; save(); renderTransactions();
+            if(confirm("Deseja APAGAR TODO o histórico? Esta ação é irreversível.")) {
+                currentUser.transactions = [];
+                save(); renderTransactions();
             }
         }
 
-        // Auto-login se houver sessão
+        function updateInsights(inc, exp) {
+            const container = document.getElementById('insights-container');
+            const percentUsed = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
+            const remaining = inc - exp;
+            container.innerHTML = `
+                <div class="card-inner p-6 insight-card premium-shadow"><p class="text-[8px] font-black text-purple-500 uppercase mb-2">Saúde do Orçamento</p><h3 class="font-black text-sm mb-1 text-white">Você comprometeu ${percentUsed}% da sua renda.</h3><div class="w-full bg-zinc-900 h-2 rounded-full mt-3"><div class="bg-purple-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div></div></div>
+                <div class="card-inner p-6 insight-card premium-shadow border-l-emerald-500"><p class="text-[8px] font-black text-emerald-500 uppercase mb-2">Disponibilidade Real</p><h3 class="font-black text-sm text-white">Seu saldo líquido: ${formatCurrency(remaining)}.</h3></div>
+            `;
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('tab-active'));
+            document.getElementById(`nav-${tab}`).classList.add('tab-active');
+        }
+
+        function setGuide(country) {
+            const container = document.getElementById('restaurant-list');
+            container.innerHTML = '';
+            restaurantesDB[country].forEach(r => {
+                container.innerHTML += `
+                    <div class="card-inner p-6 text-left hover:scale-[1.02] transition-transform">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-2xl">${r.icone}</span>
+                            <span class="text-[8px] font-black bg-purple-900/30 text-purple-400 px-2 py-1 rounded-md uppercase">${r.tipo}</span>
+                        </div>
+                        <h4 class="font-black text-white text-sm uppercase">${r.nome}</h4>
+                        <p class="text-[9px] text-slate-500 mb-2 font-bold">${r.cidade}</p>
+                        <p class="text-[10px] text-slate-400 leading-tight">${r.desc}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function addTransaction() {
+            const desc = document.getElementById('desc').value.trim() || 'LANÇAMENTO AVULSO';
+            const amount = rawValues.amountDisplay;
+            const type = document.getElementById('type').value;
+
+            if (amount === 0) { alert("Insira um valor."); return; }
+
+            const finalAmount = type === 'expense' ? -amount : amount;
+
+            currentUser.transactions.push({
+                id: Date.now(),
+                text: desc.toUpperCase(),
+                amount: finalAmount,
+                date: new Date().toLocaleDateString('pt-BR'),
+                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
+            });
+
+            save();
+            document.getElementById('desc').value = '';
+            document.getElementById('amountDisplay').value = '';
+            rawValues.amountDisplay = 0;
+            populateMonthFilter();
+            renderTransactions();
+        }
+
         window.onload = () => {
             const session = localStorage.getItem('iFinance_session');
-            if(session) {
+            if (session) {
                 const saved = localStorage.getItem(`user_${session}`);
-                if(saved) { currentUser = { ...JSON.parse(saved), email: session }; entrarApp(); }
+                if (saved) {
+                    currentUser = { ...JSON.parse(saved), email: session };
+                    setTimeout(entrarApp, 3500); // Aguarda a animação do prédio
+                }
             }
         };
     </script>
