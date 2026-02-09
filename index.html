@@ -108,7 +108,6 @@
             border-left: 4px solid #2563eb;
         }
 
-        /* Estilos Novos Objetivos */
         .progress-bar-fill {
             transition: width 1.5s cubic-bezier(0.65, 0, 0.35, 1);
         }
@@ -252,8 +251,7 @@
                     </div>
                 </div>
 
-                <div id="goals-list" class="space-y-4 pb-24">
-                    </div>
+                <div id="goals-list" class="space-y-4 pb-24"></div>
             </div>
         </section>
 
@@ -361,7 +359,7 @@
                     const userData = JSON.parse(saved);
                     if (userData.pass === pass) {
                         currentUser = { ...userData, email };
-                        if(!currentUser.goals) currentUser.goals = []; // Compatibilidade
+                        if(!currentUser.goals) currentUser.goals = []; 
                         localStorage.setItem('iFinance_session', email);
                         entrarApp();
                     } else { alert("Senha incorreta."); }
@@ -422,16 +420,14 @@
         }
 
         function repetirTransacao(text, amount) {
-            if(confirm(`Deseja lançar "${text}" novamente?`)) {
-                currentUser.transactions.push({ 
-                    id: Date.now(), 
-                    text, 
-                    amount, 
-                    date: new Date().toLocaleDateString('pt-BR'),
-                    monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
-                });
-                save(); populateMonthFilter(); renderTransactions();
-            }
+            currentUser.transactions.push({ 
+                id: Date.now(), 
+                text, 
+                amount, 
+                date: new Date().toLocaleDateString('pt-BR'),
+                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
+            });
+            save(); populateMonthFilter(); renderTransactions();
         }
 
         function renderTransactions() {
@@ -513,7 +509,6 @@
             document.getElementById(`nav-${tab}`).classList.add('tab-active');
         }
 
-        // --- LÓGICA DE OBJETIVOS (METAS) ---
         function addGoal() {
             const title = document.getElementById('goalTitle').value;
             const target = rawValues.goalAmountDisplay;
@@ -528,9 +523,13 @@
         }
 
         function updateGoalValue(id) {
-            const val = prompt("Quanto deseja adicionar à meta? (Use ponto para centavos)");
-            if(val === null) return;
-            const num = parseFloat(val);
+            const val = prompt("Quanto deseja adicionar à meta? (Digite apenas números, ex: 1050 para R$ 10,50)");
+            if(val === null || val === "") return;
+            
+            // Tratamento de centavos igual ao resto do app
+            let raw = val.replace(/\D/g, '');
+            let num = parseFloat(raw) / 100;
+            
             if(isNaN(num)) return;
             
             const goal = currentUser.goals.find(g => g.id === id);
@@ -575,13 +574,11 @@
                     <div class="flex justify-between items-center">
                         <p class="font-black text-[10px] text-blue-600 ${blurClass}">${formatCurrency(g.saved)} / ${formatCurrency(g.target)}</p>
                         <button onclick="updateGoalValue(${g.id})" class="bg-slate-50 px-4 py-2 rounded-xl text-[9px] font-black text-blue-600 uppercase border border-blue-50">+ Adicionar</button>
-                    </div>
-                `;
+                    </div>`;
                 container.appendChild(div);
             });
         }
 
-        // Auto-login session
         window.onload = () => {
             const session = localStorage.getItem('iFinance_session');
             if (session) {
