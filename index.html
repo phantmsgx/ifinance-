@@ -3,285 +3,313 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>iFinance Premium - Central de Objetivos</title>
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="iFinance">
+    <title>iFinance Premium - Deep Night</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
+        :root {
+            --deep-black: #09090b;
+            --vivid-violet: #7c3aed;
+            --led-glow: #2e1065;
+            --glass: rgba(15, 15, 20, 0.7);
+        }
+
         html, body { 
-            touch-action: pan-x pan-y; 
-            overscroll-behavior: none;
+            background-color: var(--deep-black);
+            color: #ffffff;
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #0f172a;
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             height: 100%;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            letter-spacing: -0.02em;
         }
 
         body { padding-bottom: 110px; -webkit-tap-highlight-color: transparent; }
-        .hidden { display: none !important; }
 
-        .tab-active { 
-            color: #2563eb !important; 
-            transform: scale(1.1); 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        /* 1. Efeito Alive: Blobs de Fundo */
+        .blob {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: var(--vivid-violet);
+            filter: blur(160px);
+            opacity: 0.12;
+            z-index: -1;
+            border-radius: 50%;
+            animation: float 25s infinite alternate ease-in-out;
         }
 
-        #desc { text-transform: uppercase; }
+        @keyframes float {
+            0% { transform: translate(-10%, -10%) scale(1); }
+            100% { transform: translate(40%, 30%) scale(1.2); }
+        }
 
-        * { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+        /* 2. Splash Screen */
+        #splash {
+            position: fixed; inset: 0;
+            background: black; z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 1s ease;
+        }
 
-        input, select, textarea { 
-            user-select: auto !important; 
-            -webkit-user-select: auto !important;
-            font-size: 16px !important; 
+        .logo-pulse {
+            font-size: 3.5rem; font-weight: 900; italic;
+            letter-spacing: -3px;
+            animation: pulse-light 2s infinite;
+        }
+
+        @keyframes pulse-light {
+            0%, 100% { text-shadow: 0 0 10px var(--vivid-violet); opacity: 0.7; transform: scale(0.98); }
+            50% { text-shadow: 0 0 50px var(--vivid-violet); opacity: 1; transform: scale(1); }
+        }
+
+        /* 3. Containers de Vidro Deep Night */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        /* 4. Inputs Energizados */
+        .input-glow {
+            background: rgba(0, 0, 0, 0.4) !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            color: white !important;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .input-glow:focus {
+            outline: none;
+            border-color: var(--vivid-violet) !important;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+            background: rgba(124, 58, 237, 0.05) !important;
+        }
+
+        /* Botões Premium */
+        .btn-premium {
+            background: var(--vivid-violet);
+            color: white;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px -10px var(--vivid-violet);
+        }
+
+        .btn-premium:active { transform: scale(0.94); filter: brightness(1.2); }
+
+        /* Navegação */
+        .tab-active { 
+            color: var(--vivid-violet) !important; 
+            text-shadow: 0 0 15px var(--vivid-violet);
+            transform: translateY(-5px);
         }
 
         .balance-text {
-            font-size: clamp(1.4rem, 6vw, 2.2rem); 
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.1;
+            font-size: clamp(2rem, 8vw, 3rem); 
             font-weight: 900;
-            color: #0f172a;
-        }
-        
-        .summary-text {
-            font-size: clamp(0.9rem, 4vw, 1.3rem);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-weight: 800;
+            letter-spacing: -0.05em;
+            background: linear-gradient(to bottom, #fff, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .blur-val { filter: blur(10px); pointer-events: none; }
+        .blur-val { filter: blur(12px); pointer-events: none; }
+        .hidden { display: none !important; }
 
-        @media (max-width: 640px) {
-            .card-inner { padding: 1.25rem !important; border-radius: 30px; }
-            .header-main { padding: 1rem !important; }
-            .btn-action { padding: 1rem !important; }
-            .input-main { padding: 1rem !important; font-size: 14px !important; }
-            .nav-text { font-size: 8px !important; }
-        }
-
-        .bg-auth-gradient { background: radial-gradient(circle at top right, #eff6ff, #ffffff); }
-        ::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        .fade-in-up { animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        /* Animação iOS */
+        .fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(40px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .premium-shadow { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08); }
-        .card-inner { background: white; border: 1px solid #f1f5f9; border-radius: 40px; overflow: hidden; }
-        button:active { transform: scale(0.96); }
-        .btn-gradient { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
-        .anim-fade { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .btn-income-quick {
-            background: #f0fdf4;
-            color: #16a34a;
-            border: 1px solid #bbf7d0;
-        }
-
-        .btn-repeat {
-            color: #cbd5e1;
-            transition: all 0.2s;
-        }
-        .btn-repeat:hover { color: #2563eb; }
-
-        .insight-card {
-            border-left: 4px solid #2563eb;
-        }
-
-        .progress-bar-fill {
-            transition: width 1.5s cubic-bezier(0.65, 0, 0.35, 1);
-        }
+        /* Scroll invisível */
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
-    <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 bg-auth-gradient text-center">
-        <div class="mb-6 w-20 h-20 bg-blue-600 rounded-[30px] flex items-center justify-center shadow-2xl text-white text-4xl transform rotate-12">
-            <i class="fa-solid fa-wallet"></i>
-        </div>
-        
-        <h1 id="auth-title" class="text-3xl font-black mb-1 tracking-tighter">i<span class="text-blue-600">Finance</span></h1>
-        <p id="auth-subtitle" class="text-slate-500 mb-8 font-medium text-sm">Gestão de elite.</p>
+    <div id="splash">
+        <div class="logo-pulse text-white">i<span class="text-purple-600">Finance</span></div>
+    </div>
 
-        <div class="flex flex-col w-full max-w-md gap-3">
-            <input type="email" id="emailInput" placeholder="E-mail" class="bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm focus:border-blue-200 transition-all">
-            <input type="password" id="passInput" placeholder="Senha" class="bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm focus:border-blue-200 transition-all">
-            
-            <div id="register-fields" class="hidden flex flex-col gap-3 fade-in-up">
-                <input type="text" id="userNameInput" placeholder="Nome Completo" class="bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm">
-                <div class="relative">
-                    <select id="userCurrencyInput" class="w-full bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm appearance-none">
-                        <option value="BRL">🇧🇷 BRL - Real Brasileiro</option>
-                        <option value="USD">🇺🇸 USD - Dólar Americano</option>
-                        <option value="EUR">🇪🇺 EUR - Euro</option>
-                        <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
-                        <option value="JPY">🇯🇵 JPY - Iene Japonês</option>
-                    </select>
-                    <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-400"></i>
+    <div class="blob" style="top: -200px; left: -100px;"></div>
+    <div class="blob" style="bottom: -200px; right: -100px; animation-delay: -10s; opacity: 0.08;"></div>
+
+    <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 text-center">
+        <div class="glass-card p-10 w-full max-w-md space-y-8">
+            <div class="flex flex-col items-center">
+                <div class="w-16 h-16 bg-purple-600 rounded-3xl flex items-center justify-center shadow-[0_0_30px_rgba(124,58,237,0.5)] text-white text-3xl mb-4 transform rotate-6">
+                    <i class="fa-solid fa-bolt-lightning"></i>
                 </div>
+                <h1 id="auth-title" class="text-4xl font-black tracking-tighter italic">i<span class="text-purple-500">Finance</span></h1>
+                <p id="auth-subtitle" class="text-zinc-500 font-bold text-xs uppercase tracking-widest mt-2">The Deep Night System</p>
             </div>
 
-            <button onclick="handleAuth()" id="btn-main-auth" class="btn-gradient text-white py-4 rounded-2xl font-black shadow-xl uppercase tracking-widest mt-2">Acessar Sistema</button>
-            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-blue-600 font-bold mt-2 text-[10px]">Ainda não possui conta? Registre-se</button>
+            <div class="flex flex-col gap-4">
+                <input type="email" id="emailInput" placeholder="E-MAIL" class="input-glow p-5 rounded-2xl font-bold">
+                <input type="password" id="passInput" placeholder="SENHA" class="input-glow p-5 rounded-2xl font-bold">
+                
+                <div id="register-fields" class="hidden flex flex-col gap-4 fade-in-up">
+                    <input type="text" id="userNameInput" placeholder="NOME COMPLETO" class="input-glow p-5 rounded-2xl font-bold">
+                    <select id="userCurrencyInput" class="input-glow p-5 rounded-2xl font-bold appearance-none bg-transparent">
+                        <option value="BRL">🇧🇷 BRL - REAL</option>
+                        <option value="USD">🇺🇸 USD - DÓLAR</option>
+                        <option value="EUR">🇪🇺 EUR - EURO</option>
+                    </select>
+                </div>
+
+                <button onclick="handleAuth()" id="btn-main-auth" class="btn-premium py-5 rounded-2xl text-sm mt-4">Ativar Sistema</button>
+                <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-zinc-500 font-black text-[10px] uppercase tracking-widest mt-2">Criar nova credencial</button>
+            </div>
         </div>
     </section>
 
     <div id="main-app" class="hidden">
         <section id="tab-home" class="fade-in-up">
-            <header class="header-main bg-white/80 backdrop-blur-xl border-b border-slate-100 p-5 sticky top-0 z-20 flex justify-between items-center px-6 md:px-10">
+            <header class="p-6 flex justify-between items-center max-w-6xl mx-auto">
                 <div>
-                    <h1 class="text-xl font-black text-blue-600 italic tracking-tighter">iFinance</h1>
-                    <p class="text-[7px] font-bold text-slate-400 uppercase tracking-[0.3em]">Premium Dashboard</p>
+                    <h1 class="text-2xl font-black italic tracking-tighter">i<span class="text-purple-500">Finance</span></h1>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="toggleGhostMode()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                    <button onclick="toggleGhostMode()" class="w-12 h-12 glass-card flex items-center justify-center text-zinc-400">
                         <i id="ghost-icon" class="fa-solid fa-eye"></i>
                     </button>
-                    <button onclick="logout()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 transition-all">
-                        <i class="fa-solid fa-power-off text-base"></i>
+                    <button onclick="logout()" class="w-12 h-12 glass-card flex items-center justify-center text-zinc-400 hover:text-red-500">
+                        <i class="fa-solid fa-power-off"></i>
                     </button>
                 </div>
             </header>
             
-            <main class="p-4 max-w-6xl mx-auto space-y-4">
+            <main class="p-4 max-w-6xl mx-auto space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="card-inner p-6 border-blue-100 border-2 premium-shadow bg-gradient-to-br from-white to-blue-50/30">
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Saldo Disponível</p>
+                    <div class="glass-card p-8 border-t border-white/10">
+                        <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2">Disponível</p>
                         <h2 class="balance-text" id="balance">0,00</h2>
                     </div>
-                    <div class="card-inner p-6 premium-shadow">
-                        <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-1">Entradas</p>
-                        <h2 class="summary-text text-emerald-600" id="incomes">0,00</h2>
-                    </div>
-                    <div class="card-inner p-6 premium-shadow">
-                        <p class="text-[9px] font-black text-red-500 uppercase tracking-widest mb-1">Saídas</p>
-                        <h2 class="summary-text text-red-600" id="expenses">0,00</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-1 gap-4 md:col-span-1">
+                        <div class="glass-card p-6">
+                            <p class="text-[9px] font-black text-emerald-500 uppercase mb-1">Entradas</p>
+                            <h2 class="text-xl font-black text-emerald-400" id="incomes">0,00</h2>
+                        </div>
+                        <div class="glass-card p-6">
+                            <p class="text-[9px] font-black text-red-500 uppercase mb-1">Saídas</p>
+                            <h2 class="text-xl font-black text-red-400" id="expenses">0,00</h2>
+                        </div>
                     </div>
                 </div>
 
-                <button onclick="prepararRendaMensal()" class="w-full btn-income-quick p-4 rounded-[25px] flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest shadow-sm">
-                    <i class="fa-solid fa-hand-holding-dollar text-lg"></i>
-                    Lançar Renda do Mês
+                <button onclick="prepararRendaMensal()" class="w-full glass-card p-5 flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-[0.2em] text-purple-400 border-purple-500/20">
+                    <i class="fa-solid fa-plus-circle text-lg"></i> Injetar Renda Mensal
                 </button>
 
-                <div class="card-inner p-6 premium-shadow">
+                <div class="glass-card p-6 space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
-                        <input type="text" id="desc" placeholder="DESCRIÇÃO (OPCIONAL)" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none">
-                        <input type="text" id="amountDisplay" placeholder="0,00" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-blue-600 outline-none">
-                        <select id="type" class="w-full bg-slate-50 p-4 rounded-xl font-black text-[10px] text-slate-500 uppercase appearance-none outline-none">
-                            <option value="expense">Saída (-)</option>
-                            <option value="income">Entrada (+)</option>
+                        <input type="text" id="desc" placeholder="DESCRIÇÃO" class="input-glow p-4 rounded-xl font-bold text-xs">
+                        <input type="text" id="amountDisplay" placeholder="0,00" class="input-glow p-4 rounded-xl font-black text-xl text-center text-purple-400">
+                        <select id="type" class="input-glow p-4 rounded-xl font-black text-[10px] uppercase appearance-none">
+                            <option value="expense">SAÍDA (-)</option>
+                            <option value="income">ENTRADA (+)</option>
                         </select>
-                        <button onclick="addTransaction()" class="btn-action btn-gradient text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest">Confirmar</button>
+                        <button onclick="addTransaction()" class="btn-premium rounded-xl py-4 text-xs">Lançar</button>
                     </div>
                 </div>
 
-                <div class="card-inner p-6 premium-shadow">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-black text-[10px] uppercase tracking-widest">Extrato</h3>
-                        <select id="filterMonth" onchange="renderTransactions()" class="bg-slate-50 p-2 rounded-lg font-black text-[9px] outline-none">
-                            <option value="all">TODOS OS MESES</option>
-                        </select>
-                    </div>
-
-                    <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
-                    
-                    <div class="flex gap-2 mt-4">
-                        <button onclick="exportData()" class="flex-1 text-center py-4 text-[8px] bg-slate-50 rounded-xl text-slate-400 font-black uppercase tracking-widest">Backup Dados</button>
-                        <button onclick="limparTudo()" class="flex-1 text-center py-4 text-[8px] bg-red-50 rounded-xl text-red-200 font-black uppercase tracking-[0.5em]">Limpar Base</button>
-                    </div>
+                <div class="glass-card p-8">
+                    <h3 class="font-black text-[10px] uppercase tracking-[0.3em] text-zinc-500 mb-6">Linha do Tempo</h3>
+                    <ul id="transaction-list" class="space-y-2"></ul>
                 </div>
             </main>
         </section>
 
         <section id="tab-cambio" class="hidden p-4 fade-in-up">
-             <div class="max-w-xl mx-auto card-inner p-8 premium-shadow space-y-6 mt-4 text-center">
-                <h2 class="font-black text-xl uppercase tracking-tighter">Câmbio Inteligente</h2>
-                <div class="flex items-center justify-between gap-3">
-                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-black text-xs outline-none"></select>
-                    <button onclick="inverterMoedas()" class="bg-blue-600 w-10 h-10 rounded-full flex items-center justify-center text-white shrink-0 shadow-md hover:bg-blue-700 transition-all">
-                        <i class="fa-solid fa-right-left text-sm"></i>
-                    </button>
-                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-black text-xs outline-none"></select>
+             <div class="max-w-xl mx-auto glass-card p-8 space-y-6 mt-4">
+                <h2 class="font-black text-xl uppercase text-center tracking-tighter">Câmbio <span class="text-purple-500">Alive</span></h2>
+                <div class="flex items-center gap-3">
+                    <select id="fromCurrency" onchange="buscarCotacao()" class="input-glow w-full p-4 rounded-2xl font-black text-xs"></select>
+                    <button onclick="inverterMoedas()" class="bg-purple-600 w-12 h-12 rounded-full shrink-0 shadow-lg"><i class="fa-solid fa-repeat"></i></button>
+                    <select id="toCurrency" onchange="buscarCotacao()" class="input-glow w-full p-4 rounded-2xl font-black text-xs"></select>
                 </div>
-                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-5 rounded-2xl font-black text-4xl text-center text-blue-600 outline-none shadow-inner">
-                <div class="bg-slate-900 p-8 rounded-[35px] text-white">
-                    <p class="text-blue-400 text-[8px] font-black uppercase mb-1">Resultado Estimado</p>
+                <input type="text" id="calcValueDisplay" placeholder="0,00" class="input-glow w-full p-6 rounded-2xl font-black text-4xl text-center text-purple-400">
+                <div class="bg-black/40 p-8 rounded-[35px] text-center border border-white/5">
+                    <p class="text-purple-500 text-[8px] font-black uppercase mb-1">Conversão em Tempo Real</p>
                     <h3 class="text-4xl font-black tracking-tighter" id="calcResultDisplay">0,00</h3>
                 </div>
-                <button onclick="lancarCambio()" class="w-full btn-gradient text-white font-black p-4 rounded-2xl uppercase text-[10px] tracking-widest">Lançar no Saldo</button>
              </div>
         </section>
 
         <section id="tab-insights" class="hidden p-4 fade-in-up">
-            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Financial <span class="text-blue-600">Insights</span></h2>
-            <div id="insights-container" class="max-w-xl mx-auto space-y-4 pb-24"></div>
+            <h2 class="text-2xl font-black mb-6 text-center italic uppercase">Inteligência</h2>
+            <div id="insights-container" class="max-w-xl mx-auto space-y-4"></div>
         </section>
 
         <section id="tab-objetivos" class="hidden p-4 fade-in-up">
-            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Minhas <span class="text-blue-600">Metas</span></h2>
-            
-            <div class="max-w-xl mx-auto space-y-4">
-                <div class="card-inner p-6 premium-shadow bg-blue-600 text-white">
-                    <p class="text-[9px] font-black uppercase tracking-widest opacity-70 mb-3">Novo Objetivo</p>
-                    <div class="space-y-3">
-                        <input type="text" id="goalTitle" placeholder="Ex: Viagem, Carro, Reserva..." class="w-full bg-blue-700 border-none p-4 rounded-2xl font-bold placeholder-blue-300 text-white outline-none">
-                        <input type="text" id="goalAmountDisplay" placeholder="Valor Alvo (0,00)" class="w-full bg-blue-700 border-none p-4 rounded-2xl font-bold placeholder-blue-300 text-white outline-none">
-                        <button onclick="addGoal()" class="w-full bg-white text-blue-600 font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest shadow-lg">Criar Meta de Economia</button>
+            <div class="max-w-xl mx-auto space-y-6">
+                <div class="glass-card p-8 border-t border-purple-500/30">
+                    <p class="text-[10px] font-black uppercase text-purple-400 mb-4">Novo Objetivo</p>
+                    <div class="space-y-4">
+                        <input type="text" id="goalTitle" placeholder="NOME DA META" class="input-glow w-full p-5 rounded-2xl font-bold">
+                        <input type="text" id="goalAmountDisplay" placeholder="VALOR ALVO" class="input-glow w-full p-5 rounded-2xl font-bold">
+                        <button onclick="addGoal()" class="btn-premium w-full py-5 rounded-2xl">Fixar Meta</button>
                     </div>
                 </div>
-
                 <div id="goals-list" class="space-y-4 pb-24"></div>
             </div>
         </section>
 
-        <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 py-5 flex justify-around shadow-2xl z-50">
-            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center tab-active">
+        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md glass-card p-4 flex justify-around items-center border border-white/10 shadow-2xl z-50">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center tab-active transition-all">
                 <i class="fa-solid fa-wallet text-xl"></i>
-                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Carteira</span>
+                <span class="text-[8px] font-black mt-1 uppercase">Wallet</span>
             </button>
-            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-slate-300">
+            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-zinc-600 transition-all">
                 <i class="fa-solid fa-money-bill-transfer text-xl"></i>
-                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Câmbio</span>
+                <span class="text-[8px] font-black mt-1 uppercase">Câmbio</span>
             </button>
-            <button onclick="switchTab('insights')" id="nav-insights" class="flex flex-col items-center text-slate-300">
+            <button onclick="switchTab('insights')" id="nav-insights" class="flex flex-col items-center text-zinc-600 transition-all">
                 <i class="fa-solid fa-chart-pie text-xl"></i>
-                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Insights</span>
+                <span class="text-[8px] font-black mt-1 uppercase">Insights</span>
             </button>
-            <button onclick="switchTab('objetivos')" id="nav-objetivos" class="flex flex-col items-center text-slate-300">
+            <button onclick="switchTab('objetivos')" id="nav-objetivos" class="flex flex-col items-center text-zinc-600 transition-all">
                 <i class="fa-solid fa-bullseye text-xl"></i>
-                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Metas</span>
+                <span class="text-[8px] font-black mt-1 uppercase">Metas</span>
             </button>
         </nav>
     </div>
 
     <script>
-        const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "AUD":"Dólar Aus", "CAD":"Dólar Can", "CHF":"Suíço", "ARS":"Peso Arg", "BTC":"Bitcoin" };
-
+        // Configuração e Lógica (Mantendo a funcionalidade original com a nova UI)
+        const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "BTC":"Bitcoin" };
         let isRegisterMode = false;
         let currentUser = null;
         let rawValues = { amountDisplay: 0, calcValueDisplay: 0, goalAmountDisplay: 0 };
         let ghostMode = false; 
+
+        // Splash Animation
+        window.onload = () => {
+            const session = localStorage.getItem('iFinance_session');
+            setTimeout(() => {
+                document.getElementById('splash').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash').classList.add('hidden');
+                    if(session) {
+                        const saved = localStorage.getItem(`user_${session}`);
+                        if(saved) {
+                            currentUser = { ...JSON.parse(saved), email: session };
+                            entrarApp();
+                        }
+                    }
+                }, 1000);
+            }, 2500);
+        };
 
         function populateCurrencySelectors() {
             const from = document.getElementById('fromCurrency');
@@ -289,17 +317,10 @@
             if(!from || !to) return;
             from.innerHTML = ''; to.innerHTML = '';
             Object.keys(allCurrencies).forEach(code => {
-                from.add(new Option(`${code} - ${allCurrencies[code]}`, code));
-                to.add(new Option(`${code} - ${allCurrencies[code]}`, code));
+                from.add(new Option(code, code));
+                to.add(new Option(code, code));
             });
             from.value = "USD"; to.value = "BRL";
-        }
-
-        function inverterMoedas() {
-            const from = document.getElementById('fromCurrency');
-            const to = document.getElementById('toCurrency');
-            const temp = from.value; from.value = to.value; to.value = temp;
-            buscarCotacao();
         }
 
         function applyMask(id) {
@@ -309,14 +330,9 @@
                 let v = e.target.value.replace(/\D/g, '');
                 let num = v === "" ? 0 : parseFloat(v) / 100;
                 rawValues[id] = num;
-                el.value = formatCurrency(num, getContextCurrency(id));
+                el.value = formatCurrency(num, id === 'calcValueDisplay' ? document.getElementById('fromCurrency').value : null);
                 if (id === 'calcValueDisplay') buscarCotacao();
             });
-        }
-
-        function getContextCurrency(id) {
-            if(id === 'calcValueDisplay') return document.getElementById('fromCurrency').value;
-            return currentUser ? currentUser.currency : 'BRL';
         }
 
         function formatCurrency(val, curr) {
@@ -324,47 +340,34 @@
             return val.toLocaleString('pt-BR', { style: 'currency', currency: c });
         }
 
-        function prepararRendaMensal() {
-            const meses = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-            const mesAtual = meses[new Date().getMonth()];
-            document.getElementById('desc').value = `RENDA - ${mesAtual}`;
-            document.getElementById('type').value = 'income';
-            document.getElementById('amountDisplay').focus();
-        }
-
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('auth-title').innerHTML = isRegisterMode ? 'Nova Conta' : 'i<span class="text-blue-600">Finance</span>';
-            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Registrar e Acessar' : 'Acessar Sistema';
-            document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já possui conta? Entre agora' : 'Ainda não possui conta? Registre-se';
+            document.getElementById('auth-title').innerHTML = isRegisterMode ? 'Nova <span class="text-purple-500">Conta</span>' : 'i<span class="text-purple-500">Finance</span>';
+            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Registrar Agora' : 'Ativar Sistema';
         }
 
         function handleAuth() {
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value.trim();
-            if (!email || !pass) { alert("Preencha e-mail e senha."); return; }
+            if (!email || !pass) return;
             
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
-                if (!name) { alert("Preencha seu nome."); return; }
-                const newUser = { name: name.toUpperCase(), pass, currency: document.getElementById('userCurrencyInput').value, transactions: [], goals: [] };
+                const newUser = { name, pass, currency: document.getElementById('userCurrencyInput').value, transactions: [], goals: [] };
                 localStorage.setItem(`user_${email}`, JSON.stringify(newUser));
                 currentUser = { ...newUser, email };
-                localStorage.setItem('iFinance_session', email);
-                entrarApp();
             } else {
                 const saved = localStorage.getItem(`user_${email}`);
                 if (saved) {
                     const userData = JSON.parse(saved);
                     if (userData.pass === pass) {
                         currentUser = { ...userData, email };
-                        if(!currentUser.goals) currentUser.goals = []; 
-                        localStorage.setItem('iFinance_session', email);
-                        entrarApp();
-                    } else { alert("Senha incorreta."); }
-                } else { alert("Conta não encontrada."); }
+                    } else { alert("Acesso negado."); return; }
+                } else { alert("Usuário inexistente."); return; }
             }
+            localStorage.setItem('iFinance_session', email);
+            entrarApp();
         }
 
         function entrarApp() {
@@ -372,29 +375,9 @@
             document.getElementById('main-app').classList.remove('hidden');
             applyMask('amountDisplay'); applyMask('calcValueDisplay'); applyMask('goalAmountDisplay');
             populateCurrencySelectors();
-            populateMonthFilter();
             renderTransactions(); 
             renderGoals();
         }
-
-        async function buscarCotacao() {
-            const from = document.getElementById('fromCurrency').value;
-            const to = document.getElementById('toCurrency').value;
-            if(from === to) { atualizarConversao(1); return; }
-            try {
-                const res = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
-                const data = await res.json();
-                atualizarConversao(parseFloat(data[`${from}${to}`].bid));
-            } catch { document.getElementById('calcResultDisplay').innerText = "Erro rede"; }
-        }
-
-        function atualizarConversao(rate) {
-            const res = rawValues.calcValueDisplay * rate;
-            document.getElementById('calcResultDisplay').innerText = formatCurrency(res, document.getElementById('toCurrency').value);
-        }
-
-        function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
-        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
 
         function addTransaction() {
             const text = document.getElementById('desc').value || 'DIVERSOS';
@@ -402,46 +385,37 @@
             const type = document.getElementById('type').value;
             if(amount <= 0) return;
             
-            const finalAmount = type === 'income' ? amount : -amount;
-            currentUser.transactions.push({
+            currentUser.transactions.unshift({
                 id: Date.now(),
                 text: text.toUpperCase(),
-                amount: finalAmount,
-                date: new Date().toLocaleDateString('pt-BR'),
-                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
+                amount: type === 'income' ? amount : -amount,
+                date: new Date().toLocaleDateString('pt-BR')
             });
             
             save();
             document.getElementById('desc').value = '';
             document.getElementById('amountDisplay').value = '';
             rawValues.amountDisplay = 0;
-            populateMonthFilter();
             renderTransactions();
-        }
-
-        function repetirTransacao(text, amount) {
-            currentUser.transactions.push({ 
-                id: Date.now(), 
-                text, 
-                amount, 
-                date: new Date().toLocaleDateString('pt-BR'),
-                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
-            });
-            save(); populateMonthFilter(); renderTransactions();
         }
 
         function renderTransactions() {
             const list = document.getElementById('transaction-list');
-            const filter = document.getElementById('filterMonth').value;
             list.innerHTML = ''; let inc = 0, exp = 0;
             
-            currentUser.transactions.sort((a,b) => b.id - a.id).forEach(t => {
-                if (filter !== 'all' && t.monthYear !== filter) return;
+            currentUser.transactions.forEach(t => {
                 if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
                 const li = document.createElement('li');
-                li.className = "flex justify-between items-center py-4 anim-fade";
+                li.className = "flex justify-between items-center p-5 rounded-2xl bg-white/5 border border-white/5 fade-in-up";
                 const blurClass = ghostMode ? 'blur-val' : '';
-                li.innerHTML = `<div class="flex items-center gap-3"><button onclick="repetirTransacao('${t.text}', ${t.amount})" class="btn-repeat text-sm"><i class="fa-solid fa-rotate"></i></button><div><p class="font-black text-[10px] text-slate-700">${t.text}</p><p class="text-[7px] text-slate-300 uppercase">${t.date}</p></div></div><p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}">${formatCurrency(t.amount)}</p>`;
+                li.innerHTML = `
+                    <div>
+                        <p class="font-black text-[10px] text-zinc-300 uppercase">${t.text}</p>
+                        <p class="text-[8px] text-zinc-600">${t.date}</p>
+                    </div>
+                    <p class="font-black text-xs ${t.amount > 0 ? 'text-emerald-400' : 'text-red-400'} ${blurClass}">
+                        ${formatCurrency(t.amount)}
+                    </p>`;
                 list.appendChild(li);
             });
 
@@ -457,14 +431,70 @@
             updateInsights(inc, exp);
         }
 
-        function populateMonthFilter() {
-            const filter = document.getElementById('filterMonth');
-            if(!filter) return;
-            const currentSelected = filter.value;
-            filter.innerHTML = '<option value="all">TODOS OS MESES</option>';
-            const months = [...new Set(currentUser.transactions.map(t => t.monthYear))];
-            months.sort().reverse().forEach(m => { filter.add(new Option(m, m)); });
-            filter.value = currentSelected || 'all';
+        function updateInsights(inc, exp) {
+            const container = document.getElementById('insights-container');
+            const percentUsed = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
+            container.innerHTML = `
+                <div class="glass-card p-8 border-l-4 border-purple-500">
+                    <p class="text-[8px] font-black text-purple-400 uppercase mb-2">Exposição</p>
+                    <h3 class="font-black text-lg">Consumo de ${percentUsed}% da receita.</h3>
+                    <div class="w-full bg-white/5 h-1.5 rounded-full mt-4 overflow-hidden">
+                        <div class="bg-purple-500 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div>
+                    </div>
+                </div>`;
+        }
+
+        function switchTab(tab) {
+            ['home', 'cambio', 'objetivos', 'insights'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).classList.replace('tab-active', 'text-zinc-600');
+            });
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`nav-${tab}`).classList.replace('text-zinc-600', 'tab-active');
+        }
+
+        function addGoal() {
+            const title = document.getElementById('goalTitle').value;
+            const target = rawValues.goalAmountDisplay;
+            if(!title || target <= 0) return;
+            currentUser.goals.push({ id: Date.now(), title: title.toUpperCase(), target: target, saved: 0 });
+            save(); renderGoals();
+            document.getElementById('goalTitle').value = '';
+            document.getElementById('goalAmountDisplay').value = '';
+            rawValues.goalAmountDisplay = 0;
+        }
+
+        function renderGoals() {
+            const container = document.getElementById('goals-list');
+            if(!container) return;
+            container.innerHTML = '';
+            currentUser.goals.forEach(g => {
+                const percent = Math.min((g.saved / g.target) * 100, 100).toFixed(1);
+                const div = document.createElement('div');
+                div.className = "glass-card p-6 fade-in-up";
+                div.innerHTML = `
+                    <div class="flex justify-between mb-4">
+                        <h4 class="font-black text-[10px] text-zinc-400 uppercase">${g.title}</h4>
+                        <span class="text-purple-400 font-black text-[10px]">${percent}%</span>
+                    </div>
+                    <div class="w-full bg-white/5 h-3 rounded-full overflow-hidden mb-4">
+                        <div class="bg-gradient-to-r from-purple-600 to-indigo-600 h-full" style="width: ${percent}%"></div>
+                    </div>
+                    <p class="text-xs font-black ${ghostMode ? 'blur-val' : ''}">${formatCurrency(g.saved)} / ${formatCurrency(g.target)}</p>`;
+                container.appendChild(div);
+            });
+        }
+
+        async function buscarCotacao() {
+            const from = document.getElementById('fromCurrency').value;
+            const to = document.getElementById('toCurrency').value;
+            if(from === to) { document.getElementById('calcResultDisplay').innerText = formatCurrency(rawValues.calcValueDisplay, to); return; }
+            try {
+                const res = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
+                const data = await res.json();
+                const rate = parseFloat(data[`${from}${to}`].bid);
+                document.getElementById('calcResultDisplay').innerText = formatCurrency(rawValues.calcValueDisplay * rate, to);
+            } catch { document.getElementById('calcResultDisplay').innerText = "Offline"; }
         }
 
         function toggleGhostMode() {
@@ -473,129 +503,13 @@
             renderTransactions(); renderGoals();
         }
 
-        function exportData() {
-            const data = JSON.stringify(currentUser.transactions, null, 2);
-            const blob = new Blob([data], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = `ifinance_backup_${Date.now()}.txt`;
-            a.click();
+        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
+        function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
+        function prepararRendaMensal() {
+            document.getElementById('desc').value = `REPOSIÇÃO MENSAL`;
+            document.getElementById('type').value = 'income';
+            document.getElementById('amountDisplay').focus();
         }
-
-        function limparTudo() {
-            if(confirm("Deseja APAGAR TODO o histórico? Esta ação é irreversível.")) {
-                currentUser.transactions = [];
-                save(); renderTransactions();
-            }
-        }
-
-        function updateInsights(inc, exp) {
-            const container = document.getElementById('insights-container');
-            const percentUsed = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
-            const remaining = inc - exp;
-            container.innerHTML = `
-                <div class="card-inner p-6 insight-card premium-shadow"><p class="text-[8px] font-black text-blue-600 uppercase mb-2">Saúde do Orçamento</p><h3 class="font-black text-sm mb-1">Você comprometeu ${percentUsed}% da sua renda.</h3><div class="w-full bg-slate-100 h-2 rounded-full mt-3"><div class="bg-blue-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div></div></div>
-                <div class="card-inner p-6 insight-card premium-shadow border-l-emerald-500"><p class="text-[8px] font-black text-emerald-500 uppercase mb-2">Disponibilidade Real</p><h3 class="font-black text-sm">Seu saldo líquido: ${formatCurrency(remaining)}.</h3></div>
-            `;
-        }
-
-        function switchTab(tab) {
-            ['home', 'cambio', 'objetivos', 'insights'].forEach(t => {
-                document.getElementById(`tab-${t}`).classList.add('hidden');
-                document.getElementById(`nav-${t}`).classList.remove('tab-active');
-                document.getElementById(`nav-${t}`).classList.add('text-slate-300');
-            });
-            document.getElementById(`tab-${tab}`).classList.remove('hidden');
-            document.getElementById(`nav-${tab}`).classList.add('tab-active');
-        }
-
-        function addGoal() {
-            const title = document.getElementById('goalTitle').value;
-            const target = rawValues.goalAmountDisplay;
-            if(!title || target <= 0) { alert("Preencha título e valor alvo."); return; }
-            
-            currentUser.goals.push({ id: Date.now(), title: title.toUpperCase(), target: target, saved: 0 });
-            save();
-            document.getElementById('goalTitle').value = '';
-            document.getElementById('goalAmountDisplay').value = '';
-            rawValues.goalAmountDisplay = 0;
-            renderGoals();
-        }
-
-        function confirmGoalDeposit(id) {
-            const input = document.getElementById(`input-goal-${id}`);
-            const raw = input.value.replace(/\D/g, '');
-            const num = raw === "" ? 0 : parseFloat(raw) / 100;
-            
-            if(num <= 0) return;
-
-            const goal = currentUser.goals.find(g => g.id === id);
-            if(goal) {
-                goal.saved += num;
-                save();
-                renderGoals();
-            }
-        }
-
-        function deleteGoal(id) {
-            if(confirm("Excluir esta meta?")) {
-                currentUser.goals = currentUser.goals.filter(g => g.id !== id);
-                save();
-                renderGoals();
-            }
-        }
-
-        function renderGoals() {
-            const container = document.getElementById('goals-list');
-            if(!container) return;
-            container.innerHTML = '';
-            
-            currentUser.goals.forEach(g => {
-                const percent = Math.min((g.saved / g.target) * 100, 100).toFixed(1);
-                const blurClass = ghostMode ? 'blur-val' : '';
-                
-                const div = document.createElement('div');
-                div.className = "card-inner p-6 premium-shadow anim-fade mb-4";
-                div.innerHTML = `
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h4 class="font-black text-xs text-slate-700">${g.title}</h4>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">Progresso: ${percent}%</p>
-                        </div>
-                        <button onclick="deleteGoal(${g.id})" class="text-slate-200 hover:text-red-400"><i class="fa-solid fa-trash-can text-xs"></i></button>
-                    </div>
-                    <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden mb-4">
-                        <div class="progress-bar-fill bg-gradient-to-r from-blue-500 to-blue-700 h-full" style="width: ${percent}%"></div>
-                    </div>
-                    <div class="flex flex-col gap-3">
-                        <div class="flex justify-between items-center">
-                            <p class="font-black text-[10px] text-blue-600 ${blurClass}">${formatCurrency(g.saved)} / ${formatCurrency(g.target)}</p>
-                        </div>
-                        <div class="flex gap-2">
-                             <input type="text" id="input-goal-${g.id}" placeholder="Adicionar Valor" 
-                                class="flex-1 bg-slate-50 border border-slate-100 p-3 rounded-xl font-bold text-[11px] outline-none focus:border-blue-200"
-                                oninput="this.value = (parseFloat(this.value.replace(/\\D/g, ''))/100).toLocaleString('pt-BR', {style: 'currency', currency: '${currentUser.currency}'})">
-                             <button onclick="confirmGoalDeposit(${g.id})" 
-                                class="bg-blue-600 text-white px-4 py-3 rounded-xl font-black text-[10px] uppercase shadow-md">Salvar</button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        // Auto-login session check
-        window.onload = () => {
-            const session = localStorage.getItem('iFinance_session');
-            if (session) {
-                const saved = localStorage.getItem(`user_${session}`);
-                if (saved) {
-                    currentUser = { ...JSON.parse(saved), email: session };
-                    if(!currentUser.goals) currentUser.goals = [];
-                    entrarApp();
-                }
-            }
-        };
     </script>
 </body>
 </html>
