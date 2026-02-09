@@ -65,7 +65,7 @@
             font-weight: 800;
         }
 
-        /* NOVO: Estilo para ocultar valores */
+        /* Estilo para ocultar valores */
         .blur-val { filter: blur(10px); pointer-events: none; }
 
         @media (max-width: 640px) {
@@ -283,11 +283,13 @@
         let isRegisterMode = false;
         let currentUser = null;
         let rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
-        let ghostMode = false; // Estado do Modo Fantasma
+        let ghostMode = false; 
 
         function populateCurrencySelectors() {
             const from = document.getElementById('fromCurrency');
             const to = document.getElementById('toCurrency');
+            if(!from || !to) return;
+            from.innerHTML = ''; to.innerHTML = '';
             Object.keys(allCurrencies).forEach(code => {
                 from.add(new Option(`${code} - ${allCurrencies[code]}`, code));
                 to.add(new Option(`${code} - ${allCurrencies[code]}`, code));
@@ -332,21 +334,49 @@
             document.getElementById('amountDisplay').focus();
         }
 
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('register-fields').classList.toggle('hidden');
+            document.getElementById('auth-title').innerHTML = isRegisterMode ? 'Nova Conta' : 'i<span class="text-blue-600">Finance</span>';
+            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Registrar e Acessar' : 'Acessar Sistema';
+            document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já possui conta? Entre agora' : 'Ainda não possui conta? Registre-se';
+        }
+
+        // --- SUA FUNÇÃO handleAuth INTEGRADA COM SUCESSO ---
         function handleAuth() {
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value.trim();
+            
+            if (!email || !pass) {
+                alert("Preencha e-mail e senha.");
+                return;
+            }
+            
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
+                if (!name) {
+                    alert("Preencha seu nome.");
+                    return;
+                }
                 const newUser = { name: name.toUpperCase(), pass, currency: document.getElementById('userCurrencyInput').value, transactions: [] };
                 localStorage.setItem(`user_${email}`, JSON.stringify(newUser));
-                alert("Conta VIP criada!"); toggleAuthMode();
+                currentUser = { ...newUser, email };
+                localStorage.setItem('iFinance_session', email);
+                entrarApp();
             } else {
                 const saved = localStorage.getItem(`user_${email}`);
-                if (saved && JSON.parse(saved).pass === pass) {
-                    currentUser = { ...JSON.parse(saved), email };
-                    localStorage.setItem('iFinance_session', email);
-                    entrarApp();
-                } else { alert("Acesso negado."); }
+                if (saved) {
+                    const userData = JSON.parse(saved);
+                    if (userData.pass === pass) {
+                        currentUser = { ...userData, email };
+                        localStorage.setItem('iFinance_session', email);
+                        entrarApp();
+                    } else {
+                        alert("Senha incorreta.");
+                    }
+                } else { 
+                    alert("Conta não encontrada."); 
+                }
             }
         }
 
@@ -354,7 +384,8 @@
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             applyMask('amountDisplay'); applyMask('calcValueDisplay');
-            populateMonthFilter(); // Popula os meses na entrada
+            populateCurrencySelectors();
+            populateMonthFilter();
             renderTransactions(); setGuide('BRL');
         }
 
@@ -372,14 +403,6 @@
         function atualizarConversao(rate) {
             const res = rawValues.calcValueDisplay * rate;
             document.getElementById('calcResultDisplay').innerText = formatCurrency(res, document.getElementById('toCurrency').value);
-        }
-
-        function checkSession() {
-            const savedEmail = localStorage.getItem('iFinance_session');
-            if (savedEmail) {
-                const userData = localStorage.getItem(`user_${savedEmail}`);
-                if (userData) { currentUser = { ...JSON.parse(userData), email: savedEmail }; entrarApp(); }
-            }
         }
 
         function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
@@ -404,14 +427,12 @@
             list.innerHTML = ''; let inc = 0, exp = 0;
             
             currentUser.transactions.sort((a,b) => b.id - a.id).forEach(t => {
-                // Filtro por mês
                 if (filter !== 'all' && t.monthYear !== filter) return;
 
                 if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
                 const li = document.createElement('li');
                 li.className = "flex justify-between items-center py-4 anim-fade";
                 
-                // Aplica blur se Modo Fantasma estiver ativo
                 const blurClass = ghostMode ? 'blur-val' : '';
 
                 li.innerHTML = `<div class="flex items-center gap-3"><button onclick="repetirTransacao('${t.text}', ${t.amount})" class="btn-repeat text-sm"><i class="fa-solid fa-rotate"></i></button><div><p class="font-black text-[10px] text-slate-700">${t.text}</p><p class="text-[7px] text-slate-300 uppercase">${t.date}</p></div></div><p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}">${formatCurrency(t.amount)}</p>`;
@@ -422,7 +443,6 @@
             document.getElementById('incomes').innerText = formatCurrency(inc);
             document.getElementById('expenses').innerText = formatCurrency(exp);
 
-            // Borra os cartões superiores no Modo Fantasma
             if(ghostMode) {
                 document.getElementById('balance').classList.add('blur-val');
                 document.getElementById('incomes').classList.add('blur-val');
@@ -438,6 +458,7 @@
 
         function populateMonthFilter() {
             const filter = document.getElementById('filterMonth');
+            if(!filter) return;
             const currentSelected = filter.value;
             filter.innerHTML = '<option value="all">TODOS OS MESES</option>';
             const months = [...new Set(currentUser.transactions.map(t => t.monthYear))];
@@ -461,6 +482,13 @@
             const a = document.createElement('a');
             a.href = url; a.download = `ifinance_backup_${Date.now()}.txt`;
             a.click();
+        }
+
+        function limparTudo() {
+            if(confirm("Deseja APAGAR TODO o histórico? Esta ação é irreversível.")) {
+                currentUser.transactions = [];
+                save(); renderTransactions();
+            }
         }
 
         function updateInsights(inc, exp) {
@@ -516,25 +544,27 @@
 
         function lancarCambio() {
             const val = rawValues.calcValueDisplay; if(val <= 0) return;
-            currentUser.transactions.push({ 
-                id: Date.now(), 
-                text: `CÂMBIO REALIZADO`, 
-                amount: -val, 
+            const resText = document.getElementById('calcResultDisplay').innerText;
+            const from = document.getElementById('fromCurrency').value;
+            const to = document.getElementById('toCurrency').value;
+            
+            currentUser.transactions.push({
+                id: Date.now(),
+                text: `CÂMBIO: ${from} ➔ ${to}`,
+                amount: parseFloat(resText.replace(/[^\d,-]/g, '').replace(',', '.')),
                 date: new Date().toLocaleDateString('pt-BR'),
                 monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
             });
-            save(); populateMonthFilter(); renderTransactions(); switchTab('home');
+            save(); renderTransactions(); switchTab('home');
         }
 
-        function toggleAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'CRIAR CONTA' : 'ACESSAR';
-        }
-
-        function limparTudo() { if(confirm("Apagar tudo?")) { localStorage.clear(); logout(); } }
-
-        window.onload = () => { populateCurrencySelectors(); checkSession(); };
+        window.onload = () => {
+            const savedEmail = localStorage.getItem('iFinance_session');
+            if (savedEmail) {
+                const userData = localStorage.getItem(`user_${savedEmail}`);
+                if (userData) { currentUser = { ...JSON.parse(userData), email: savedEmail }; entrarApp(); }
+            }
+        };
     </script>
 </body>
 </html>
