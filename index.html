@@ -3,6 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iFinance Premium — Deep Night</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root{
+            --bg:#09090B;
+            --violet:#7C3AED;
+            --violet-soft:#A855F7;
+            --led:#2E1065;
+            --text:#FFFFFF;
+            --muted:#A1A1AA;
+        }
+
+        html,body{
+            margin:0;
+            padding:0;
+            height:100%;
+            background:var(--bg);
+            color:var(--text);
+            font-family:'Inter',sans-serif;
+            overflow-x:hidden;
+            -webkit-font-smoothing:antialiased;
+        }
+
+        .hidden{display:none!important;}
+
+        /* ================= SPLASH ================= */
+        #splash-screen{
+            position:fixed;
+            inset:0;
+            background:black;
+            z-index:9999;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .splash-border{
+            position:absolute;
+            inset:0;
+            border:2px solid transparent;
+            animation:borderRun 2.5s linear forwards;
+        }
+
+        @keyframes borderRun{
+            0%{border-color:transparent;}
+            25%{border-top-color:var(--violet);}
+            50%{border-right-color:var(--violet);}
+            75%{border-bottom-color:var(--violet);}
+            100%{border-left-color:var(--violet);}
+        }
+
+        .splash-logo{
+            font-size:4rem;
+            color:var(--violet);
+            animation:pulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes pulse{
+            0%{text-shadow:0 0 10px var(--violet);}
+            50%{text-shadow:0 0 40px var(--violet-soft);}
+            100%{text-shadow:0 0 10px var(--violet);}
+        }
+
+        /* ================= FUNDO LED ================= */
+        body::before,body::after{
+            content:'';
+            position:fixed;
+            width:500px;
+            height:500px;
+            background:var(--led);
+            filter:blur(150px);
+            opacity:.55;
+            z-index:-1;
+            animation:float 20s ease-in-out infinite alternate;
+        }
+
+        body::after{
+            right:-150px;
+            bottom:-150px;
+            animation-duration:26s;
+        }
+
+        @keyframes float{
+            from{transform:translateY(0);}
+            to{transform:translateY(-120px);}
+        }
+
+        /* ================= GLASS ================= */
+        .card-inner{
+            background:rgba(15,15,20,.75)!important;
+            backdrop-filter:blur(20px);
+            border-radius:35px!important;
+            border:1px solid rgba(124,58,237,.25);
+            box-shadow:0 0 45px rgba(124,58,237,.18);
+        }
+
+        /* ================= INPUTS ================= */
+        input,select,textarea{
+            background:rgba(20,20,25,.6)!important;
+            color:white!important;
+            border:2px solid #27272A!important;
+            border-radius:16px!important;
+            font-weight:800;
+            outline:none!important;
+        }
+
+        input:focus,select:focus,textarea:focus{
+            border-image:linear-gradient(90deg,var(--violet),var(--violet-soft)) 1;
+            box-shadow:0 0 25px rgba(168,85,247,.6);
+        }
+
+        /* ================= BOTÕES ================= */
+        .btn-gradient{
+            background:linear-gradient(135deg,var(--violet),var(--violet-soft))!important;
+            box-shadow:
+                inset 0 0 20px rgba(255,255,255,.18),
+                0 0 45px rgba(124,58,237,.6);
+            transition:.3s ease;
+        }
+
+        .btn-gradient:active{
+            transform:scale(.96);
+        }
+
+        /* ================= TEXTO ================= */
+        .text-slate-400,.text-slate-300{color:var(--muted)!important;}
+        .text-blue-600{color:var(--violet)!important;}
+
+        /* ================= NAV ================= */
+        nav{
+            background:rgba(10,10,15,.85)!important;
+            backdrop-filter:blur(25px);
+            border-top:1px solid rgba(124,58,237,.2)!important;
+        }
+
+        .tab-active{
+            color:var(--violet-soft)!important;
+            transform:scale(1.15);
+            text-shadow:0 0 15px var(--violet);
+        }
+
+        /* ================= ANIMAÇÕES ================= */
+        .fade-in-up{
+            animation:fadeUp .6s cubic-bezier(.23,1,.32,1);
+        }
+
+        @keyframes fadeUp{
+            from{opacity:0;transform:translateY(30px);}
+            to{opacity:1;transform:translateY(0);}
+        }
+
+        .blur-val{filter:blur(10px);}
+    </style>
+</head>
+
+<body>
+
+<!-- SPLASH -->
+<div id="splash-screen">
+    <div class="splash-border"></div>
+    <i class="fa-solid fa-wallet splash-logo"></i>
+</div>
+
+<!-- ================= A PARTIR DAQUI: SEU HTML ORIGINAL ================= -->
+<!-- ⚠️ NÃO REMOVIDO, NÃO CORTADO, NÃO ALTERADO -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>iFinance Premium - Ultra Version</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -568,3 +745,9 @@
     </script>
 </body>
 </html>
+<script>
+setTimeout(()=>{
+    document.getElementById('splash-screen').style.display='none';
+},2500);
+</script>
+
