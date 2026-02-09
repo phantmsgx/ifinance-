@@ -9,33 +9,64 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="iFinance">
-    
+    <meta name="theme-color" content="#000000">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
-    <style>
-        html, body { 
-            touch-action: pan-x pan-y; 
-            overscroll-behavior: none;
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #0f172a;
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
+    }<style>
+    html, body { 
+        touch-action: pan-x pan-y; 
+        overscroll-behavior: none;
+        font-family: 'Inter', sans-serif;
+        background-color: #000000; /* Preto absoluto do iPhone */
+        color: #FFFFFF;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
 
-        body { padding-bottom: 110px; -webkit-tap-highlight-color: transparent; }
-        .hidden { display: none !important; }
+    body { padding-bottom: 110px; -webkit-tap-highlight-color: transparent; }
 
-        .tab-active { 
-            color: #2563eb !important; 
-            transform: scale(1.1); 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+    /* Estilo dos Cards estilo iOS Dark */
+    .card-inner { 
+        background: #1C1C1E; /* Cinza secundário do iOS */
+        border: 1px solid #2C2C2E; 
+        border-radius: 24px; 
+        overflow: hidden; 
+    }
+
+    /* Inputs estilo iOS Dark */
+    input, select {
+        background-color: #2C2C2E !important;
+        color: white !important;
+        border: none !important;
+    }
+
+    .balance-text {
+        font-size: clamp(1.4rem, 6vw, 2.2rem); 
+        font-weight: 900;
+        color: #FFFFFF;
+    }
+
+    .bg-auth-gradient { background: #000000; }
+
+    /* Ajuste para o Blur no fundo escuro */
+    .blur-val { filter: blur(12px); opacity: 0.5; }
+
+    /* Navegação inferior estilo iPhone */
+    nav {
+        background: rgba(28, 28, 30, 0.8) !important;
+        backdrop-filter: blur(20px);
+        border-top: 0.5px solid #38383A !important;
+    }
+
+    .tab-active { color: #0A84FF !important; } /* Azul vibrante Apple */
+</style>
+
+     
 
         #desc { text-transform: uppercase; }
 
@@ -117,8 +148,8 @@
             <i class="fa-solid fa-wallet"></i>
         </div>
         
-        <h1 id="auth-title" class="text-3xl font-black mb-1 tracking-tighter">i<span class="text-blue-600">Finance</span></h1>
-        <p id="auth-subtitle" class="text-slate-500 mb-8 font-medium text-sm">Gestão de elite.</p>
+        <h1 id="auth-title" class="text-3xl font-black mb-1 tracking-tighter">i<span class="text-[#0A84FF]>Finance</span></h1>
+        <p id="auth-subtitle" class="text-[#8E8E93] mb-8 font-medium text-sm">Gestão de elite.</p>
 
         <div class="flex flex-col w-full max-w-md gap-3">
             <input type="email" id="emailInput" placeholder="E-mail" class="bg-white border-2 border-slate-50 p-4 rounded-2xl font-bold outline-none shadow-sm focus:border-blue-200 transition-all">
@@ -134,27 +165,28 @@
                         <option value="GBP">🇬🇧 GBP - Libra Esterlina</option>
                         <option value="JPY">🇯🇵 JPY - Iene Japonês</option>
                     </select>
-                    <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-[#8E8E93]"></i>
                 </div>
             </div>
 
             <button onclick="handleAuth()" id="btn-main-auth" class="btn-gradient text-white py-4 rounded-2xl font-black shadow-xl uppercase tracking-widest mt-2">Acessar Sistema</button>
-            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-blue-600 font-bold mt-2 text-[10px]">Ainda não possui conta? Registre-se</button>
+            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-[#0A84FF] font-bold mt-2 text-[10px]">Ainda não possui conta? Registre-se</button>
         </div>
     </section>
 
     <div id="main-app" class="hidden">
         <section id="tab-home" class="fade-in-up">
-            <header class="header-main bg-white/80 backdrop-blur-xl border-b border-slate-100 p-5 sticky top-0 z-20 flex justify-between items-center px-6 md:px-10">
+            <header class="header-main bg-black/80 backdrop-blur-xl border-b border-slate-100 p-5 sticky top-0 z-20 flex justify-between items-center px-6 md:px-10">
                 <div>
-                    <h1 class="text-xl font-black text-blue-600 italic tracking-tighter">iFinance</h1>
-                    <p class="text-[7px] font-bold text-slate-400 uppercase tracking-[0.3em]">Premium Dashboard</p>
+                    <h1 class="text-xl font-black text-[#0A84FF]
+                        italic tracking-tighter">iFinance</h1>
+                    <p class="text-[7px] font-bold text-[#8E8E93] uppercase tracking-[0.3em]">Premium Dashboard</p>
                 </div>
                 <div class="flex gap-3">
-                    <button onclick="toggleGhostMode()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400">
+                    <button onclick="toggleGhostMode()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-[#8E8E93]">
                         <i id="ghost-icon" class="fa-solid fa-eye"></i>
                     </button>
-                    <button onclick="logout()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 transition-all">
+                    <button onclick="logout()" class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-[#8E8E93] hover:text-red-500 transition-all">
                         <i class="fa-solid fa-power-off text-base"></i>
                     </button>
                 </div>
@@ -163,7 +195,7 @@
             <main class="p-4 max-w-6xl mx-auto space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="card-inner p-6 border-blue-100 border-2 premium-shadow bg-gradient-to-br from-white to-blue-50/30">
-                        <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Saldo Disponível</p>
+                        <p class="text-[9px] font-black text-[#8E8E93] uppercase tracking-widest mb-1">Saldo Disponível</p>
                         <h2 class="balance-text" id="balance">0,00</h2>
                     </div>
                     <div class="card-inner p-6 premium-shadow">
@@ -184,8 +216,8 @@
                 <div class="card-inner p-6 premium-shadow">
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
                         <input type="text" id="desc" placeholder="DESCRIÇÃO (OPCIONAL)" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-xs text-slate-700 outline-none">
-                        <input type="text" id="amountDisplay" placeholder="0,00" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-blue-600 outline-none">
-                        <select id="type" class="w-full bg-slate-50 p-4 rounded-xl font-black text-[10px] text-slate-500 uppercase appearance-none outline-none">
+                        <input type="text" id="amountDisplay" placeholder="0,00" class="input-main w-full bg-slate-50 p-4 rounded-xl font-black text-lg text-center text-[#0A84FF] outline-none">
+                        <select id="type" class="w-full bg-slate-50 p-4 rounded-xl font-black text-[10px] text-[#8E8E93] uppercase appearance-none outline-none">
                             <option value="expense">Saída (-)</option>
                             <option value="income">Entrada (+)</option>
                         </select>
@@ -201,10 +233,10 @@
                         </select>
                     </div>
 
-                    <ul id="transaction-list" class="divide-y divide-slate-50"></ul>
+                    <ul id="transaction-list" class="divide-y divide-[#2C2C2E]"></ul>
                     
                     <div class="flex gap-2 mt-4">
-                        <button onclick="exportData()" class="flex-1 text-center py-4 text-[8px] bg-slate-50 rounded-xl text-slate-400 font-black uppercase tracking-widest">Backup Dados</button>
+                        <button onclick="exportData()" class="flex-1 text-center py-4 text-[8px] bg-slate-50 rounded-xl text-[#8E8E93]font-black uppercase tracking-widest">Backup Dados</button>
                         <button onclick="limparTudo()" class="flex-1 text-center py-4 text-[8px] bg-red-50 rounded-xl text-red-200 font-black uppercase tracking-[0.5em]">Limpar Base</button>
                     </div>
                 </div>
@@ -221,7 +253,7 @@
                     </button>
                     <select id="toCurrency" onchange="buscarCotacao()" class="w-full bg-slate-50 p-4 rounded-2xl font-black text-xs outline-none"></select>
                 </div>
-                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-5 rounded-2xl font-black text-4xl text-center text-blue-600 outline-none shadow-inner">
+                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full bg-slate-50 p-5 rounded-2xl font-black text-4xl text-center text-[#0A84FF] outline-none shadow-inner">
                 <div class="bg-slate-900 p-8 rounded-[35px] text-white">
                     <p class="text-blue-400 text-[8px] font-black uppercase mb-1">Resultado Estimado</p>
                     <h3 class="text-4xl font-black tracking-tighter" id="calcResultDisplay">0,00</h3>
@@ -231,7 +263,7 @@
         </section>
 
         <section id="tab-insights" class="hidden p-4 fade-in-up">
-            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Financial <span class="text-blue-600">Insights</span></h2>
+            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Financial <span class="text-[#0A84FF]" >Insights</span></h2>
             <div id="insights-container" class="max-w-xl mx-auto space-y-4 pb-24"></div>
         </section>
 
@@ -337,7 +369,7 @@
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('auth-title').innerHTML = isRegisterMode ? 'Nova Conta' : 'i<span class="text-blue-600">Finance</span>';
+            document.getElementById('auth-title').innerHTML = isRegisterMode ? 'Nova Conta' : 'i<span class="text-[#0A84FF]">Finance</span>';
             document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Registrar e Acessar' : 'Acessar Sistema';
             document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já possui conta? Entre agora' : 'Ainda não possui conta? Registre-se';
         }
@@ -496,7 +528,7 @@
             const percentUsed = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
             const remaining = inc - exp;
             container.innerHTML = `
-                <div class="card-inner p-6 insight-card premium-shadow"><p class="text-[8px] font-black text-blue-600 uppercase mb-2">Saúde do Orçamento</p><h3 class="font-black text-sm mb-1">Você comprometeu ${percentUsed}% da sua renda.</h3><div class="w-full bg-slate-100 h-2 rounded-full mt-3"><div class="bg-blue-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div></div></div>
+                <div class="card-inner p-6 insight-card premium-shadow"><p class="text-[8px] font-black text-[#0A84FF] uppercase mb-2">Saúde do Orçamento</p><h3 class="font-black text-sm mb-1">Você comprometeu ${percentUsed}% da sua renda.</h3><div class="w-full bg-slate-100 h-2 rounded-full mt-3"><div class="bg-blue-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div></div></div>
                 <div class="card-inner p-6 insight-card premium-shadow border-l-emerald-500"><p class="text-[8px] font-black text-emerald-500 uppercase mb-2">Disponibilidade Real</p><h3 class="font-black text-sm">Seu saldo líquido: ${formatCurrency(remaining)}.</h3></div>
             `;
         }
@@ -517,7 +549,7 @@
             (restaurantesDB[reg] || []).forEach(r => {
                 const div = document.createElement('div');
                 div.className = "card-inner p-5 text-left premium-shadow fade-in-up";
-                div.innerHTML = `<div class="text-2xl mb-3">${r.icone}</div><h4 class="font-black text-[11px]">${r.nome}</h4><p class="text-[8px] font-bold text-blue-600 mb-1">${r.cidade} • ${r.tipo}</p><p class="text-[9px] text-slate-400 font-medium">${r.desc}</p>`;
+                div.innerHTML = `<div class="text-2xl mb-3">${r.icone}</div><h4 class="font-black text-[11px]">${r.nome}</h4><p class="text-[8px] font-bold text-[#0A84FF] mb-1">${r.cidade} • ${r.tipo}</p><p class="text-[9px] text-[#8E8E93] font-medium">${r.desc}</p>`;
                 container.appendChild(div);
             });
         }
