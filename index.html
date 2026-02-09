@@ -190,7 +190,47 @@ DOCTYPE html>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    
+    /* ===== FIX FINAL: TEXTO BRANCO EM FUNDO BRANCO ===== */
+
+/* fundo global */
+html, body {
+    background: #09090B !important;
+}
+
+/* força fundo escuro em TODOS os containers */
+body *,
+section,
+main,
+div {
+    background-color: #09090B !important;
+}
+
+/* texto principal */
+body {
+    color: #FFFFFF !important;
+}
+
+/* textos que estavam invisíveis */
+p, span, h1, h2, h3, h4, h5, h6, label {
+    color: #FFFFFF !important;
+}
+
+/* textos secundários */
+small {
+    color: #A1A1AA !important;
+}
+
+/* inputs */
+input, textarea {
+    color: #FFFFFF !important;
+    background-color: #0F0F14 !important;
+}
+
+/* botões */
+button {
+    color: #FFFFFF !important;
+}
+
     <style>
         html, body { 
             touch-action: pan-x pan-y; 
