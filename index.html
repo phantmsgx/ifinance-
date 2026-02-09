@@ -3,261 +3,319 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>iFinance Premium - Cyber Luxury</title>
+    <title>iFinance Premium - Ultra Version</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="iFinance">
     
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --neon-purple: #BF40BF;
-            --ios-grey: #1C1C1E;
-            --true-black: #000000;
-            --glass: rgba(28, 28, 30, 0.6);
+            --neon-purple: #a855f7;
+            --deep-space: #000000;
+            --glass-bg: rgba(15, 15, 25, 0.7);
         }
 
         html, body { 
-            background-color: var(--true-black);
-            color: #ffffff;
+            touch-action: pan-x pan-y; 
+            overscroll-behavior: none;
             font-family: 'Inter', sans-serif;
-            margin: 0; padding: 0;
-            height: 100%; overflow-x: hidden;
+            background-color: var(--deep-space);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ANIMAÇÃO BREATH (SITE VIVO) */
-        @keyframes breath {
-            0% { box-shadow: 0 0 15px rgba(191, 64, 191, 0.1); border-color: rgba(191, 64, 191, 0.2); }
-            50% { box-shadow: 0 0 25px rgba(191, 64, 191, 0.3); border-color: rgba(191, 64, 191, 0.5); }
-            100% { box-shadow: 0 0 15px rgba(191, 64, 191, 0.1); border-color: rgba(191, 64, 191, 0.2); }
+        /* Fundo Animado */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000000 0%, #0f051a 100%);
+            z-index: -1;
         }
 
-        /* GLASSMORPHISM LUXURY */
-        .glass-card {
-            background: var(--glass);
+        body { padding-bottom: 110px; -webkit-tap-highlight-color: transparent; }
+        .hidden { display: none !important; }
+
+        /* Efeito de Respiração LED */
+        @keyframes breath {
+            0%, 100% { box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); border-color: rgba(168, 85, 247, 0.3); }
+            50% { box-shadow: 0 0 25px rgba(168, 85, 247, 0.5); border-color: rgba(168, 85, 247, 0.6); }
+        }
+
+        .card-inner { 
+            background: var(--glass-bg); 
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
+            border: 1px solid rgba(168, 85, 247, 0.3); 
+            border-radius: 35px; 
+            overflow: hidden;
             animation: breath 4s infinite ease-in-out;
+            transition: transform 0.3s ease;
         }
 
-        .neon-led {
-            filter: drop-shadow(0 0 10px var(--neon-purple));
+        /* Efeito Shimmer nos Botões */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
 
-        #drone-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 9999;
-            pointer-events: none;
-            background: #000;
+        .btn-gradient { 
+            background: linear-gradient(90deg, #7c3aed, #a855f7, #7c3aed);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite linear;
+            box-shadow: 0 10px 20px rgba(124, 58, 237, 0.3);
+            border: none;
+        }
+
+        /* Glassmorphism iPhone Dark */
+        .header-main, nav {
+            background: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        .input-main, input, select {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: white !important;
+            border-radius: 18px !important;
+        }
+
+        .tab-active { 
+            color: var(--neon-purple) !important; 
+            transform: scale(1.1); 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-shadow: 0 0 10px rgba(168, 85, 247, 0.8);
         }
 
         .balance-text {
-            font-size: clamp(1.8rem, 8vw, 2.5rem); 
+            font-size: clamp(1.8rem, 7vw, 2.5rem); 
             font-weight: 900;
-            letter-spacing: -2px;
-            background: linear-gradient(to bottom, #fff 30%, var(--neon-purple));
+            background: linear-gradient(to right, #fff, #a855f7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .btn-luxury {
-            background: linear-gradient(145deg, #BF40BF, #702070);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .btn-luxury:active { transform: scale(0.95); opacity: 0.8; }
-
-        input, select {
-            background: rgba(255, 255, 255, 0.03) !important;
-            border: 1px solid rgba(255,255,255,0.1) !important;
-            color: white !important;
-            transition: all 0.3s;
-        }
-
-        input:focus {
-            border-color: var(--neon-purple) !important;
-            background: rgba(191, 64, 191, 0.05) !important;
-        }
-
-        .nav-ios {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(30px);
-            border-top: 0.5px solid rgba(255,255,255,0.1);
-        }
-
-        .tab-active { color: var(--neon-purple) !important; filter: drop-shadow(0 0 5px var(--neon-purple)); }
+        .blur-val { filter: blur(12px); pointer-events: none; }
         
-        .blur-val { filter: blur(12px); }
-        .hidden { display: none !important; }
+        /* Fade Tecnológico para Login */
+        .login-fade {
+            animation: techFade 1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        @keyframes techFade {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); filter: blur(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+
+        ::-webkit-scrollbar { display: none; }
+        * { user-select: none; -webkit-user-select: none; }
+        input, select { user-select: auto !important; -webkit-user-select: auto !important; }
+
+        @media (max-width: 640px) {
+            .card-inner { padding: 1.25rem !important; border-radius: 28px; }
+        }
     </style>
 </head>
 <body>
 
-    <canvas id="drone-canvas"></canvas>
+    <div id="particles-js"></div>
 
-    <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-8 z-10 relative">
-        <div class="mb-8 w-20 h-20 bg-[#BF40BF] rounded-[22px] flex items-center justify-center neon-led transform -rotate-6">
-            <i class="fa-solid fa-bolt-lightning text-white text-3xl"></i>
+    <section id="auth-screen" class="min-h-screen flex flex-col items-center justify-center p-6 text-center login-fade">
+        <div class="mb-6 w-24 h-24 bg-purple-600 rounded-[35px] flex items-center justify-center shadow-[0_0_40px_rgba(168,85,247,0.6)] text-white text-4xl transform rotate-12 border-2 border-purple-400">
+            <i class="fa-solid fa-bolt-lightning"></i>
         </div>
         
-        <h1 id="auth-title" class="text-5xl font-black mb-2 tracking-tighter">i<span style="color: var(--neon-purple)">Finance</span></h1>
-        <p id="auth-subtitle" class="text-slate-500 mb-10 font-bold text-xs uppercase tracking-[0.4em]">Quantum Premium</p>
+        <h1 id="auth-title" class="text-4xl font-black mb-1 tracking-tighter">i<span class="text-purple-500">Finance</span></h1>
+        <p id="auth-subtitle" class="text-purple-300/60 mb-8 font-medium text-xs uppercase tracking-widest">Ultra Luxury Banking</p>
 
-        <div class="flex flex-col w-full max-w-sm gap-4">
-            <input type="email" id="emailInput" placeholder="E-mail" class="glass-card p-5 outline-none rounded-2xl">
-            <input type="password" id="passInput" placeholder="Senha" class="glass-card p-5 outline-none rounded-2xl">
+        <div class="flex flex-col w-full max-w-md gap-4">
+            <input type="email" id="emailInput" placeholder="Acesso Seguro (Email)" class="p-5 font-bold outline-none transition-all focus:border-purple-500/50">
+            <input type="password" id="passInput" placeholder="Chave Criptografada" class="p-5 font-bold outline-none transition-all focus:border-purple-500/50">
             
             <div id="register-fields" class="hidden flex flex-col gap-4">
-                <input type="text" id="userNameInput" placeholder="Nome Completo" class="glass-card p-5 outline-none rounded-2xl">
-                <select id="userCurrencyInput" class="w-full glass-card p-5 outline-none rounded-2xl appearance-none">
-                    <option value="BRL">BRL - Real</option>
-                    <option value="USD">USD - Dólar</option>
-                    <option value="EUR">EUR - Euro</option>
-                </select>
+                <input type="text" id="userNameInput" placeholder="Nome Completo" class="p-5 font-bold outline-none">
+                <div class="relative">
+                    <select id="userCurrencyInput" class="w-full p-5 font-bold outline-none appearance-none">
+                        <option value="BRL">🇧🇷 BRL - Real</option>
+                        <option value="USD">🇺🇸 USD - Dólar</option>
+                        <option value="EUR">🇪🇺 EUR - Euro</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down absolute right-6 top-1/2 -translate-y-1/2 text-purple-400"></i>
+                </div>
             </div>
 
-            <button onclick="handleAuth()" id="btn-main-auth" class="btn-luxury text-white py-5 rounded-2xl font-black uppercase tracking-widest shadow-2xl mt-4">Acessar Terminal</button>
-            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-slate-500 font-bold mt-4 text-[10px] uppercase tracking-widest">Criar Assinatura VIP</button>
+            <button onclick="handleAuth()" id="btn-main-auth" class="btn-gradient text-white py-5 rounded-2xl font-black shadow-xl uppercase tracking-[0.2em] mt-2 text-sm">Iniciar Sessão Elite</button>
+            <button onclick="toggleAuthMode()" id="btn-switch-auth" class="text-purple-400 font-bold mt-4 text-[10px] uppercase tracking-widest opacity-70 hover:opacity-100">Criar Nova Credencial VIP</button>
         </div>
     </section>
 
-    <div id="main-app" class="hidden pb-32">
-        <section id="tab-home">
-            <header class="p-6 flex justify-between items-center sticky top-0 z-30 bg-black/50 backdrop-blur-lg">
+    <div id="main-app" class="hidden">
+        <section id="tab-home" class="login-fade">
+            <header class="header-main p-5 sticky top-0 z-20 flex justify-between items-center px-6">
                 <div>
-                    <h1 class="text-xl font-black italic tracking-tighter">iF<span class="text-[#BF40BF]">.</span></h1>
+                    <h1 class="text-xl font-black text-purple-500 italic tracking-tighter">iFinance</h1>
+                    <p class="text-[7px] font-bold text-purple-300/50 uppercase tracking-[0.3em]">Quantum Edition</p>
                 </div>
-                <div class="flex gap-4">
-                    <button onclick="toggleGhostMode()" class="w-12 h-12 glass-card flex items-center justify-center"><i id="ghost-icon" class="fa-solid fa-eye text-xs"></i></button>
-                    <button onclick="logout()" class="w-12 h-12 glass-card flex items-center justify-center text-red-500"><i class="fa-solid fa-power-off text-xs"></i></button>
+                <div class="flex gap-3">
+                    <button onclick="toggleGhostMode()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-purple-400 border border-white/10">
+                        <i id="ghost-icon" class="fa-solid fa-eye"></i>
+                    </button>
+                    <button onclick="logout()" class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-red-400 border border-white/10">
+                        <i class="fa-solid fa-power-off"></i>
+                    </button>
                 </div>
             </header>
-
-            <main class="p-5 space-y-6 max-w-2xl mx-auto">
-                <div class="glass-card p-8 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-[#BF40BF] opacity-10 blur-[50px] rounded-full"></div>
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Liquidez Total</p>
-                    <h2 class="balance-text" id="balance">0,00</h2>
-                    
-                    <div class="grid grid-cols-2 gap-4 mt-8">
-                        <div>
-                            <p class="text-[8px] font-bold text-emerald-500 uppercase">Cash In</p>
-                            <p class="text-lg font-bold" id="incomes">0,00</p>
+            
+            <main class="p-4 max-w-6xl mx-auto space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="card-inner p-8 text-center">
+                        <p class="text-[10px] font-black text-purple-300/60 uppercase tracking-widest mb-2">Liquidez Total</p>
+                        <h2 class="balance-text" id="balance">0,00</h2>
+                    </div>
+                    <div class="grid grid-cols-2 md:contents gap-4">
+                        <div class="card-inner p-6">
+                            <p class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1">Inflow</p>
+                            <h2 class="text-xl font-bold text-emerald-500" id="incomes">0,00</h2>
                         </div>
-                        <div>
-                            <p class="text-[8px] font-bold text-red-500 uppercase">Cash Out</p>
-                            <p class="text-lg font-bold" id="expenses">0,00</p>
+                        <div class="card-inner p-6">
+                            <p class="text-[9px] font-black text-red-400 uppercase tracking-widest mb-1">Outflow</p>
+                            <h2 class="text-xl font-bold text-red-500" id="expenses">0,00</h2>
                         </div>
                     </div>
                 </div>
 
-                <button onclick="prepararRendaMensal()" class="w-full p-4 glass-card text-[#BF40BF] font-black text-[10px] uppercase tracking-[0.2em]">
-                    + Injetar Capital Mensal
+                <button onclick="prepararRendaMensal()" class="w-full bg-white/5 border border-purple-500/30 p-5 rounded-[25px] flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest text-purple-300">
+                    <i class="fa-solid fa-meteor text-purple-500"></i>
+                    Injetar Renda Mensal
                 </button>
 
-                <div class="glass-card p-6 space-y-4">
-                    <input type="text" id="desc" placeholder="DESCRIÇÃO DO FLUXO" class="w-full p-4 rounded-xl outline-none font-bold text-xs uppercase">
-                    <div class="flex gap-2">
-                        <input type="text" id="amountDisplay" placeholder="0,00" class="flex-1 p-4 rounded-xl outline-none font-black text-xl text-[#BF40BF]">
-                        <select id="type" class="p-4 rounded-xl outline-none font-bold text-[10px] uppercase">
-                            <option value="expense">Débito</option>
-                            <option value="income">Crédito</option>
+                <div class="card-inner p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                        <input type="text" id="desc" placeholder="DESCRIÇÃO" class="w-full p-4 font-black text-xs">
+                        <input type="text" id="amountDisplay" placeholder="0,00" class="w-full p-4 font-black text-lg text-center text-purple-400">
+                        <select id="type" class="w-full p-4 font-black text-[10px] uppercase">
+                            <option value="expense">Débito (-)</option>
+                            <option value="income">Crédito (+)</option>
                         </select>
+                        <button onclick="addTransaction()" class="btn-gradient text-white font-black rounded-xl py-4 uppercase text-[10px] tracking-widest">Executar</button>
                     </div>
-                    <button onclick="addTransaction()" class="w-full btn-luxury p-5 rounded-xl font-black uppercase text-xs tracking-widest">Confirmar Transação</button>
                 </div>
 
-                <div class="glass-card p-6">
+                <div class="card-inner p-6">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-[10px] font-black uppercase tracking-widest text-slate-500">Histórico de Operações</h3>
-                        <select id="filterMonth" onchange="renderTransactions()" class="bg-transparent text-[10px] font-bold outline-none"></select>
+                        <h3 class="font-black text-[10px] uppercase tracking-widest text-purple-400">Log de Operações</h3>
+                        <select id="filterMonth" onchange="renderTransactions()" class="p-2 rounded-lg font-black text-[9px]"></select>
                     </div>
-                    <ul id="transaction-list" class="space-y-4"></ul>
+                    <ul id="transaction-list" class="divide-y divide-white/5"></ul>
+                    
+                    <div class="flex gap-4 mt-8">
+                        <button onclick="exportData()" class="flex-1 py-4 text-[9px] bg-white/5 rounded-2xl text-purple-300 font-black uppercase border border-white/5">Backup Neural</button>
+                        <button onclick="limparTudo()" class="flex-1 py-4 text-[9px] bg-red-900/20 rounded-2xl text-red-400 font-black uppercase border border-red-500/20">Reset Sistema</button>
+                    </div>
                 </div>
             </main>
         </section>
 
-        <section id="tab-cambio" class="hidden p-5">
-            <div class="max-w-md mx-auto glass-card p-8 space-y-6 mt-10">
-                <h2 class="text-center font-black uppercase tracking-tighter text-xl">Global Exchange</h2>
-                <div class="flex items-center gap-3">
-                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full p-4 rounded-xl outline-none text-xs"></select>
-                    <button onclick="inverterMoedas()" class="w-12 h-12 rounded-full bg-[#BF40BF] flex items-center justify-center shrink-0 shadow-lg"><i class="fa-solid fa-repeat"></i></button>
-                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full p-4 rounded-xl outline-none text-xs"></select>
+        <section id="tab-cambio" class="hidden p-4 login-fade">
+             <div class="max-w-xl mx-auto card-inner p-8 space-y-6 mt-4 text-center">
+                <h2 class="font-black text-xl uppercase tracking-widest text-purple-400">Quantum Exchange</h2>
+                <div class="flex items-center justify-between gap-3">
+                    <select id="fromCurrency" onchange="buscarCotacao()" class="w-full p-4 font-black text-xs"></select>
+                    <button onclick="inverterMoedas()" class="bg-purple-600 w-12 h-12 rounded-full flex items-center justify-center text-white shrink-0 shadow-lg">
+                        <i class="fa-solid fa-shuffle"></i>
+                    </button>
+                    <select id="toCurrency" onchange="buscarCotacao()" class="w-full p-4 font-black text-xs"></select>
                 </div>
-                <input type="text" id="calcValueDisplay" class="w-full bg-transparent text-5xl text-center font-black text-[#BF40BF] outline-none">
-                <div class="p-6 rounded-2xl bg-black/40 border border-white/5 text-center">
-                    <p class="text-[9px] font-black text-slate-500 uppercase mb-2">Cotação Convertida</p>
-                    <h3 class="text-3xl font-black tracking-tighter" id="calcResultDisplay">0,00</h3>
+                <input type="text" id="calcValueDisplay" placeholder="0,00" class="w-full p-6 text-4xl text-center text-purple-400">
+                <div class="bg-black/40 border border-purple-500/20 p-8 rounded-[35px]">
+                    <p class="text-purple-400 text-[8px] font-black uppercase mb-1">Conversão em Tempo Real</p>
+                    <h3 class="text-4xl font-black" id="calcResultDisplay">0,00</h3>
                 </div>
-                <button onclick="lancarCambio()" class="w-full btn-luxury p-5 rounded-xl font-black uppercase text-xs">Liquidar no Saldo</button>
-            </div>
+                <button onclick="lancarCambio()" class="w-full btn-gradient text-white font-black p-5 rounded-2xl uppercase text-xs tracking-widest">Sincronizar Saldo</button>
+             </div>
         </section>
 
-        <nav class="fixed bottom-0 left-0 right-0 nav-ios h-24 flex justify-around items-center px-4 z-50">
-            <button onclick="switchTab('home')" id="nav-home" class="tab-active flex flex-col items-center gap-1">
-                <i class="fa-solid fa-house-chimney text-xl"></i>
-                <span class="text-[8px] font-bold uppercase">Início</span>
+        <section id="tab-insights" class="hidden p-4 login-fade">
+            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center">Neural <span class="text-purple-500">Analytics</span></h2>
+            <div id="insights-container" class="max-w-xl mx-auto space-y-4 pb-24"></div>
+        </section>
+
+        <section id="tab-viagem" class="hidden p-4 text-center login-fade">
+            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-widest">VIP World Guide</h2>
+            <div class="flex gap-3 overflow-x-auto pb-6 mb-4 no-scrollbar">
+                <button onclick="setGuide('BRL')" class="bg-white/5 border border-white/10 px-6 py-4 rounded-2xl font-black shrink-0 text-[10px] uppercase text-purple-200">🇧🇷 Brasil</button>
+                <button onclick="setGuide('USD')" class="bg-white/5 border border-white/10 px-6 py-4 rounded-2xl font-black shrink-0 text-[10px] uppercase text-purple-200">🇺🇸 EUA</button>
+                <button onclick="setGuide('EUR')" class="bg-white/5 border border-white/10 px-6 py-4 rounded-2xl font-black shrink-0 text-[10px] uppercase text-purple-200">🇪🇺 Europa</button>
+                <button onclick="setGuide('ITA')" class="bg-white/5 border border-white/10 px-6 py-4 rounded-2xl font-black shrink-0 text-[10px] uppercase text-purple-200">🇮🇹 Itália</button>
+            </div>
+            <div id="restaurant-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20 max-w-5xl mx-auto"></div>
+        </section>
+
+        <nav class="fixed bottom-6 left-6 right-6 rounded-[30px] py-4 flex justify-around shadow-2xl z-50 border border-white/10">
+            <button onclick="switchTab('home')" id="nav-home" class="flex flex-col items-center tab-active">
+                <i class="fa-solid fa-house-chimney-window text-xl"></i>
+                <span class="text-[8px] font-black mt-1 uppercase">Home</span>
             </button>
-            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center gap-1 text-slate-600">
-                <i class="fa-solid fa-globe text-xl"></i>
-                <span class="text-[8px] font-bold uppercase">Câmbio</span>
+            <button onclick="switchTab('cambio')" id="nav-cambio" class="flex flex-col items-center text-white/30">
+                <i class="fa-solid fa-atom text-xl"></i>
+                <span class="text-[8px] font-black mt-1 uppercase">Câmbio</span>
+            </button>
+            <button onclick="switchTab('insights')" id="nav-insights" class="flex flex-col items-center text-white/30">
+                <i class="fa-solid fa-brain text-xl"></i>
+                <span class="text-[8px] font-black mt-1 uppercase">IA</span>
+            </button>
+            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-white/30">
+                <i class="fa-solid fa-crown text-xl"></i>
+                <span class="text-[8px] font-black mt-1 uppercase">VIP</span>
             </button>
         </nav>
     </div>
 
     <script>
-        /* --- THREE.JS ENGINE (O DIFERENCIAL 3D) --- */
-        const canvas = document.getElementById('drone-canvas');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        // Geometria do "Prédio Cyber"
-        const geometry = new THREE.BoxGeometry(2, 8, 2);
-        const material = new THREE.MeshBasicMaterial({ 
-            color: 0x050505,
-            wireframe: false
-        });
-        const building = new THREE.Mesh(geometry, material);
-        scene.add(building);
-
-        // Frisos Neon Purple
-        const edges = new THREE.EdgesGeometry(geometry);
-        const lineMat = new THREE.LineBasicMaterial({ color: 0xBF40BF });
-        const wireframe = new THREE.LineSegments(edges, lineMat);
-        building.add(wireframe);
-
-        camera.position.z = 10;
-        camera.position.y = 2;
-
-        function animate3D() {
-            requestAnimationFrame(animate3D);
-            building.rotation.y += 0.005;
-            renderer.render(scene, camera);
-        }
-        animate3D();
-
-        // GSAP Intro
-        window.addEventListener('load', () => {
-            gsap.to(camera.position, { z: 25, y: 15, duration: 4, ease: "power2.inOut" });
-            gsap.to(canvas, { opacity: 0, duration: 1, delay: 4, onComplete: () => canvas.remove() });
+        // CONFIGURAÇÃO PARTICLES.JS
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#a855f7" },
+                "shape": { "type": "circle" },
+                "opacity": { "value": 0.5, "random": true },
+                "size": { "value": 3, "random": true },
+                "line_linked": { "enable": false },
+                "move": { "enable": true, "speed": 1, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": { "onhover": { "enable": true, "mode": "bubble" }, "onclick": { "enable": true, "mode": "push" } },
+                "modes": { "bubble": { "distance": 200, "size": 6, "duration": 2, "opacity": 0.8, "speed": 3 } }
+            }
         });
 
-        /* --- LOGICA ORIGINAL PRESERVADA --- */
-        const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "BTC":"Bitcoin" };
-        let currentUser = null;
+        // --- SEU SCRIPT ORIGINAL MANTIDO ---
+        const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "AUD":"Dólar Aus", "CAD":"Dólar Can", "CHF":"Suíço", "ARS":"Peso Arg", "BTC":"Bitcoin" };
+
+        const restaurantesDB = {
+            'BRL': [{nome: 'A CASA DO PORCO', cidade: 'SP', tipo: 'CONCEITUAL', icone: '🐷', desc: 'Focado na carne suína.'}, {nome: 'D.O.M', cidade: 'SP', tipo: 'AMAZÔNICO', icone: '🌿', desc: 'Alta gastronomia Amazônica.'}, {nome: 'LASAI', cidade: 'RJ', tipo: 'ORGÂNICO', icone: '🥕', desc: 'Ingredientes colhidos no dia.'}, {nome: 'MANÍ', cidade: 'SP', tipo: 'CONTEMPORÂNEO', icone: '🥣', desc: 'A sofisticação de Helena Rizzo.'}, {nome: 'MARIUS DEGUSTARE', cidade: 'RJ', tipo: 'EXCLUSIVO', icone: '🥩', desc: 'Ambiente temático épico.'}],
+            'USD': [{nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'PEIXES', icone: '🐟', desc: 'O ápice dos frutos do mar.'}, {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'Fatia lendária de Manhattan.'}, {nome: 'PETER LUGER', cidade: 'BROOKLYN', tipo: 'STEAKHOUSE', icone: '🥩', desc: 'Famoso desde 1887.'}, {nome: 'NOBU MALIBU', cidade: 'LA', tipo: 'FUSION', icone: '🍣', desc: 'Elite de Hollywood.'}, {nome: 'KATZ\'S DELI', cidade: 'NY', tipo: 'DELI', icone: '🥪', desc: 'Pastrami definitivo.'}],
+            'EUR': [{nome: 'STEIRERECK', cidade: 'VIENA', tipo: 'MODERNO', icone: '🇦🇹', desc: 'Coração do Stadtpark.'}, {nome: 'HOFBRÄUHAUS', cidade: 'MUNICH', tipo: 'HISTÓRICO', icone: '🍺', desc: 'Cervejaria mais famosa.'}, {nome: 'TICKET BAR', cidade: 'BARCELONA', tipo: 'TAPAS', icone: '🥘', desc: 'Inovação extrema.'}, {nome: 'OSTERIA FRANCESCANA', cidade: 'MODENA', tipo: 'ARTE', icone: '🎨', desc: 'Massimo Bottura.'}, {nome: 'NOMA', cidade: 'COPENHAGUE', tipo: 'NÓRDICO', icone: '🌲', desc: 'Frequentemente nº 1 do mundo.'}],
+            'ITA': [{nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin.'}, {nome: 'DA VITTORIO', cidade: 'BERGAMO', tipo: 'FAMILIAR', icone: '🍝', desc: 'Tradição italiana elevada.'}, {nome: 'TRATTORIA BAFFETTO', cidade: 'ROMA', tipo: 'PIZZA', icone: '🇮🇹', desc: 'Massa mais fina de Roma.'}, {nome: 'ANTICA PESA', cidade: 'ROMA', tipo: 'HISTÓRICO', icone: '🍷', desc: 'Jantar no Trastevere.'}, {nome: 'LANGHOSTERIA', cidade: 'MILÃO', tipo: 'FASHION', icone: '🦞', desc: 'Melhor peixe fresco do norte.'}]
+        };
+
         let isRegisterMode = false;
-        let ghostMode = false;
+        let currentUser = null;
         let rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
+        let ghostMode = false; 
 
         function populateCurrencySelectors() {
             const from = document.getElementById('fromCurrency');
@@ -265,10 +323,17 @@
             if(!from || !to) return;
             from.innerHTML = ''; to.innerHTML = '';
             Object.keys(allCurrencies).forEach(code => {
-                from.add(new Option(`${code}`, code));
-                to.add(new Option(`${code}`, code));
+                from.add(new Option(`${code} - ${allCurrencies[code]}`, code));
+                to.add(new Option(`${code} - ${allCurrencies[code]}`, code));
             });
             from.value = "USD"; to.value = "BRL";
+        }
+
+        function inverterMoedas() {
+            const from = document.getElementById('fromCurrency');
+            const to = document.getElementById('toCurrency');
+            const temp = from.value; from.value = to.value; to.value = temp;
+            buscarCotacao();
         }
 
         function applyMask(id) {
@@ -278,116 +343,210 @@
                 let v = e.target.value.replace(/\D/g, '');
                 let num = v === "" ? 0 : parseFloat(v) / 100;
                 rawValues[id] = num;
-                el.value = num.toLocaleString('pt-BR', { style: 'currency', currency: currentUser ? currentUser.currency : 'BRL' });
+                el.value = formatCurrency(num, getContextCurrency(id));
                 if (id === 'calcValueDisplay') buscarCotacao();
             });
+        }
+
+        function getContextCurrency(id) {
+            if(id === 'calcValueDisplay') return document.getElementById('fromCurrency').value;
+            return currentUser ? currentUser.currency : 'BRL';
+        }
+
+        function formatCurrency(val, curr) {
+            const c = curr || (currentUser ? currentUser.currency : 'BRL');
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: c });
+        }
+
+        function prepararRendaMensal() {
+            const meses = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+            const mesAtual = meses[new Date().getMonth()];
+            document.getElementById('desc').value = `RENDA - ${mesAtual}`;
+            document.getElementById('type').value = 'income';
+            document.getElementById('amountDisplay').focus();
+        }
+
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('register-fields').classList.toggle('hidden');
+            document.getElementById('auth-title').innerHTML = isRegisterMode ? 'Nova Conta' : 'i<span class="text-purple-500">Finance</span>';
+            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Registrar Credenciais' : 'Iniciar Sessão Elite';
         }
 
         function handleAuth() {
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value.trim();
-            if (!email || !pass) return alert("Acesso Negado: Credenciais Inválidas");
-
+            if (!email || !pass) { alert("Preencha e-mail e senha."); return; }
+            
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
+                if (!name) { alert("Preencha seu nome."); return; }
                 const newUser = { name: name.toUpperCase(), pass, currency: document.getElementById('userCurrencyInput').value, transactions: [] };
                 localStorage.setItem(`user_${email}`, JSON.stringify(newUser));
                 currentUser = { ...newUser, email };
+                localStorage.setItem('iFinance_session', email);
+                entrarApp();
             } else {
                 const saved = localStorage.getItem(`user_${email}`);
                 if (saved) {
                     const userData = JSON.parse(saved);
-                    if (userData.pass === pass) currentUser = { ...userData, email };
-                    else return alert("Senha incorreta.");
-                } else return alert("Conta não encontrada.");
+                    if (userData.pass === pass) {
+                        currentUser = { ...userData, email };
+                        localStorage.setItem('iFinance_session', email);
+                        entrarApp();
+                    } else { alert("Senha incorreta."); }
+                } else { alert("Conta não encontrada."); }
             }
-            localStorage.setItem('iFinance_session', email);
-            entrarApp();
         }
 
         function entrarApp() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
             applyMask('amountDisplay'); applyMask('calcValueDisplay');
-            populateCurrencySelectors();
-            renderTransactions();
-        }
-
-        function renderTransactions() {
-            const list = document.getElementById('transaction-list');
-            list.innerHTML = '';
-            let inc = 0, exp = 0;
-
-            currentUser.transactions.forEach(t => {
-                if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
-                const li = document.createElement('li');
-                li.className = "flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5";
-                const blur = ghostMode ? 'blur-val' : '';
-                li.innerHTML = `
-                    <div class="flex flex-col">
-                        <span class="text-[10px] font-black uppercase text-white">${t.text}</span>
-                        <span class="text-[8px] text-slate-500">${t.date}</span>
-                    </div>
-                    <span class="font-black ${t.amount > 0 ? 'text-emerald-400' : 'text-red-500'} ${blur}">
-                        ${t.amount.toLocaleString('pt-BR', { style: 'currency', currency: currentUser.currency })}
-                    </span>
-                `;
-                list.appendChild(li);
-            });
-
-            const bal = inc - exp;
-            document.getElementById('balance').innerText = bal.toLocaleString('pt-BR', { style: 'currency', currency: currentUser.currency });
-            document.getElementById('incomes').innerText = inc.toLocaleString('pt-BR', { style: 'currency', currency: currentUser.currency });
-            document.getElementById('expenses').innerText = exp.toLocaleString('pt-BR', { style: 'currency', currency: currentUser.currency });
-            
-            if(ghostMode) document.getElementById('balance').classList.add('blur-val');
-            else document.getElementById('balance').classList.remove('blur-val');
-        }
-
-        function addTransaction() {
-            const text = document.getElementById('desc').value || "OPERACAO VIP";
-            const amount = rawValues.amountDisplay;
-            const type = document.getElementById('type').value;
-            if(amount <= 0) return;
-
-            currentUser.transactions.push({
-                id: Date.now(),
-                text: text.toUpperCase(),
-                amount: type === 'income' ? amount : -amount,
-                date: new Date().toLocaleDateString('pt-BR')
-            });
-            
-            localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser));
-            renderTransactions();
-            document.getElementById('desc').value = ''; 
-            document.getElementById('amountDisplay').value = '';
-            rawValues.amountDisplay = 0;
+            populateCurrencySelectors(); populateMonthFilter();
+            renderTransactions(); setGuide('BRL');
         }
 
         async function buscarCotacao() {
             const from = document.getElementById('fromCurrency').value;
             const to = document.getElementById('toCurrency').value;
+            if(from === to) { atualizarConversao(1); return; }
             try {
                 const res = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
                 const data = await res.json();
-                const rate = parseFloat(data[`${from}${to}`].bid);
-                const resVal = rawValues.calcValueDisplay * rate;
-                document.getElementById('calcResultDisplay').innerText = resVal.toLocaleString('pt-BR', { style: 'currency', currency: to });
-            } catch { console.log("Erro de conexão"); }
+                atualizarConversao(parseFloat(data[`${from}${to}`].bid));
+            } catch { document.getElementById('calcResultDisplay').innerText = "Erro rede"; }
+        }
+
+        function atualizarConversao(rate) {
+            const res = rawValues.calcValueDisplay * rate;
+            document.getElementById('calcResultDisplay').innerText = formatCurrency(res, document.getElementById('toCurrency').value);
+        }
+
+        function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
+        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
+
+        function addTransaction() {
+            const desc = document.getElementById('desc').value || 'Transação Geral';
+            const amount = rawValues.amountDisplay;
+            const type = document.getElementById('type').value;
+            if (amount <= 0) return;
+
+            const finalAmount = type === 'expense' ? -amount : amount;
+            currentUser.transactions.push({
+                id: Date.now(),
+                text: desc.toUpperCase(),
+                amount: finalAmount,
+                date: new Date().toLocaleDateString('pt-BR'),
+                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
+            });
+            save(); populateMonthFilter(); renderTransactions();
+            document.getElementById('desc').value = '';
+            document.getElementById('amountDisplay').value = '';
+            rawValues.amountDisplay = 0;
+        }
+
+        function lancarCambio() {
+            const val = parseFloat(document.getElementById('calcResultDisplay').innerText.replace(/[^\d,]/g, '').replace(',', '.'));
+            if(val > 0) {
+                currentUser.transactions.push({
+                    id: Date.now(), text: 'CÂMBIO REALIZADO', amount: val,
+                    date: new Date().toLocaleDateString('pt-BR'),
+                    monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
+                });
+                save(); alert('Valor injetado no saldo!'); switchTab('home');
+            }
+        }
+
+        function renderTransactions() {
+            const list = document.getElementById('transaction-list');
+            const filter = document.getElementById('filterMonth').value;
+            list.innerHTML = ''; let inc = 0, exp = 0;
+            
+            currentUser.transactions.sort((a,b) => b.id - a.id).forEach(t => {
+                if (filter !== 'all' && t.monthYear !== filter) return;
+                if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
+                
+                const li = document.createElement('li');
+                li.className = "flex justify-between items-center py-5 transition-all";
+                const blurClass = ghostMode ? 'blur-val' : '';
+                li.innerHTML = `
+                    <div class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] text-purple-400 border border-white/10">
+                            <i class="fa-solid ${t.amount > 0 ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
+                        </div>
+                        <div>
+                            <p class="font-black text-[10px] text-white/90">${t.text}</p>
+                            <p class="text-[7px] text-white/30 uppercase tracking-widest">${t.date}</p>
+                        </div>
+                    </div>
+                    <p class="font-black text-xs ${t.amount > 0 ? 'text-emerald-400' : 'text-red-400'} ${blurClass}">${formatCurrency(t.amount)}</p>
+                `;
+                list.appendChild(li);
+            });
+
+            document.getElementById('balance').innerText = formatCurrency(inc - exp);
+            document.getElementById('incomes').innerText = formatCurrency(inc);
+            document.getElementById('expenses').innerText = formatCurrency(exp);
+
+            if(ghostMode) {
+                ['balance', 'incomes', 'expenses'].forEach(id => document.getElementById(id).classList.add('blur-val'));
+            } else {
+                ['balance', 'incomes', 'expenses'].forEach(id => document.getElementById(id).classList.remove('blur-val'));
+            }
+            updateInsights(inc, exp);
+        }
+
+        function populateMonthFilter() {
+            const filter = document.getElementById('filterMonth');
+            if(!filter) return;
+            const currentSelected = filter.value;
+            filter.innerHTML = '<option value="all">TODOS OS MESES</option>';
+            const months = [...new Set(currentUser.transactions.map(t => t.monthYear))];
+            months.sort().reverse().forEach(m => filter.add(new Option(m, m)));
+            filter.value = currentSelected || 'all';
         }
 
         function switchTab(tabId) {
-            document.getElementById('tab-home').classList.add('hidden');
-            document.getElementById('tab-cambio').classList.add('hidden');
+            ['home', 'cambio', 'insights', 'viagem'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                document.getElementById(`nav-${t}`).classList.remove('tab-active');
+                document.getElementById(`nav-${t}`).classList.add('text-white/30');
+            });
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('tab-active'));
             document.getElementById(`nav-${tabId}`).classList.add('tab-active');
+            if(tabId === 'home') renderTransactions();
         }
 
-        function toggleAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Criar Assinatura' : 'Acessar Terminal';
+        function setGuide(loc) {
+            const container = document.getElementById('restaurant-list');
+            container.innerHTML = '';
+            restaurantesDB[loc]?.forEach(r => {
+                container.innerHTML += `
+                    <div class="card-inner p-6 text-left flex gap-4 items-start">
+                        <div class="text-3xl">${r.icone}</div>
+                        <div>
+                            <h4 class="font-black text-purple-400 text-xs">${r.nome}</h4>
+                            <p class="text-[8px] text-white/40 mb-2 font-bold">${r.cidade} | ${r.tipo}</p>
+                            <p class="text-[10px] text-white/70">${r.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateInsights(inc, exp) {
+            const container = document.getElementById('insights-container');
+            const percentUsed = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
+            container.innerHTML = `
+                <div class="card-inner p-6 border-l-4 border-l-purple-500">
+                    <p class="text-[8px] font-black text-purple-400 uppercase mb-2">Comprometimento de Renda</p>
+                    <h3 class="font-black text-sm mb-3">Você utilizou ${percentUsed}% do capital disponível.</h3>
+                    <div class="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                        <div class="bg-purple-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div>
+                    </div>
+                </div>
+            `;
         }
 
         function toggleGhostMode() {
@@ -396,14 +555,29 @@
             renderTransactions();
         }
 
-        function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
-
-        // Session recovery
-        const session = localStorage.getItem('iFinance_session');
-        if (session) {
-            const saved = localStorage.getItem(`user_${session}`);
-            if (saved) { currentUser = { ...JSON.parse(saved), email: session }; entrarApp(); }
+        function exportData() {
+            const data = JSON.stringify(currentUser, null, 2);
+            const blob = new Blob([data], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `ifinance_vault_${Date.now()}.txt`;
+            a.click();
         }
+
+        function limparTudo() {
+            if(confirm("Confirmar reset total do banco de dados?")) {
+                currentUser.transactions = []; save(); renderTransactions();
+            }
+        }
+
+        // Auto-login se houver sessão
+        window.onload = () => {
+            const session = localStorage.getItem('iFinance_session');
+            if(session) {
+                const saved = localStorage.getItem(`user_${session}`);
+                if(saved) { currentUser = { ...JSON.parse(saved), email: session }; entrarApp(); }
+            }
+        };
     </script>
 </body>
 </html>
