@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>iFinance Premium - Ultra Version</title>
+    <title>iFinance Premium - Central de Objetivos</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -65,7 +65,6 @@
             font-weight: 800;
         }
 
-        /* Estilo para ocultar valores */
         .blur-val { filter: blur(10px); pointer-events: none; }
 
         @media (max-width: 640px) {
@@ -107,6 +106,11 @@
 
         .insight-card {
             border-left: 4px solid #2563eb;
+        }
+
+        /* Estilos Novos Objetivos */
+        .progress-bar-fill {
+            transition: width 1.5s cubic-bezier(0.65, 0, 0.35, 1);
         }
     </style>
 </head>
@@ -235,17 +239,22 @@
             <div id="insights-container" class="max-w-xl mx-auto space-y-4 pb-24"></div>
         </section>
 
-        <section id="tab-viagem" class="hidden p-4 text-center fade-in-up">
-            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter">VIP Guide</h2>
-            <div class="flex gap-2 overflow-x-auto pb-4 mb-4 no-scrollbar">
-                <button onclick="setGuide('BRL')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇧🇷 Brasil</button>
-                <button onclick="setGuide('USD')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇺🇸 EUA</button>
-                <button onclick="setGuide('EUR')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇪🇺 Europa</button>
-                <button onclick="setGuide('ITA')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇮🇹 Itália</button>
-                <button onclick="setGuide('FRA')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇫🇷 França</button>
-                <button onclick="setGuide('JPN')" class="bg-white border px-6 py-3 rounded-xl font-black shrink-0 text-[10px] uppercase shadow-sm">🇯🇵 Japão</button>
+        <section id="tab-objetivos" class="hidden p-4 fade-in-up">
+            <h2 class="text-2xl font-black mb-6 mt-4 uppercase tracking-tighter text-center italic">Minhas <span class="text-blue-600">Metas</span></h2>
+            
+            <div class="max-w-xl mx-auto space-y-4">
+                <div class="card-inner p-6 premium-shadow bg-blue-600 text-white">
+                    <p class="text-[9px] font-black uppercase tracking-widest opacity-70 mb-3">Novo Objetivo</p>
+                    <div class="space-y-3">
+                        <input type="text" id="goalTitle" placeholder="Ex: Viagem, Carro, Reserva..." class="w-full bg-blue-700 border-none p-4 rounded-2xl font-bold placeholder-blue-300 text-white outline-none">
+                        <input type="text" id="goalAmountDisplay" placeholder="Valor Alvo (0,00)" class="w-full bg-blue-700 border-none p-4 rounded-2xl font-bold placeholder-blue-300 text-white outline-none">
+                        <button onclick="addGoal()" class="w-full bg-white text-blue-600 font-black py-4 rounded-2xl uppercase text-[10px] tracking-widest shadow-lg">Criar Meta de Economia</button>
+                    </div>
+                </div>
+
+                <div id="goals-list" class="space-y-4 pb-24">
+                    </div>
             </div>
-            <div id="restaurant-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-20 max-w-5xl mx-auto"></div>
         </section>
 
         <nav class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-2xl border-t border-slate-100 py-5 flex justify-around shadow-2xl z-50">
@@ -261,9 +270,9 @@
                 <i class="fa-solid fa-chart-pie text-xl"></i>
                 <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Insights</span>
             </button>
-            <button onclick="switchTab('viagem')" id="nav-viagem" class="flex flex-col items-center text-slate-300">
-                <i class="fa-solid fa-utensils text-xl"></i>
-                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Guia VIP</span>
+            <button onclick="switchTab('objetivos')" id="nav-objetivos" class="flex flex-col items-center text-slate-300">
+                <i class="fa-solid fa-bullseye text-xl"></i>
+                <span class="nav-text text-[9px] font-black mt-1 uppercase tracking-wider">Metas</span>
             </button>
         </nav>
     </div>
@@ -271,18 +280,9 @@
     <script>
         const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "AUD":"Dólar Aus", "CAD":"Dólar Can", "CHF":"Suíço", "ARS":"Peso Arg", "BTC":"Bitcoin" };
 
-        const restaurantesDB = {
-            'BRL': [{nome: 'A CASA DO PORCO', cidade: 'SP', tipo: 'CONCEITUAL', icone: '🐷', desc: 'Focado na carne suína.'}, {nome: 'D.O.M', cidade: 'SP', tipo: 'AMAZÔNICO', icone: '🌿', desc: 'Alta gastronomia Amazônica.'}, {nome: 'LASAI', cidade: 'RJ', tipo: 'ORGÂNICO', icone: '🥕', desc: 'Ingredientes colhidos no dia.'}, {nome: 'MANÍ', cidade: 'SP', tipo: 'CONTEMPORÂNEO', icone: '🥣', desc: 'A sofisticação de Helena Rizzo.'}, {nome: 'MARIUS DEGUSTARE', cidade: 'RJ', tipo: 'EXCLUSIVO', icone: '🥩', desc: 'Ambiente temático épico.'}],
-            'USD': [{nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'PEIXES', icone: '🐟', desc: 'O ápice dos frutos do mar.'}, {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'Fatia lendária de Manhattan.'}, {nome: 'PETER LUGER', cidade: 'BROOKLYN', tipo: 'STEAKHOUSE', icone: '🥩', desc: 'Famoso desde 1887.'}, {nome: 'NOBU MALIBU', cidade: 'LA', tipo: 'FUSION', icone: '🍣', desc: 'Elite de Hollywood.'}, {nome: 'KATZ\'S DELI', cidade: 'NY', tipo: 'DELI', icone: '🥪', desc: 'Pastrami definitivo.'}],
-            'EUR': [{nome: 'STEIRERECK', cidade: 'VIENA', tipo: 'MODERNO', icone: '🇦🇹', desc: 'Coração do Stadtpark.'}, {nome: 'HOFBRÄUHAUS', cidade: 'MUNICH', tipo: 'HISTÓRICO', icone: '🍺', desc: 'Cervejaria mais famosa.'}, {nome: 'TICKET BAR', cidade: 'BARCELONA', tipo: 'TAPAS', icone: '🥘', desc: 'Inovação extrema.'}, {nome: 'OSTERIA FRANCESCANA', cidade: 'MODENA', tipo: 'ARTE', icone: '🎨', desc: 'Massimo Bottura.'}, {nome: 'NOMA', cidade: 'COPENHAGUE', tipo: 'NÓRDICO', icone: '🌲', desc: 'Frequentemente nº 1 do mundo.'}],
-            'ITA': [{nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin.'}, {nome: 'DA VITTORIO', cidade: 'BERGAMO', tipo: 'FAMILIAR', icone: '🍝', desc: 'Tradição italiana elevada.'}, {nome: 'TRATTORIA BAFFETTO', cidade: 'ROMA', tipo: 'PIZZA', icone: '🇮🇹', desc: 'Massa mais fina de Roma.'}, {nome: 'ANTICA PESA', cidade: 'ROMA', tipo: 'HISTÓRICO', icone: '🍷', desc: 'Jantar no Trastevere.'}, {nome: 'LANGHOSTERIA', cidade: 'MILÃO', tipo: 'FASHION', icone: '🦞', desc: 'Melhor peixe fresco do norte.'}],
-            'FRA': [{nome: 'LE MEURICE', cidade: 'PARIS', tipo: 'PALÁCIO', icone: '🥐', desc: 'Ambiente real Alain Ducasse.'}, {nome: 'SEPTIME', cidade: 'PARIS', tipo: 'NEO-BISTRO', icone: '🍷', desc: 'O mais concorrido de Paris.'}, {nome: 'MIRAZUR', cidade: 'MENTON', tipo: 'RIVIERA', icone: '🌊', desc: 'Mar e jardins.'}, {nome: 'L\'AMI LOUIS', cidade: 'PARIS', tipo: 'BISTRO', icone: '🦆', desc: 'Bistrô mais famoso do mundo.'}, {nome: 'CIEL DE PARIS', cidade: 'PARIS', tipo: 'VISTA', icone: '🗼', desc: 'Topo da Torre Montparnasse.'}],
-            'JPN': [{nome: 'SUKIYABASHI JIRO', cidade: 'TOKYO', tipo: 'SUSHI', icone: '🍣', desc: 'Lenda de Jiro Ono.'}, {nome: 'NARISAWA', cidade: 'TOKYO', tipo: 'ECO', icone: '🌲', desc: 'Respeito à natureza.'}, {nome: 'ICHIRAN RAMEN', cidade: 'TOKYO', tipo: 'RAMEN', icone: '🍜', desc: 'Ramen definitivo.'}, {nome: 'KOBE BEEF KAISEKI', cidade: 'KOBE', tipo: 'WAGYU', icone: '🐂', desc: 'Carne mais macia do mundo.'}, {nome: 'DEN', cidade: 'TOKYO', tipo: 'CRIATIVO', icone: '🍱', desc: 'Humor e técnica impecável.'}]
-        };
-
         let isRegisterMode = false;
         let currentUser = null;
-        let rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
+        let rawValues = { amountDisplay: 0, calcValueDisplay: 0, goalAmountDisplay: 0 };
         let ghostMode = false; 
 
         function populateCurrencySelectors() {
@@ -342,23 +342,15 @@
             document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já possui conta? Entre agora' : 'Ainda não possui conta? Registre-se';
         }
 
-        // --- SUA FUNÇÃO handleAuth INTEGRADA COM SUCESSO ---
         function handleAuth() {
             const email = document.getElementById('emailInput').value.trim();
             const pass = document.getElementById('passInput').value.trim();
-            
-            if (!email || !pass) {
-                alert("Preencha e-mail e senha.");
-                return;
-            }
+            if (!email || !pass) { alert("Preencha e-mail e senha."); return; }
             
             if (isRegisterMode) {
                 const name = document.getElementById('userNameInput').value.trim();
-                if (!name) {
-                    alert("Preencha seu nome.");
-                    return;
-                }
-                const newUser = { name: name.toUpperCase(), pass, currency: document.getElementById('userCurrencyInput').value, transactions: [] };
+                if (!name) { alert("Preencha seu nome."); return; }
+                const newUser = { name: name.toUpperCase(), pass, currency: document.getElementById('userCurrencyInput').value, transactions: [], goals: [] };
                 localStorage.setItem(`user_${email}`, JSON.stringify(newUser));
                 currentUser = { ...newUser, email };
                 localStorage.setItem('iFinance_session', email);
@@ -369,24 +361,22 @@
                     const userData = JSON.parse(saved);
                     if (userData.pass === pass) {
                         currentUser = { ...userData, email };
+                        if(!currentUser.goals) currentUser.goals = []; // Compatibilidade
                         localStorage.setItem('iFinance_session', email);
                         entrarApp();
-                    } else {
-                        alert("Senha incorreta.");
-                    }
-                } else { 
-                    alert("Conta não encontrada."); 
-                }
+                    } else { alert("Senha incorreta."); }
+                } else { alert("Conta não encontrada."); }
             }
         }
 
         function entrarApp() {
             document.getElementById('auth-screen').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
-            applyMask('amountDisplay'); applyMask('calcValueDisplay');
+            applyMask('amountDisplay'); applyMask('calcValueDisplay'); applyMask('goalAmountDisplay');
             populateCurrencySelectors();
             populateMonthFilter();
-            renderTransactions(); setGuide('BRL');
+            renderTransactions(); 
+            renderGoals();
         }
 
         async function buscarCotacao() {
@@ -408,6 +398,29 @@
         function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
         function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
 
+        function addTransaction() {
+            const text = document.getElementById('desc').value || 'DIVERSOS';
+            const amount = rawValues.amountDisplay;
+            const type = document.getElementById('type').value;
+            if(amount <= 0) return;
+            
+            const finalAmount = type === 'income' ? amount : -amount;
+            currentUser.transactions.push({
+                id: Date.now(),
+                text: text.toUpperCase(),
+                amount: finalAmount,
+                date: new Date().toLocaleDateString('pt-BR'),
+                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
+            });
+            
+            save();
+            document.getElementById('desc').value = '';
+            document.getElementById('amountDisplay').value = '';
+            rawValues.amountDisplay = 0;
+            populateMonthFilter();
+            renderTransactions();
+        }
+
         function repetirTransacao(text, amount) {
             if(confirm(`Deseja lançar "${text}" novamente?`)) {
                 currentUser.transactions.push({ 
@@ -428,13 +441,10 @@
             
             currentUser.transactions.sort((a,b) => b.id - a.id).forEach(t => {
                 if (filter !== 'all' && t.monthYear !== filter) return;
-
                 if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
                 const li = document.createElement('li');
                 li.className = "flex justify-between items-center py-4 anim-fade";
-                
                 const blurClass = ghostMode ? 'blur-val' : '';
-
                 li.innerHTML = `<div class="flex items-center gap-3"><button onclick="repetirTransacao('${t.text}', ${t.amount})" class="btn-repeat text-sm"><i class="fa-solid fa-rotate"></i></button><div><p class="font-black text-[10px] text-slate-700">${t.text}</p><p class="text-[7px] text-slate-300 uppercase">${t.date}</p></div></div><p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}">${formatCurrency(t.amount)}</p>`;
                 list.appendChild(li);
             });
@@ -444,15 +454,10 @@
             document.getElementById('expenses').innerText = formatCurrency(exp);
 
             if(ghostMode) {
-                document.getElementById('balance').classList.add('blur-val');
-                document.getElementById('incomes').classList.add('blur-val');
-                document.getElementById('expenses').classList.add('blur-val');
+                ['balance', 'incomes', 'expenses'].forEach(id => document.getElementById(id).classList.add('blur-val'));
             } else {
-                document.getElementById('balance').classList.remove('blur-val');
-                document.getElementById('incomes').classList.remove('blur-val');
-                document.getElementById('expenses').classList.remove('blur-val');
+                ['balance', 'incomes', 'expenses'].forEach(id => document.getElementById(id).classList.remove('blur-val'));
             }
-
             updateInsights(inc, exp);
         }
 
@@ -462,17 +467,14 @@
             const currentSelected = filter.value;
             filter.innerHTML = '<option value="all">TODOS OS MESES</option>';
             const months = [...new Set(currentUser.transactions.map(t => t.monthYear))];
-            months.sort().reverse().forEach(m => {
-                const opt = new Option(m, m);
-                filter.add(opt);
-            });
+            months.sort().reverse().forEach(m => { filter.add(new Option(m, m)); });
             filter.value = currentSelected || 'all';
         }
 
         function toggleGhostMode() {
             ghostMode = !ghostMode;
             document.getElementById('ghost-icon').className = ghostMode ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-            renderTransactions();
+            renderTransactions(); renderGoals();
         }
 
         function exportData() {
@@ -502,7 +504,7 @@
         }
 
         function switchTab(tab) {
-            ['home', 'cambio', 'viagem', 'insights'].forEach(t => {
+            ['home', 'cambio', 'objetivos', 'insights'].forEach(t => {
                 document.getElementById(`tab-${t}`).classList.add('hidden');
                 document.getElementById(`nav-${t}`).classList.remove('tab-active');
                 document.getElementById(`nav-${t}`).classList.add('text-slate-300');
@@ -511,58 +513,84 @@
             document.getElementById(`nav-${tab}`).classList.add('tab-active');
         }
 
-        function setGuide(reg) {
-            const container = document.getElementById('restaurant-list');
+        // --- LÓGICA DE OBJETIVOS (METAS) ---
+        function addGoal() {
+            const title = document.getElementById('goalTitle').value;
+            const target = rawValues.goalAmountDisplay;
+            if(!title || target <= 0) { alert("Preencha título e valor alvo."); return; }
+            
+            currentUser.goals.push({ id: Date.now(), title: title.toUpperCase(), target: target, saved: 0 });
+            save();
+            document.getElementById('goalTitle').value = '';
+            document.getElementById('goalAmountDisplay').value = '';
+            rawValues.goalAmountDisplay = 0;
+            renderGoals();
+        }
+
+        function updateGoalValue(id) {
+            const val = prompt("Quanto deseja adicionar à meta? (Use ponto para centavos)");
+            if(val === null) return;
+            const num = parseFloat(val);
+            if(isNaN(num)) return;
+            
+            const goal = currentUser.goals.find(g => g.id === id);
+            if(goal) {
+                goal.saved += num;
+                if(goal.saved < 0) goal.saved = 0;
+                save();
+                renderGoals();
+            }
+        }
+
+        function deleteGoal(id) {
+            if(confirm("Excluir esta meta?")) {
+                currentUser.goals = currentUser.goals.filter(g => g.id !== id);
+                save();
+                renderGoals();
+            }
+        }
+
+        function renderGoals() {
+            const container = document.getElementById('goals-list');
+            if(!container) return;
             container.innerHTML = '';
-            (restaurantesDB[reg] || []).forEach(r => {
+            
+            currentUser.goals.forEach(g => {
+                const percent = Math.min((g.saved / g.target) * 100, 100).toFixed(1);
+                const blurClass = ghostMode ? 'blur-val' : '';
+                
                 const div = document.createElement('div');
-                div.className = "card-inner p-5 text-left premium-shadow fade-in-up";
-                div.innerHTML = `<div class="text-2xl mb-3">${r.icone}</div><h4 class="font-black text-[11px]">${r.nome}</h4><p class="text-[8px] font-bold text-blue-600 mb-1">${r.cidade} • ${r.tipo}</p><p class="text-[9px] text-slate-400 font-medium">${r.desc}</p>`;
+                div.className = "card-inner p-6 premium-shadow anim-fade";
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h4 class="font-black text-xs text-slate-700">${g.title}</h4>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase">Progresso: ${percent}%</p>
+                        </div>
+                        <button onclick="deleteGoal(${g.id})" class="text-slate-200 hover:text-red-400"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                    </div>
+                    <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden mb-4">
+                        <div class="progress-bar-fill bg-gradient-to-r from-blue-500 to-blue-700 h-full" style="width: ${percent}%"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="font-black text-[10px] text-blue-600 ${blurClass}">${formatCurrency(g.saved)} / ${formatCurrency(g.target)}</p>
+                        <button onclick="updateGoalValue(${g.id})" class="bg-slate-50 px-4 py-2 rounded-xl text-[9px] font-black text-blue-600 uppercase border border-blue-50">+ Adicionar</button>
+                    </div>
+                `;
                 container.appendChild(div);
             });
         }
 
-        function addTransaction() {
-            const descInput = document.getElementById('desc').value.trim();
-            const val = rawValues.amountDisplay;
-            if (val === 0) return;
-            const finalDesc = descInput === "" ? " — " : descInput.toUpperCase();
-            const finalVal = (document.getElementById('type').value === 'expense') ? -val : val;
-            
-            currentUser.transactions.push({ 
-                id: Date.now(), 
-                text: finalDesc, 
-                amount: finalVal, 
-                date: new Date().toLocaleDateString('pt-BR'),
-                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
-            });
-            
-            save(); populateMonthFilter(); renderTransactions();
-            document.getElementById('desc').value = ''; rawValues.amountDisplay = 0;
-            document.getElementById('amountDisplay').value = formatCurrency(0);
-        }
-
-        function lancarCambio() {
-            const val = rawValues.calcValueDisplay; if(val <= 0) return;
-            const resText = document.getElementById('calcResultDisplay').innerText;
-            const from = document.getElementById('fromCurrency').value;
-            const to = document.getElementById('toCurrency').value;
-            
-            currentUser.transactions.push({
-                id: Date.now(),
-                text: `CÂMBIO: ${from} ➔ ${to}`,
-                amount: parseFloat(resText.replace(/[^\d,-]/g, '').replace(',', '.')),
-                date: new Date().toLocaleDateString('pt-BR'),
-                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
-            });
-            save(); renderTransactions(); switchTab('home');
-        }
-
+        // Auto-login session
         window.onload = () => {
-            const savedEmail = localStorage.getItem('iFinance_session');
-            if (savedEmail) {
-                const userData = localStorage.getItem(`user_${savedEmail}`);
-                if (userData) { currentUser = { ...JSON.parse(userData), email: savedEmail }; entrarApp(); }
+            const session = localStorage.getItem('iFinance_session');
+            if (session) {
+                const saved = localStorage.getItem(`user_${session}`);
+                if (saved) {
+                    currentUser = { ...JSON.parse(saved), email: session };
+                    if(!currentUser.goals) currentUser.goals = [];
+                    entrarApp();
+                }
             }
         };
     </script>
