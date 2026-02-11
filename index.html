@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>iFinance Premium - Ultra Secure Version</title>
     
-    <!-- Content Security Policy (CSP) Otimizada -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://economia.awesomeapi.com.br;">
+    <!-- Content Security Policy (CSP) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://economia.awesomeapi.com.br;">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -20,6 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km6VChw6syOtMvBWQF8MSs+GVBWwUsWnYY/+uf9dmGfqnV0sPBeAljkPJP5BA/4jJ8TrDT5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
     <style>
+        /* CONFIGURAÇÕES TEMA DARK ULTRA */
         :root {
             --neon-purple: #a855f7;
             --dark-bg: #050505;
@@ -43,6 +44,7 @@
         body { padding-bottom: 110px; -webkit-tap-highlight-color: transparent; }
         .hidden { display: none !important; }
 
+        /* INTRO ANIMATION: O PRÉDIO FUTURISTA */
         #intro-overlay {
             position: fixed;
             top: 0;
@@ -71,8 +73,17 @@
             animation: moveUpBuilding 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
-        .window { width: 100%; height: 30px; background: #1a1a1a; }
-        .window.bright { background: var(--neon-purple); box-shadow: 0 0 15px var(--neon-purple); animation: flicker 2s infinite alternate; }
+        .window {
+            width: 100%;
+            height: 30px;
+            background: #1a1a1a;
+        }
+
+        .window.bright {
+            background: var(--neon-purple);
+            box-shadow: 0 0 15px var(--neon-purple);
+            animation: flicker 2s infinite alternate;
+        }
 
         .target-window {
             position: absolute;
@@ -87,11 +98,27 @@
             animation: zoomIntoWindow 1s ease-in forwards 2.5s;
         }
 
-        @keyframes moveUpBuilding { 0% { transform: translateY(100%); } 100% { transform: translateY(20%); } }
-        @keyframes zoomIntoWindow { 0% { opacity: 0; transform: translateX(-50%) scale(1); } 50% { opacity: 1; } 100% { opacity: 1; transform: translateX(-50%) scale(50); } }
-        @keyframes fadeOutIntro { to { opacity: 0; visibility: hidden; } }
-        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+        @keyframes moveUpBuilding {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(20%); }
+        }
 
+        @keyframes zoomIntoWindow {
+            0% { opacity: 0; transform: translateX(-50%) scale(1); }
+            50% { opacity: 1; }
+            100% { opacity: 1; transform: translateX(-50%) scale(50); }
+        }
+
+        @keyframes fadeOutIntro {
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* ELEMENTOS VIVOS (HOVER/ACTIVE/LED) */
         .card-inner { 
             background: var(--card-bg) !important; 
             border: 1px solid #1f1f1f !important; 
@@ -100,18 +127,36 @@
             transition: all 0.3s ease;
         }
 
-        .card-inner:hover { transform: translateY(-5px); box-shadow: 0 0 30px rgba(168, 85, 247, 0.6); }
+        .card-inner:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+        }
 
-        button, .btn-action, .btn-gradient { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: var(--led-shadow); }
-        button:active { transform: scale(0.92) !important; box-shadow: 0 0 40px var(--neon-purple) !important; }
+        button, .btn-action, .btn-gradient {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--led-shadow);
+        }
 
-        input, select { background-color: #121212 !important; border: 1px solid #222 !important; color: white !important; }
+        button:active { 
+            transform: scale(0.92) !important; 
+            box-shadow: 0 0 40px var(--neon-purple) !important;
+        }
 
+        input, select {
+            background-color: #121212 !important;
+            border: 1px solid #222 !important;
+            color: white !important;
+        }
+
+        /* AJUSTES DE TEXTO E CORES */
         .balance-text { color: #fff; font-weight: 900; }
         .text-slate-500, .text-slate-400 { color: #888 !important; }
         .bg-auth-gradient { background: #050505; }
         
-        .tab-active { color: var(--neon-purple) !important; text-shadow: 0 0 10px var(--neon-purple); }
+        .tab-active { 
+            color: var(--neon-purple) !important; 
+            text-shadow: 0 0 10px var(--neon-purple);
+        }
 
         header { background: rgba(5, 5, 5, 0.8) !important; border-bottom: 1px solid #1f1f1f !important; }
         nav { background: rgba(10, 10, 10, 0.9) !important; border-top: 1px solid #1f1f1f !important; }
@@ -218,7 +263,9 @@
                             <option value="all">TODOS OS MESES</option>
                         </select>
                     </div>
+
                     <ul id="transaction-list" class="divide-y divide-zinc-900"></ul>
+                    
                     <div class="flex gap-2 mt-4">
                         <button onclick="exportData()" class="flex-1 text-center py-4 text-[8px] bg-zinc-900 rounded-xl text-slate-400 font-black uppercase tracking-widest">Backup Dados</button>
                         <button onclick="limparTudo()" class="flex-1 text-center py-4 text-[8px] bg-red-900/20 rounded-xl text-red-500 font-black uppercase tracking-[0.5em]">Limpar Base</button>
@@ -285,39 +332,23 @@
     </div>
 
     <script>
-        // CONFIGURAÇÕES DE SEGURANÇA AVANÇADA
-        const DB_NAME = 'iFinanceDB';
-        const DB_VERSION = 1;
-        let db;
+        // CONFIGURAÇÕES DE SEGURANÇA E LÓGICA DO APP
         let currentUser = null;
         let userPassword = "";
         let encryptionKey = null;
-        let loginAttempts = 0;
+        let isRegisterMode = false;
+        let rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
+        let ghostMode = false;
+        const rateCache = new Map();
         const MAX_ATTEMPTS = 3;
 
-        // Inicialização do IndexedDB
-        const initDB = () => {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
-                request.onupgradeneeded = (e) => {
-                    const db = e.target.result;
-                    if (!db.objectStoreNames.contains('users')) {
-                        db.createObjectStore('users', { keyPath: 'email' });
-                    }
-                };
-                request.onsuccess = (e) => { db = e.target.result; resolve(); };
-                request.onerror = (e) => reject(e);
-            });
-        };
-
-        // Derivação de Chave PBKDF2 com Salt
+        // Funções de Criptografia Avançada
         async function deriveKey(password, salt) {
             const iterations = 10000;
             const keySize = 256 / 32;
             return CryptoJS.PBKDF2(password, salt, { keySize, iterations }).toString();
         }
 
-        // Criptografia AES-256
         function encrypt(data, key) {
             return CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
         }
@@ -337,95 +368,80 @@
             return temp.innerHTML.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
         };
 
+        const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "AUD":"Dólar Aus", "CAD":"Dólar Can", "CHF":"Suíço", "ARS":"Peso Arg", "BTC":"Bitcoin" };
+
+        const restaurantesDB = {
+            'BRL': [{nome: 'A CASA DO PORCO', cidade: 'SP', tipo: 'CONCEITUAL', icone: '🐷', desc: 'Focado na carne suína.'}, {nome: 'D.O.M', cidade: 'SP', tipo: 'AMAZÔNICO', icone: '🌿', desc: 'Alta gastronomia Amazônica.'}, {nome: 'LASAI', cidade: 'RJ', tipo: 'ORGÂNICO', icone: '🥕', desc: 'Ingredientes colhidos no dia.'}, {nome: 'MANÍ', cidade: 'SP', tipo: 'CONTEMPORÂNEO', icone: '🥣', desc: 'A sofisticação de Helena Rizzo.'}, {nome: 'MARIUS DEGUSTARE', cidade: 'RJ', tipo: 'EXCLUSIVO', icone: '🥩', desc: 'Ambiente temático épico.'}],
+            'USD': [{nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'PEIXES', icone: '🐟', desc: 'O ápice dos frutos do mar.'}, {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'Fatia lendária de Manhattan.'}, {nome: 'PETER LUGER', cidade: 'BROOKLYN', tipo: 'STEAKHOUSE', icone: '🥩', desc: 'Famoso desde 1887.'}, {nome: 'NOBU MALIBU', cidade: 'LA', tipo: 'FUSION', icone: '🍣', desc: 'Elite de Hollywood.'}, {nome: 'KATZ\'S DELI', cidade: 'NY', tipo: 'DELI', icone: '🥪', desc: 'Pastrami definitivo.'}],
+            'EUR': [{nome: 'STEIRERECK', cidade: 'VIENA', tipo: 'MODERNO', icone: '🇦🇹', desc: 'Coração do Stadtpark.'}, {nome: 'HOFBRÄUHAUS', cidade: 'MUNICH', tipo: 'HISTÓRICO', icone: '🍺', desc: 'Cervejaria mais famosa.'}, {nome: 'TICKET BAR', cidade: 'BARCELONA', tipo: 'TAPAS', icone: '🥘', desc: 'Inovação extrema.'}, {nome: 'OSTERIA FRANCESCANA', cidade: 'MODENA', tipo: 'ARTE', icone: '🎨', desc: 'Massimo Bottura.'}, {nome: 'NOMA', cidade: 'COPENHAGUE', tipo: 'NÓRDICO', icone: '🌲', desc: 'Frequentemente nº 1 do mundo.'}],
+            'ITA': [{nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin.'}, {nome: 'DA VITTORIO', cidade: 'BERGAMO', tipo: 'FAMILIAR', icone: '🍝', desc: 'Tradição italiana elevada.'}, {nome: 'TRATTORIA BAFFETTO', cidade: 'ROMA', tipo: 'PIZZA', icone: '🇮🇹', desc: 'Massa mais fina de Roma.'}, {nome: 'ANTICA PESA', cidade: 'ROMA', tipo: 'HISTÓRICO', icone: '🍷', desc: 'Jantar no Trastevere.'}, {nome: 'LANGHOSTERIA', cidade: 'MILÃO', tipo: 'FASHION', icone: '🦞', desc: 'Melhor peixe fresco do norte.'}],
+            'FRA': [{nome: 'LE MEURICE', cidade: 'PARIS', tipo: 'PALÁCIO', icone: '🥐', desc: 'Ambiente real Alain Ducasse.'}, {nome: 'SEPTIME', cidade: 'PARIS', tipo: 'NEO-BISTRO', icone: '🍷', desc: 'O mais concorrido de Paris.'}, {nome: 'MIRAZUR', cidade: 'MENTON', tipo: 'RIVIERA', icone: '🌊', desc: 'Mar e jardins.'}, {nome: 'L\'AMI LOUIS', cidade: 'PARIS', tipo: 'BISTRO', icone: '🦆', desc: 'Bistrô mais famoso do mundo.'}, {nome: 'CIEL DE PARIS', cidade: 'PARIS', tipo: 'VISTA', icone: '🗼', desc: 'Topo da Torre Montparnasse.'}],
+            'JPN': [{nome: 'SUKIYABASHI JIRO', cidade: 'TOKYO', tipo: 'SUSHI', icone: '🍣', desc: 'Lenda de Jiro Ono.'}, {nome: 'NARISAWA', cidade: 'TOKYO', tipo: 'ECO', icone: '🌲', desc: 'Respeito à natureza.'}, {nome: 'ICHIRAN RAMEN', cidade: 'TOKYO', tipo: 'RAMEN', icone: '🍜', desc: 'Ramen definitivo.'}, {nome: 'KOBE BEEF KAISEKI', cidade: 'KOBE', tipo: 'WAGYU', icone: '🐂', desc: 'Carne mais macia do mundo.'}, {nome: 'DEN', cidade: 'TOKYO', tipo: 'CRIATIVO', icone: '🍱', desc: 'Humor e técnica impecável.'}]
+        };
+
         async function handleAuth() {
             const email = sanitize(document.getElementById('emailInput').value.trim().toLowerCase());
             const pass = document.getElementById('passInput').value.trim();
             
             if (!email || !pass) { alert("Preencha e-mail e senha."); return; }
 
-            const transaction = db.transaction(['users'], 'readwrite');
-            const store = transaction.objectStore('users');
-            
-            const getRequest = store.get(email);
-            getRequest.onsuccess = async () => {
-                const userRecord = getRequest.result;
+            if (isRegisterMode) {
+                const existing = localStorage.getItem(`user_${email}`);
+                if (existing) { alert("E-mail já registrado."); return; }
                 
-                if (isRegisterMode) {
-                    if (userRecord) { alert("Este e-mail já está registrado."); return; }
-                    const name = sanitize(document.getElementById('userNameInput').value.trim());
-                    if (!name) { alert("Preencha seu nome."); return; }
-                    
-                    const salt = CryptoJS.lib.WordArray.random(128/8).toString();
-                    const derivedKey = await deriveKey(pass, salt);
-                    
-                    const userData = { name: name.toUpperCase(), currency: document.getElementById('userCurrencyInput').value, transactions: [] };
-                    const encryptedData = encrypt(userData, derivedKey);
-                    
-                    store.add({ email, salt, data: encryptedData, attempts: 0 });
-                    
+                const name = sanitize(document.getElementById('userNameInput').value.trim());
+                if (!name) { alert("Preencha seu nome."); return; }
+                
+                const salt = CryptoJS.lib.WordArray.random(128/8).toString();
+                const derivedKey = await deriveKey(pass, salt);
+                
+                const userData = { name: name.toUpperCase(), currency: document.getElementById('userCurrencyInput').value, transactions: [] };
+                const encryptedData = encrypt(userData, derivedKey);
+                
+                localStorage.setItem(`user_${email}`, JSON.stringify({ salt, data: encryptedData, attempts: 0 }));
+                
+                userPassword = pass;
+                encryptionKey = derivedKey;
+                currentUser = { ...userData, email };
+                entrarApp();
+            } else {
+                const recordRaw = localStorage.getItem(`user_${email}`);
+                if (!recordRaw) { alert("Conta não encontrada."); return; }
+                
+                const record = JSON.parse(recordRaw);
+                if (record.attempts >= MAX_ATTEMPTS) {
+                    alert("CONTA BLOQUEADA: 3 tentativas falhadas. E-mail de recuperação enviado para " + email);
+                    return;
+                }
+
+                const derivedKey = await deriveKey(pass, record.salt);
+                const decryptedData = decrypt(record.data, derivedKey);
+
+                if (decryptedData) {
+                    record.attempts = 0;
+                    localStorage.setItem(`user_${email}`, JSON.stringify(record));
                     userPassword = pass;
                     encryptionKey = derivedKey;
-                    currentUser = { ...userData, email };
+                    currentUser = { ...decryptedData, email };
                     entrarApp();
                 } else {
-                    if (!userRecord) { alert("Conta não encontrada."); return; }
-                    
-                    if (userRecord.attempts >= MAX_ATTEMPTS) {
-                        alert("CONTA BLOQUEADA: Demasiadas tentativas falhadas. Um e-mail de recuperação foi enviado para " + email);
-                        console.log("SIMULAÇÃO: Enviando e-mail de recuperação para " + email);
-                        return;
-                    }
-
-                    const derivedKey = await deriveKey(pass, userRecord.salt);
-                    const decryptedData = decrypt(userRecord.data, derivedKey);
-
-                    if (decryptedData) {
-                        userRecord.attempts = 0;
-                        store.put(userRecord);
-                        userPassword = pass;
-                        encryptionKey = derivedKey;
-                        currentUser = { ...decryptedData, email };
-                        entrarApp();
-                    } else {
-                        userRecord.attempts = (userRecord.attempts || 0) + 1;
-                        store.put(userRecord);
-                        alert(`Senha incorreta. Tentativas restantes: ${MAX_ATTEMPTS - userRecord.attempts}`);
-                        if (userRecord.attempts >= MAX_ATTEMPTS) {
-                            alert("Sua conta foi bloqueada por segurança.");
-                        }
-                    }
+                    record.attempts = (record.attempts || 0) + 1;
+                    localStorage.setItem(`user_${email}`, JSON.stringify(record));
+                    alert(`Senha incorreta. Tentativas restantes: ${MAX_ATTEMPTS - record.attempts}`);
                 }
-            };
+            }
         }
 
         function save() {
             if (!currentUser || !encryptionKey) return;
-            const transaction = db.transaction(['users'], 'readwrite');
-            const store = transaction.objectStore('users');
-            const getRequest = store.get(currentUser.email);
-            getRequest.onsuccess = () => {
-                const record = getRequest.result;
-                const dataToSave = { ...currentUser };
-                delete dataToSave.email;
-                record.data = encrypt(dataToSave, encryptionKey);
-                store.put(record);
-            };
+            const recordRaw = localStorage.getItem(`user_${currentUser.email}`);
+            if (!recordRaw) return;
+            const record = JSON.parse(recordRaw);
+            const dataToSave = { ...currentUser };
+            delete dataToSave.email;
+            record.data = encrypt(dataToSave, encryptionKey);
+            localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(record));
         }
-
-        // RESTANTE DA LÓGICA DO APP (Formatada e Segura)
-        let rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
-        let ghostMode = false;
-        const rateCache = new Map();
-        const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "BTC":"Bitcoin" };
-
-        const restaurantesDB = {
-            'BRL': [{nome: 'A CASA DO PORCO', cidade: 'SP', tipo: 'CONCEITUAL', icone: '🐷', desc: 'Focado na carne suína.'}, {nome: 'D.O.M', cidade: 'SP', tipo: 'AMAZÔNICO', icone: '🌿', desc: 'Alta gastronomia Amazônica.'}],
-            'USD': [{nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'PEIXES', icone: '🐟', desc: 'O ápice dos frutos do mar.'}, {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'Fatia lendária de Manhattan.'}],
-            'EUR': [{nome: 'NOMA', cidade: 'COPENHAGUE', tipo: 'NÓRDICO', icone: '🌲', desc: 'Frequentemente nº 1 do mundo.'}],
-            'ITA': [{nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin.'}],
-            'FRA': [{nome: 'LE MEURICE', cidade: 'PARIS', tipo: 'PALÁCIO', icone: '🥐', desc: 'Ambiente real Alain Ducasse.'}],
-            'JPN': [{nome: 'SUKIYABASHI JIRO', cidade: 'TOKYO', tipo: 'SUSHI', icone: '🍣', desc: 'Lenda de Jiro Ono.'}]
-        };
 
         function entrarApp() {
             document.getElementById('auth-screen').classList.add('hidden');
@@ -575,8 +591,35 @@
             container.innerHTML = `<div class="card-inner p-6"><p class="text-[8px] font-black text-purple-500 uppercase">Resumo</p><h3 class="text-sm">Saldo: ${formatCurrency(inc - exp)}</h3></div>`;
         }
 
-        let isRegisterMode = false;
-        window.onload = async () => { await initDB(); };
+        function toggleGhostMode() {
+            ghostMode = !ghostMode;
+            document.getElementById('ghost-icon').className = ghostMode ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+            renderTransactions();
+        }
+
+        function prepararRendaMensal() {
+            const meses = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
+            const mesAtual = meses[new Date().getMonth()];
+            document.getElementById('desc').value = `RENDA - ${mesAtual}`;
+            document.getElementById('type').value = 'income';
+            document.getElementById('amountDisplay').focus();
+        }
+
+        function exportData() {
+            const data = JSON.stringify(currentUser.transactions, null, 2);
+            const blob = new Blob([data], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = `ifinance_backup_${Date.now()}.txt`;
+            a.click();
+        }
+
+        function limparTudo() {
+            if(confirm("Deseja APAGAR TODO o histórico? Esta ação é irreversível.")) {
+                currentUser.transactions = [];
+                save(); renderTransactions();
+            }
+        }
     </script>
 </body>
 </html>
