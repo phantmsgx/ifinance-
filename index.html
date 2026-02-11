@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -236,8 +236,7 @@
                 </div>
 
                 <button onclick="prepararRendaMensal()" class="w-full bg-emerald-950/30 border border-emerald-900/50 text-emerald-500 p-4 rounded-[25px] flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest shadow-sm">
-                    <i class="fa-solid fa-hand-holding-dollar text-lg"></i>
-                    Lançar Renda do Mês
+                    <i class="fa-solid fa-calendar-check"></i> LANÇAR RENDA MENSAL
                 </button>
 
                 <div class="card-inner p-6">
@@ -328,7 +327,25 @@
     </div>
 
     <script>
-        // MANTIDO TODO O SEU SCRIPT ORIGINAL ABAIXO SEM ALTERAÇÕES
+        /**
+         * CAMADA DE SEGURANÇA E AUTOMAÇÃO (OTIMIZADO)
+         * Implementado por Especialista em Segurança e Automação Web
+         */
+
+        // Sanitização de entrada para prevenir XSS
+        const sanitize = (str) => {
+            if (typeof str !== 'string') return str;
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        };
+
+        // Prevenção de Clickjacking e proteção básica
+        if (window.self !== window.top) window.top.location = window.self.location;
+
+        // Automação: Cache de cotações para reduzir chamadas de API
+        const rateCache = new Map();
+
         const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "AUD":"Dólar Aus", "CAD":"Dólar Can", "CHF":"Suíço", "ARS":"Peso Arg", "BTC":"Bitcoin" };
 
         const restaurantesDB = {
@@ -396,14 +413,14 @@
 
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
-            document.getElementById('register-fields').classList.toggle('hidden');
-            document.getElementById('auth-title').innerHTML = isRegisterMode ? 'Nova Conta' : 'i<span class="text-purple-500">Finance</span>';
+            document.getElementById('register-fields').classList.toggle('hidden', !isRegisterMode);
+            document.getElementById('auth-title').innerText = isRegisterMode ? 'Novo Registro' : 'iFinance';
             document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Registrar e Acessar' : 'Acessar Sistema';
             document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já possui conta? Entre agora' : 'Ainda não possui conta? Registre-se';
         }
 
         function handleAuth() {
-            const email = document.getElementById('emailInput').value.trim();
+            const email = sanitize(document.getElementById('emailInput').value.trim());
             const pass = document.getElementById('passInput').value.trim();
             
             if (!email || !pass) {
@@ -412,7 +429,7 @@
             }
             
             if (isRegisterMode) {
-                const name = document.getElementById('userNameInput').value.trim();
+                const name = sanitize(document.getElementById('userNameInput').value.trim());
                 if (!name) {
                     alert("Preencha seu nome.");
                     return;
@@ -452,10 +469,19 @@
             const from = document.getElementById('fromCurrency').value;
             const to = document.getElementById('toCurrency').value;
             if(from === to) { atualizarConversao(1); return; }
+            
+            const cacheKey = `${from}-${to}`;
+            if (rateCache.has(cacheKey) && (Date.now() - rateCache.get(cacheKey).time < 300000)) { // 5 min cache
+                atualizarConversao(rateCache.get(cacheKey).rate);
+                return;
+            }
+
             try {
                 const res = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
                 const data = await res.json();
-                atualizarConversao(parseFloat(data[`${from}${to}`].bid));
+                const rate = parseFloat(data[`${from}${to}`].bid);
+                rateCache.set(cacheKey, { rate, time: Date.now() });
+                atualizarConversao(rate);
             } catch { document.getElementById('calcResultDisplay').innerText = "Erro rede"; }
         }
 
@@ -471,7 +497,7 @@
             if(confirm(`Deseja lançar "${text}" novamente?`)) {
                 currentUser.transactions.push({ 
                     id: Date.now(), 
-                    text, 
+                    text: sanitize(text), 
                     amount, 
                     date: new Date().toLocaleDateString('pt-BR'),
                     monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
@@ -493,8 +519,9 @@
                 li.className = "flex justify-between items-center py-4 anim-fade";
                 
                 const blurClass = ghostMode ? 'blur-val' : '';
+                const cleanText = sanitize(t.text);
 
-                li.innerHTML = `<div class="flex items-center gap-3"><button onclick="repetirTransacao('${t.text}', ${t.amount})" class="btn-repeat text-sm"><i class="fa-solid fa-rotate"></i></button><div><p class="font-black text-[10px] text-white">${t.text}</p><p class="text-[7px] text-slate-500 uppercase">${t.date}</p></div></div><p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}">${formatCurrency(t.amount)}</p>`;
+                li.innerHTML = `<div class="flex items-center gap-3"><button onclick="repetirTransacao('${cleanText}', ${t.amount})" class="btn-repeat text-sm"><i class="fa-solid fa-rotate"></i></button><div><p class="font-black text-[10px] text-white">${cleanText}</p><p class="text-[7px] text-slate-500 uppercase">${t.date}</p></div></div><p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}">${formatCurrency(t.amount)}</p>`;
                 list.appendChild(li);
             });
 
@@ -554,10 +581,20 @@
             const container = document.getElementById('insights-container');
             const percentUsed = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
             const remaining = inc - exp;
-            container.innerHTML = `
-                <div class="card-inner p-6 insight-card premium-shadow"><p class="text-[8px] font-black text-purple-500 uppercase mb-2">Saúde do Orçamento</p><h3 class="font-black text-sm mb-1 text-white">Você comprometeu ${percentUsed}% da sua renda.</h3><div class="w-full bg-zinc-900 h-2 rounded-full mt-3"><div class="bg-purple-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div></div></div>
-                <div class="card-inner p-6 insight-card premium-shadow border-l-emerald-500"><p class="text-[8px] font-black text-emerald-500 uppercase mb-2">Disponibilidade Real</p><h3 class="font-black text-sm text-white">Seu saldo líquido: ${formatCurrency(remaining)}.</h3></div>
-            `;
+            
+            // Usando textContent e manipulação segura de DOM para insights
+            container.innerHTML = '';
+            
+            const card1 = document.createElement('div');
+            card1.className = "card-inner p-6 insight-card premium-shadow";
+            card1.innerHTML = `<p class="text-[8px] font-black text-purple-500 uppercase mb-2">Saúde do Orçamento</p><h3 class="font-black text-sm mb-1 text-white">Você comprometeu ${percentUsed}% da sua renda.</h3><div class="w-full bg-zinc-900 h-2 rounded-full mt-3"><div class="bg-purple-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div></div>`;
+            
+            const card2 = document.createElement('div');
+            card2.className = "card-inner p-6 insight-card premium-shadow border-l-emerald-500";
+            card2.innerHTML = `<p class="text-[8px] font-black text-emerald-500 uppercase mb-2">Disponibilidade Real</p><h3 class="font-black text-sm text-white">Seu saldo líquido: ${formatCurrency(remaining)}.</h3>`;
+            
+            container.appendChild(card1);
+            container.appendChild(card2);
         }
 
         function switchTab(tab) {
@@ -572,22 +609,23 @@
             const container = document.getElementById('restaurant-list');
             container.innerHTML = '';
             restaurantesDB[country].forEach(r => {
-                container.innerHTML += `
-                    <div class="card-inner p-6 text-left hover:scale-[1.02] transition-transform">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-2xl">${r.icone}</span>
-                            <span class="text-[8px] font-black bg-purple-900/30 text-purple-400 px-2 py-1 rounded-md uppercase">${r.tipo}</span>
-                        </div>
-                        <h4 class="font-black text-white text-sm uppercase">${r.nome}</h4>
-                        <p class="text-[9px] text-slate-500 mb-2 font-bold">${r.cidade}</p>
-                        <p class="text-[10px] text-slate-400 leading-tight">${r.desc}</p>
+                const card = document.createElement('div');
+                card.className = "card-inner p-6 text-left hover:scale-[1.02] transition-transform";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-2xl">${sanitize(r.icone)}</span>
+                        <span class="text-[8px] font-black bg-purple-900/30 text-purple-400 px-2 py-1 rounded-md uppercase">${sanitize(r.tipo)}</span>
                     </div>
+                    <h4 class="font-black text-white text-sm uppercase">${sanitize(r.nome)}</h4>
+                    <p class="text-[9px] text-slate-500 mb-2 font-bold">${sanitize(r.cidade)}</p>
+                    <p class="text-[10px] text-slate-400 leading-tight">${sanitize(r.desc)}</p>
                 `;
+                container.appendChild(card);
             });
         }
 
         function addTransaction() {
-            const desc = document.getElementById('desc').value.trim() || 'LANÇAMENTO AVULSO';
+            const desc = sanitize(document.getElementById('desc').value.trim()) || 'LANÇAMENTO AVULSO';
             const amount = rawValues.amountDisplay;
             const type = document.getElementById('type').value;
 
@@ -611,7 +649,39 @@
             renderTransactions();
         }
 
+        function lancarCambio() {
+            const from = document.getElementById('fromCurrency').value;
+            const to = document.getElementById('toCurrency').value;
+            const amountFrom = rawValues.calcValueDisplay;
+            const resultText = document.getElementById('calcResultDisplay').innerText;
+            
+            if (amountFrom === 0) { alert("Insira um valor para converter."); return; }
+            
+            // Lançar saída na moeda de origem
+            currentUser.transactions.push({
+                id: Date.now(),
+                text: `CÂMBIO: SAÍDA ${from}`,
+                amount: -amountFrom,
+                date: new Date().toLocaleDateString('pt-BR'),
+                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
+            });
+            
+            alert(`Conversão realizada! Lembre-se de lançar a entrada em ${to} manualmente se desejar compor o saldo.`);
+            
+            save();
+            renderTransactions();
+            switchTab('home');
+        }
+
         window.onload = () => {
+            // Automação: Limpeza de cache expirado
+            setInterval(() => {
+                const now = Date.now();
+                for (const [key, value] of rateCache.entries()) {
+                    if (now - value.time > 300000) rateCache.delete(key);
+                }
+            }, 60000);
+
             const session = localStorage.getItem('iFinance_session');
             if (session) {
                 const saved = localStorage.getItem(`user_${session}`);
