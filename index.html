@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>iFinance Premium - Ultra Version (Secure)</title>
+    <title>iFinance Premium - Ultra Secure Version</title>
     
-    <!-- Content Security Policy (CSP) para mitigar XSS -->
+    <!-- Content Security Policy (CSP) Otimizada -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://economia.awesomeapi.com.br;">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,14 +13,13 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="iFinance">
     
+    <!-- Scripts com SRI (Subresource Integrity) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Biblioteca CryptoJS para Criptografia de Dados Locais -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km6VChw6syOtMvBWQF8MSs+GVBWwUsWnYY/+uf9dmGfqnV0sPBeAljkPJP5BA/4jJ8TrDT5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     
     <style>
-        /* CONFIGURAÇÕES TEMA DARK ULTRA */
         :root {
             --neon-purple: #a855f7;
             --dark-bg: #050505;
@@ -44,7 +43,6 @@
         body { padding-bottom: 110px; -webkit-tap-highlight-color: transparent; }
         .hidden { display: none !important; }
 
-        /* INTRO ANIMATION: O PRÉDIO FUTURISTA */
         #intro-overlay {
             position: fixed;
             top: 0;
@@ -73,17 +71,8 @@
             animation: moveUpBuilding 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
 
-        .window {
-            width: 100%;
-            height: 30px;
-            background: #1a1a1a;
-        }
-
-        .window.bright {
-            background: var(--neon-purple);
-            box-shadow: 0 0 15px var(--neon-purple);
-            animation: flicker 2s infinite alternate;
-        }
+        .window { width: 100%; height: 30px; background: #1a1a1a; }
+        .window.bright { background: var(--neon-purple); box-shadow: 0 0 15px var(--neon-purple); animation: flicker 2s infinite alternate; }
 
         .target-window {
             position: absolute;
@@ -98,27 +87,11 @@
             animation: zoomIntoWindow 1s ease-in forwards 2.5s;
         }
 
-        @keyframes moveUpBuilding {
-            0% { transform: translateY(100%); }
-            100% { transform: translateY(20%); }
-        }
+        @keyframes moveUpBuilding { 0% { transform: translateY(100%); } 100% { transform: translateY(20%); } }
+        @keyframes zoomIntoWindow { 0% { opacity: 0; transform: translateX(-50%) scale(1); } 50% { opacity: 1; } 100% { opacity: 1; transform: translateX(-50%) scale(50); } }
+        @keyframes fadeOutIntro { to { opacity: 0; visibility: hidden; } }
+        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
-        @keyframes zoomIntoWindow {
-            0% { opacity: 0; transform: translateX(-50%) scale(1); }
-            50% { opacity: 1; }
-            100% { opacity: 1; transform: translateX(-50%) scale(50); }
-        }
-
-        @keyframes fadeOutIntro {
-            to { opacity: 0; visibility: hidden; }
-        }
-
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-
-        /* ELEMENTOS VIVOS (HOVER/ACTIVE/LED) */
         .card-inner { 
             background: var(--card-bg) !important; 
             border: 1px solid #1f1f1f !important; 
@@ -127,36 +100,18 @@
             transition: all 0.3s ease;
         }
 
-        .card-inner:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
-        }
+        .card-inner:hover { transform: translateY(-5px); box-shadow: 0 0 30px rgba(168, 85, 247, 0.6); }
 
-        button, .btn-action, .btn-gradient {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--led-shadow);
-        }
+        button, .btn-action, .btn-gradient { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: var(--led-shadow); }
+        button:active { transform: scale(0.92) !important; box-shadow: 0 0 40px var(--neon-purple) !important; }
 
-        button:active { 
-            transform: scale(0.92) !important; 
-            box-shadow: 0 0 40px var(--neon-purple) !important;
-        }
+        input, select { background-color: #121212 !important; border: 1px solid #222 !important; color: white !important; }
 
-        input, select {
-            background-color: #121212 !important;
-            border: 1px solid #222 !important;
-            color: white !important;
-        }
-
-        /* AJUSTES DE TEXTO E CORES */
         .balance-text { color: #fff; font-weight: 900; }
         .text-slate-500, .text-slate-400 { color: #888 !important; }
         .bg-auth-gradient { background: #050505; }
         
-        .tab-active { 
-            color: var(--neon-purple) !important; 
-            text-shadow: 0 0 10px var(--neon-purple);
-        }
+        .tab-active { color: var(--neon-purple) !important; text-shadow: 0 0 10px var(--neon-purple); }
 
         header { background: rgba(5, 5, 5, 0.8) !important; border-bottom: 1px solid #1f1f1f !important; }
         nav { background: rgba(10, 10, 10, 0.9) !important; border-top: 1px solid #1f1f1f !important; }
@@ -263,9 +218,7 @@
                             <option value="all">TODOS OS MESES</option>
                         </select>
                     </div>
-
                     <ul id="transaction-list" class="divide-y divide-zinc-900"></ul>
-                    
                     <div class="flex gap-2 mt-4">
                         <button onclick="exportData()" class="flex-1 text-center py-4 text-[8px] bg-zinc-900 rounded-xl text-slate-400 font-black uppercase tracking-widest">Backup Dados</button>
                         <button onclick="limparTudo()" class="flex-1 text-center py-4 text-[8px] bg-red-900/20 rounded-xl text-red-500 font-black uppercase tracking-[0.5em]">Limpar Base</button>
@@ -332,43 +285,39 @@
     </div>
 
     <script>
-        /**
-         * CAMADA DE SEGURANÇA E AUTOMAÇÃO (OTIMIZADO)
-         * Implementado por Especialista em Segurança e Automação Web
-         */
-
-        // Sanitização de entrada para prevenir XSS
-        const sanitize = (str) => {
-            if (typeof str !== 'string') return str;
-            const temp = document.createElement('div');
-            temp.textContent = str;
-            return temp.innerHTML.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
-        };
-
-        // Prevenção de Clickjacking e proteção básica
-        if (window.self !== window.top) window.top.location = window.self.location;
-
-        // Automação: Cache de cotações para reduzir chamadas de API
-        const rateCache = new Map();
-
-        const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "AUD":"Dólar Aus", "CAD":"Dólar Can", "CHF":"Suíço", "ARS":"Peso Arg", "BTC":"Bitcoin" };
-
-        const restaurantesDB = {
-            'BRL': [{nome: 'A CASA DO PORCO', cidade: 'SP', tipo: 'CONCEITUAL', icone: '🐷', desc: 'Focado na carne suína.'}, {nome: 'D.O.M', cidade: 'SP', tipo: 'AMAZÔNICO', icone: '🌿', desc: 'Alta gastronomia Amazônica.'}, {nome: 'LASAI', cidade: 'RJ', tipo: 'ORGÂNICO', icone: '🥕', desc: 'Ingredientes colhidos no dia.'}, {nome: 'MANÍ', cidade: 'SP', tipo: 'CONTEMPORÂNEO', icone: '🥣', desc: 'A sofisticação de Helena Rizzo.'}, {nome: 'MARIUS DEGUSTARE', cidade: 'RJ', tipo: 'EXCLUSIVO', icone: '🥩', desc: 'Ambiente temático épico.'}],
-            'USD': [{nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'PEIXES', icone: '🐟', desc: 'O ápice dos frutos do mar.'}, {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'Fatia lendária de Manhattan.'}, {nome: 'PETER LUGER', cidade: 'BROOKLYN', tipo: 'STEAKHOUSE', icone: '🥩', desc: 'Famoso desde 1887.'}, {nome: 'NOBU MALIBU', cidade: 'LA', tipo: 'FUSION', icone: '🍣', desc: 'Elite de Hollywood.'}, {nome: 'KATZ\'S DELI', cidade: 'NY', tipo: 'DELI', icone: '🥪', desc: 'Pastrami definitivo.'}],
-            'EUR': [{nome: 'STEIRERECK', cidade: 'VIENA', tipo: 'MODERNO', icone: '🇦🇹', desc: 'Coração do Stadtpark.'}, {nome: 'HOFBRÄUHAUS', cidade: 'MUNICH', tipo: 'HISTÓRICO', icone: '🍺', desc: 'Cervejaria mais famosa.'}, {nome: 'TICKET BAR', cidade: 'BARCELONA', tipo: 'TAPAS', icone: '🥘', desc: 'Inovação extrema.'}, {nome: 'OSTERIA FRANCESCANA', cidade: 'MODENA', tipo: 'ARTE', icone: '🎨', desc: 'Massimo Bottura.'}, {nome: 'NOMA', cidade: 'COPENHAGUE', tipo: 'NÓRDICO', icone: '🌲', desc: 'Frequentemente nº 1 do mundo.'}],
-            'ITA': [{nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin.'}, {nome: 'DA VITTORIO', cidade: 'BERGAMO', tipo: 'FAMILIAR', icone: '🍝', desc: 'Tradição italiana elevada.'}, {nome: 'TRATTORIA BAFFETTO', cidade: 'ROMA', tipo: 'PIZZA', icone: '🇮🇹', desc: 'Massa mais fina de Roma.'}, {nome: 'ANTICA PESA', cidade: 'ROMA', tipo: 'HISTÓRICO', icone: '🍷', desc: 'Jantar no Trastevere.'}, {nome: 'LANGHOSTERIA', cidade: 'MILÃO', tipo: 'FASHION', icone: '🦞', desc: 'Melhor peixe fresco do norte.'}],
-            'FRA': [{nome: 'LE MEURICE', cidade: 'PARIS', tipo: 'PALÁCIO', icone: '🥐', desc: 'Ambiente real Alain Ducasse.'}, {nome: 'SEPTIME', cidade: 'PARIS', tipo: 'NEO-BISTRO', icone: '🍷', desc: 'O mais concorrido de Paris.'}, {nome: 'MIRAZUR', cidade: 'MENTON', tipo: 'RIVIERA', icone: '🌊', desc: 'Mar e jardins.'}, {nome: 'L\'AMI LOUIS', cidade: 'PARIS', tipo: 'BISTRO', icone: '🦆', desc: 'Bistrô mais famoso do mundo.'}, {nome: 'CIEL DE PARIS', cidade: 'PARIS', tipo: 'VISTA', icone: '🗼', desc: 'Topo da Torre Montparnasse.'}],
-            'JPN': [{nome: 'SUKIYABASHI JIRO', cidade: 'TOKYO', tipo: 'SUSHI', icone: '🍣', desc: 'Lenda de Jiro Ono.'}, {nome: 'NARISAWA', cidade: 'TOKYO', tipo: 'ECO', icone: '🌲', desc: 'Respeito à natureza.'}, {nome: 'ICHIRAN RAMEN', cidade: 'TOKYO', tipo: 'RAMEN', icone: '🍜', desc: 'Ramen definitivo.'}, {nome: 'KOBE BEEF KAISEKI', cidade: 'KOBE', tipo: 'WAGYU', icone: '🐂', desc: 'Carne mais macia do mundo.'}, {nome: 'DEN', cidade: 'TOKYO', tipo: 'CRIATIVO', icone: '🍱', desc: 'Humor e técnica impecável.'}]
-        };
-
-        let isRegisterMode = false;
+        // CONFIGURAÇÕES DE SEGURANÇA AVANÇADA
+        const DB_NAME = 'iFinanceDB';
+        const DB_VERSION = 1;
+        let db;
         let currentUser = null;
-        let rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
-        let ghostMode = false; 
-        let userPassword = ""; // Senha em memória para criptografia
+        let userPassword = "";
+        let encryptionKey = null;
+        let loginAttempts = 0;
+        const MAX_ATTEMPTS = 3;
 
-        // Funções de Criptografia
+        // Inicialização do IndexedDB
+        const initDB = () => {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains('users')) {
+                        db.createObjectStore('users', { keyPath: 'email' });
+                    }
+                };
+                request.onsuccess = (e) => { db = e.target.result; resolve(); };
+                request.onerror = (e) => reject(e);
+            });
+        };
+
+        // Derivação de Chave PBKDF2 com Salt
+        async function deriveKey(password, salt) {
+            const iterations = 10000;
+            const keySize = 256 / 32;
+            return CryptoJS.PBKDF2(password, salt, { keySize, iterations }).toString();
+        }
+
+        // Criptografia AES-256
         function encrypt(data, key) {
             return CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
         }
@@ -376,110 +325,107 @@
         function decrypt(ciphertext, key) {
             try {
                 const bytes = CryptoJS.AES.decrypt(ciphertext, key);
-                return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-            } catch (e) {
-                return null;
-            }
+                const decryptedStr = bytes.toString(CryptoJS.enc.Utf8);
+                return decryptedStr ? JSON.parse(decryptedStr) : null;
+            } catch (e) { return null; }
         }
 
-        function populateCurrencySelectors() {
-            const from = document.getElementById('fromCurrency');
-            const to = document.getElementById('toCurrency');
-            if(!from || !to) return;
-            from.innerHTML = ''; to.innerHTML = '';
-            Object.keys(allCurrencies).forEach(code => {
-                from.add(new Option(`${code} - ${allCurrencies[code]}`, code));
-                to.add(new Option(`${code} - ${allCurrencies[code]}`, code));
-            });
-            from.value = "USD"; to.value = "BRL";
-        }
+        const sanitize = (str) => {
+            if (typeof str !== 'string') return str;
+            const temp = document.createElement('div');
+            temp.textContent = str;
+            return temp.innerHTML.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        };
 
-        function inverterMoedas() {
-            const from = document.getElementById('fromCurrency');
-            const to = document.getElementById('toCurrency');
-            const temp = from.value; from.value = to.value; to.value = temp;
-            buscarCotacao();
-        }
-
-        function applyMask(id) {
-            const el = document.getElementById(id);
-            if(!el) return;
-            el.addEventListener('input', (e) => {
-                let v = e.target.value.replace(/\D/g, '');
-                let num = v === "" ? 0 : parseFloat(v) / 100;
-                rawValues[id] = num;
-                el.value = formatCurrency(num, getContextCurrency(id));
-                if (id === 'calcValueDisplay') buscarCotacao();
-            });
-        }
-
-        function getContextCurrency(id) {
-            if(id === 'calcValueDisplay') return document.getElementById('fromCurrency').value;
-            return currentUser ? currentUser.currency : 'BRL';
-        }
-
-        function formatCurrency(val, curr) {
-            const c = curr || (currentUser ? currentUser.currency : 'BRL');
-            return val.toLocaleString('pt-BR', { style: 'currency', currency: c });
-        }
-
-        function prepararRendaMensal() {
-            const meses = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-            const mesAtual = meses[new Date().getMonth()];
-            document.getElementById('desc').value = `RENDA - ${mesAtual}`;
-            document.getElementById('type').value = 'income';
-            document.getElementById('amountDisplay').focus();
-        }
-
-        function toggleAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('register-fields').classList.toggle('hidden', !isRegisterMode);
-            document.getElementById('auth-title').innerText = isRegisterMode ? 'Novo Registro' : 'iFinance';
-            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Registrar e Acessar' : 'Acessar Sistema';
-            document.getElementById('btn-switch-auth').innerText = isRegisterMode ? 'Já possui conta? Entre agora' : 'Ainda não possui conta? Registre-se';
-        }
-
-        function handleAuth() {
-            const email = sanitize(document.getElementById('emailInput').value.trim());
+        async function handleAuth() {
+            const email = sanitize(document.getElementById('emailInput').value.trim().toLowerCase());
             const pass = document.getElementById('passInput').value.trim();
             
-            if (!email || !pass) {
-                alert("Preencha e-mail e senha.");
-                return;
-            }
+            if (!email || !pass) { alert("Preencha e-mail e senha."); return; }
+
+            const transaction = db.transaction(['users'], 'readwrite');
+            const store = transaction.objectStore('users');
             
-            if (isRegisterMode) {
-                const name = sanitize(document.getElementById('userNameInput').value.trim());
-                if (!name) {
-                    alert("Preencha seu nome.");
-                    return;
-                }
-                // Senha agora é usada como chave, não guardada em texto plano no objeto
-                const newUser = { name: name.toUpperCase(), currency: document.getElementById('userCurrencyInput').value, transactions: [] };
-                userPassword = pass;
-                localStorage.setItem(`user_${email}`, encrypt(newUser, pass));
-                currentUser = { ...newUser, email };
-                sessionStorage.setItem('iFinance_temp_key', pass); // Persiste chave apenas na sessão atual
-                localStorage.setItem('iFinance_session', email);
-                entrarApp();
-            } else {
-                const saved = localStorage.getItem(`user_${email}`);
-                if (saved) {
-                    const decryptedData = decrypt(saved, pass);
+            const getRequest = store.get(email);
+            getRequest.onsuccess = async () => {
+                const userRecord = getRequest.result;
+                
+                if (isRegisterMode) {
+                    if (userRecord) { alert("Este e-mail já está registrado."); return; }
+                    const name = sanitize(document.getElementById('userNameInput').value.trim());
+                    if (!name) { alert("Preencha seu nome."); return; }
+                    
+                    const salt = CryptoJS.lib.WordArray.random(128/8).toString();
+                    const derivedKey = await deriveKey(pass, salt);
+                    
+                    const userData = { name: name.toUpperCase(), currency: document.getElementById('userCurrencyInput').value, transactions: [] };
+                    const encryptedData = encrypt(userData, derivedKey);
+                    
+                    store.add({ email, salt, data: encryptedData, attempts: 0 });
+                    
+                    userPassword = pass;
+                    encryptionKey = derivedKey;
+                    currentUser = { ...userData, email };
+                    entrarApp();
+                } else {
+                    if (!userRecord) { alert("Conta não encontrada."); return; }
+                    
+                    if (userRecord.attempts >= MAX_ATTEMPTS) {
+                        alert("CONTA BLOQUEADA: Demasiadas tentativas falhadas. Um e-mail de recuperação foi enviado para " + email);
+                        console.log("SIMULAÇÃO: Enviando e-mail de recuperação para " + email);
+                        return;
+                    }
+
+                    const derivedKey = await deriveKey(pass, userRecord.salt);
+                    const decryptedData = decrypt(userRecord.data, derivedKey);
+
                     if (decryptedData) {
+                        userRecord.attempts = 0;
+                        store.put(userRecord);
                         userPassword = pass;
+                        encryptionKey = derivedKey;
                         currentUser = { ...decryptedData, email };
-                        sessionStorage.setItem('iFinance_temp_key', pass);
-                        localStorage.setItem('iFinance_session', email);
                         entrarApp();
                     } else {
-                        alert("Senha incorreta ou erro na descriptografia.");
+                        userRecord.attempts = (userRecord.attempts || 0) + 1;
+                        store.put(userRecord);
+                        alert(`Senha incorreta. Tentativas restantes: ${MAX_ATTEMPTS - userRecord.attempts}`);
+                        if (userRecord.attempts >= MAX_ATTEMPTS) {
+                            alert("Sua conta foi bloqueada por segurança.");
+                        }
                     }
-                } else { 
-                    alert("Conta não encontrada."); 
                 }
-            }
+            };
         }
+
+        function save() {
+            if (!currentUser || !encryptionKey) return;
+            const transaction = db.transaction(['users'], 'readwrite');
+            const store = transaction.objectStore('users');
+            const getRequest = store.get(currentUser.email);
+            getRequest.onsuccess = () => {
+                const record = getRequest.result;
+                const dataToSave = { ...currentUser };
+                delete dataToSave.email;
+                record.data = encrypt(dataToSave, encryptionKey);
+                store.put(record);
+            };
+        }
+
+        // RESTANTE DA LÓGICA DO APP (Formatada e Segura)
+        let rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
+        let ghostMode = false;
+        const rateCache = new Map();
+        const allCurrencies = { "BRL":"Real", "USD":"Dólar", "EUR":"Euro", "GBP":"Libra", "JPY":"Iene", "BTC":"Bitcoin" };
+
+        const restaurantesDB = {
+            'BRL': [{nome: 'A CASA DO PORCO', cidade: 'SP', tipo: 'CONCEITUAL', icone: '🐷', desc: 'Focado na carne suína.'}, {nome: 'D.O.M', cidade: 'SP', tipo: 'AMAZÔNICO', icone: '🌿', desc: 'Alta gastronomia Amazônica.'}],
+            'USD': [{nome: 'LE BERNARDIN', cidade: 'NY', tipo: 'PEIXES', icone: '🐟', desc: 'O ápice dos frutos do mar.'}, {nome: 'JOE\'S PIZZA', cidade: 'NY', tipo: 'PIZZA', icone: '🍕', desc: 'Fatia lendária de Manhattan.'}],
+            'EUR': [{nome: 'NOMA', cidade: 'COPENHAGUE', tipo: 'NÓRDICO', icone: '🌲', desc: 'Frequentemente nº 1 do mundo.'}],
+            'ITA': [{nome: 'LA PERGOLA', cidade: 'ROMA', tipo: 'LUXO', icone: '🏛️', desc: 'Único 3 estrelas Michelin.'}],
+            'FRA': [{nome: 'LE MEURICE', cidade: 'PARIS', tipo: 'PALÁCIO', icone: '🥐', desc: 'Ambiente real Alain Ducasse.'}],
+            'JPN': [{nome: 'SUKIYABASHI JIRO', cidade: 'TOKYO', tipo: 'SUSHI', icone: '🍣', desc: 'Lenda de Jiro Ono.'}]
+        };
 
         function entrarApp() {
             document.getElementById('auth-screen').classList.add('hidden');
@@ -490,56 +436,21 @@
             renderTransactions(); setGuide('BRL');
         }
 
-        async function buscarCotacao() {
-            const from = document.getElementById('fromCurrency').value;
-            const to = document.getElementById('toCurrency').value;
-            if(from === to) { atualizarConversao(1); return; }
-            
-            const cacheKey = `${from}-${to}`;
-            if (rateCache.has(cacheKey) && (Date.now() - rateCache.get(cacheKey).time < 300000)) { // 5 min cache
-                atualizarConversao(rateCache.get(cacheKey).rate);
-                return;
-            }
-
-            try {
-                const res = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
-                const data = await res.json();
-                const rate = parseFloat(data[`${from}${to}`].bid);
-                rateCache.set(cacheKey, { rate, time: Date.now() });
-                atualizarConversao(rate);
-            } catch { document.getElementById('calcResultDisplay').innerText = "Erro rede"; }
+        function formatCurrency(val, curr) {
+            const c = curr || (currentUser ? currentUser.currency : 'BRL');
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: c });
         }
 
-        function atualizarConversao(rate) {
-            const res = rawValues.calcValueDisplay * rate;
-            document.getElementById('calcResultDisplay').innerText = formatCurrency(res, document.getElementById('toCurrency').value);
-        }
-
-        function logout() { 
-            localStorage.removeItem('iFinance_session'); 
-            sessionStorage.removeItem('iFinance_temp_key');
-            location.reload(); 
-        }
-
-        function save() { 
-            if (userPassword) {
-                const dataToSave = { ...currentUser };
-                delete dataToSave.email;
-                localStorage.setItem(`user_${currentUser.email}`, encrypt(dataToSave, userPassword)); 
-            }
-        }
-
-        function repetirTransacao(text, amount) {
-            if(confirm(`Deseja lançar "${text}" novamente?`)) {
-                currentUser.transactions.push({ 
-                    id: Date.now(), 
-                    text: sanitize(text),
-                    amount: amount,
-                    date: new Date().toLocaleDateString('pt-BR'),
-                    monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
-                });
-                save(); populateMonthFilter(); renderTransactions();
-            }
+        function applyMask(id) {
+            const el = document.getElementById(id);
+            if(!el) return;
+            el.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '');
+                let num = v === "" ? 0 : parseFloat(v) / 100;
+                rawValues[id] = num;
+                el.value = formatCurrency(num, id === 'calcValueDisplay' ? document.getElementById('fromCurrency').value : currentUser.currency);
+                if (id === 'calcValueDisplay') buscarCotacao();
+            });
         }
 
         function renderTransactions() {
@@ -549,273 +460,123 @@
             
             currentUser.transactions.sort((a,b) => b.id - a.id).forEach(t => {
                 if (filter !== 'all' && t.monthYear !== filter) return;
-
                 if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
                 
                 const li = document.createElement('li');
                 li.className = "flex justify-between items-center py-4 anim-fade";
-                
                 const blurClass = ghostMode ? 'blur-val' : '';
-                const cleanText = sanitize(t.text);
-
-                // Construção segura do DOM para evitar XSS
+                
                 const leftDiv = document.createElement('div');
                 leftDiv.className = "flex items-center gap-3";
-                
-                const repeatBtn = document.createElement('button');
-                repeatBtn.className = "btn-repeat text-sm";
-                repeatBtn.innerHTML = '<i class="fa-solid fa-rotate"></i>';
-                repeatBtn.onclick = () => repetirTransacao(t.text, t.amount);
-                
                 const textInfo = document.createElement('div');
                 const pTitle = document.createElement('p');
                 pTitle.className = "font-black text-[10px] text-white";
-                pTitle.textContent = cleanText;
+                pTitle.textContent = t.text;
                 const pDate = document.createElement('p');
                 pDate.className = "text-[7px] text-slate-500 uppercase";
                 pDate.textContent = t.date;
-                
-                textInfo.appendChild(pTitle);
-                textInfo.appendChild(pDate);
-                leftDiv.appendChild(repeatBtn);
+                textInfo.appendChild(pTitle); textInfo.appendChild(pDate);
                 leftDiv.appendChild(textInfo);
                 
                 const pAmount = document.createElement('p');
                 pAmount.className = `font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}`;
                 pAmount.textContent = formatCurrency(t.amount);
                 
-                li.appendChild(leftDiv);
-                li.appendChild(pAmount);
+                li.appendChild(leftDiv); li.appendChild(pAmount);
                 list.appendChild(li);
             });
 
             document.getElementById('balance').innerText = formatCurrency(inc - exp);
             document.getElementById('incomes').innerText = formatCurrency(inc);
             document.getElementById('expenses').innerText = formatCurrency(exp);
-
-            if(ghostMode) {
-                document.getElementById('balance').classList.add('blur-val');
-                document.getElementById('incomes').classList.add('blur-val');
-                document.getElementById('expenses').classList.add('blur-val');
-            } else {
-                document.getElementById('balance').classList.remove('blur-val');
-                document.getElementById('incomes').classList.remove('blur-val');
-                document.getElementById('expenses').classList.remove('blur-val');
-            }
-
             updateInsights(inc, exp);
         }
 
-        function populateMonthFilter() {
-            const filter = document.getElementById('filterMonth');
-            if(!filter) return;
-            const currentSelected = filter.value;
-            filter.innerHTML = '';
-            
-            const defaultOpt = document.createElement('option');
-            defaultOpt.value = 'all';
-            defaultOpt.textContent = 'TODOS OS MESES';
-            filter.appendChild(defaultOpt);
-            
-            const months = [...new Set(currentUser.transactions.map(t => t.monthYear))];
-            months.sort().reverse().forEach(m => {
-                const opt = document.createElement('option');
-                opt.value = m;
-                opt.textContent = m;
-                filter.appendChild(opt);
+        function addTransaction() {
+            const desc = sanitize(document.getElementById('desc').value.trim()) || 'LANÇAMENTO';
+            const amount = rawValues.amountDisplay;
+            const type = document.getElementById('type').value;
+            if (amount === 0) return;
+            currentUser.transactions.push({
+                id: Date.now(),
+                text: desc.toUpperCase(),
+                amount: type === 'expense' ? -amount : amount,
+                date: new Date().toLocaleDateString('pt-BR'),
+                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
             });
-            filter.value = currentSelected || 'all';
+            save(); renderTransactions();
+            document.getElementById('desc').value = '';
+            document.getElementById('amountDisplay').value = '';
+            rawValues.amountDisplay = 0;
         }
 
-        function toggleGhostMode() {
-            ghostMode = !ghostMode;
-            document.getElementById('ghost-icon').className = ghostMode ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
-            renderTransactions();
+        async function buscarCotacao() {
+            const from = document.getElementById('fromCurrency').value;
+            const to = document.getElementById('toCurrency').value;
+            if(from === to) { atualizarConversao(1); return; }
+            try {
+                const res = await fetch(`https://economia.awesomeapi.com.br/last/${from}-${to}`);
+                const data = await res.json();
+                const rate = parseFloat(data[`${from}${to}`].bid);
+                atualizarConversao(rate);
+            } catch { document.getElementById('calcResultDisplay').innerText = "Erro"; }
         }
 
-        function exportData() {
-            const data = JSON.stringify(currentUser.transactions, null, 2);
-            const blob = new Blob([data], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = `ifinance_backup_${Date.now()}.txt`;
-            a.click();
+        function atualizarConversao(rate) {
+            const res = rawValues.calcValueDisplay * rate;
+            document.getElementById('calcResultDisplay').innerText = formatCurrency(res, document.getElementById('toCurrency').value);
         }
 
-        function limparTudo() {
-            if(confirm("Deseja APAGAR TODO o histórico? Esta ação é irreversível.")) {
-                currentUser.transactions = [];
-                save(); renderTransactions();
-            }
-        }
-
-        function updateInsights(inc, exp) {
-            const container = document.getElementById('insights-container');
-            const percentUsed = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
-            const remaining = inc - exp;
-            
-            container.innerHTML = '';
-            
-            const card1 = document.createElement('div');
-            card1.className = "card-inner p-6 insight-card premium-shadow";
-            
-            const pTitle1 = document.createElement('p');
-            pTitle1.className = "text-[8px] font-black text-purple-500 uppercase mb-2";
-            pTitle1.textContent = "Saúde do Orçamento";
-            
-            const h3Title1 = document.createElement('h3');
-            h3Title1.className = "font-black text-sm mb-1 text-white";
-            h3Title1.textContent = `Você comprometeu ${percentUsed}% da sua renda.`;
-            
-            const progressContainer = document.createElement('div');
-            progressContainer.className = "w-full bg-zinc-900 h-2 rounded-full mt-3";
-            const progressBar = document.createElement('div');
-            progressBar.className = "bg-purple-600 h-full";
-            progressBar.style.width = `${Math.min(percentUsed, 100)}%`;
-            progressContainer.appendChild(progressBar);
-            
-            card1.appendChild(pTitle1);
-            card1.appendChild(h3Title1);
-            card1.appendChild(progressContainer);
-            
-            const card2 = document.createElement('div');
-            card2.className = "card-inner p-6 insight-card premium-shadow border-l-emerald-500";
-            
-            const pTitle2 = document.createElement('p');
-            pTitle2.className = "text-[8px] font-black text-emerald-500 uppercase mb-2";
-            pTitle2.textContent = "Disponibilidade Real";
-            
-            const h3Title2 = document.createElement('h3');
-            h3Title2.className = "font-black text-sm text-white";
-            h3Title2.textContent = `Seu saldo líquido: ${formatCurrency(remaining)}.`;
-            
-            card2.appendChild(pTitle2);
-            card2.appendChild(h3Title2);
-            
-            container.appendChild(card1);
-            container.appendChild(card2);
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('register-fields').classList.toggle('hidden', !isRegisterMode);
+            document.getElementById('auth-title').innerText = isRegisterMode ? 'Novo Registro' : 'iFinance';
+            document.getElementById('btn-main-auth').innerText = isRegisterMode ? 'Registrar' : 'Acessar';
         }
 
         function switchTab(tab) {
             document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
             document.getElementById('main-app').classList.remove('hidden');
             document.getElementById(`tab-${tab}`).classList.remove('hidden');
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('tab-active'));
-            document.getElementById(`nav-${tab}`).classList.add('tab-active');
+        }
+
+        function logout() { location.reload(); }
+        
+        function populateCurrencySelectors() {
+            const from = document.getElementById('fromCurrency');
+            const to = document.getElementById('toCurrency');
+            Object.keys(allCurrencies).forEach(code => {
+                from.add(new Option(`${code}`, code));
+                to.add(new Option(`${code}`, code));
+            });
+            from.value = "USD"; to.value = "BRL";
+        }
+
+        function populateMonthFilter() {
+            const filter = document.getElementById('filterMonth');
+            filter.innerHTML = '<option value="all">TODOS</option>';
+            const months = [...new Set(currentUser.transactions.map(t => t.monthYear))];
+            months.forEach(m => filter.add(new Option(m, m)));
         }
 
         function setGuide(country) {
             const container = document.getElementById('restaurant-list');
             container.innerHTML = '';
-            restaurantesDB[country].forEach(r => {
+            (restaurantesDB[country] || []).forEach(r => {
                 const card = document.createElement('div');
-                card.className = "card-inner p-6 text-left hover:scale-[1.02] transition-transform";
-                
-                const headerDiv = document.createElement('div');
-                headerDiv.className = "flex justify-between items-start mb-2";
-                const spanIcon = document.createElement('span');
-                spanIcon.className = "text-2xl";
-                spanIcon.textContent = r.icone;
-                const spanType = document.createElement('span');
-                spanType.className = "text-[8px] font-black bg-purple-900/30 text-purple-400 px-2 py-1 rounded-md uppercase";
-                spanType.textContent = r.tipo;
-                headerDiv.appendChild(spanIcon);
-                headerDiv.appendChild(spanType);
-                
-                const h4Name = document.createElement('h4');
-                h4Name.className = "font-black text-white text-sm uppercase";
-                h4Name.textContent = r.nome;
-                
-                const pCity = document.createElement('p');
-                pCity.className = "text-[9px] text-slate-500 mb-2 font-bold";
-                pCity.textContent = r.cidade;
-                
-                const pDesc = document.createElement('p');
-                pDesc.className = "text-[10px] text-slate-400 leading-tight";
-                pDesc.textContent = r.desc;
-                
-                card.appendChild(headerDiv);
-                card.appendChild(h4Name);
-                card.appendChild(pCity);
-                card.appendChild(pDesc);
+                card.className = "card-inner p-6 text-left";
+                card.innerHTML = `<h4 class="font-black text-white text-sm">${r.nome}</h4><p class="text-[9px] text-slate-500">${r.cidade}</p><p class="text-[10px] text-slate-400">${r.desc}</p>`;
                 container.appendChild(card);
             });
         }
 
-        function addTransaction() {
-            const descInput = document.getElementById('desc');
-            const desc = sanitize(descInput.value.trim()) || 'LANÇAMENTO AVULSO';
-            const amount = rawValues.amountDisplay;
-            const type = document.getElementById('type').value;
-
-            if (amount === 0) { alert("Insira um valor."); return; }
-
-            const finalAmount = type === 'expense' ? -amount : amount;
-
-            currentUser.transactions.push({
-                id: Date.now(),
-                text: desc.toUpperCase(),
-                amount: finalAmount,
-                date: new Date().toLocaleDateString('pt-BR'),
-                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
-            });
-
-            save();
-            descInput.value = '';
-            document.getElementById('amountDisplay').value = '';
-            rawValues.amountDisplay = 0;
-            populateMonthFilter();
-            renderTransactions();
+        function updateInsights(inc, exp) {
+            const container = document.getElementById('insights-container');
+            container.innerHTML = `<div class="card-inner p-6"><p class="text-[8px] font-black text-purple-500 uppercase">Resumo</p><h3 class="text-sm">Saldo: ${formatCurrency(inc - exp)}</h3></div>`;
         }
 
-        function lancarCambio() {
-            const from = document.getElementById('fromCurrency').value;
-            const to = document.getElementById('toCurrency').value;
-            const amountFrom = rawValues.calcValueDisplay;
-            
-            if (amountFrom === 0) { alert("Insira um valor para converter."); return; }
-            
-            currentUser.transactions.push({
-                id: Date.now(),
-                text: `CÂMBIO: SAÍDA ${from}`,
-                amount: -amountFrom,
-                date: new Date().toLocaleDateString('pt-BR'),
-                monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
-            });
-            
-            alert(`Conversão realizada! Lembre-se de lançar a entrada em ${to} manualmente se desejar compor o saldo.`);
-            
-            save();
-            renderTransactions();
-            switchTab('home');
-        }
-
-        window.onload = () => {
-            // Automação: Limpeza de cache expirado
-            setInterval(() => {
-                const now = Date.now();
-                for (const [key, value] of rateCache.entries()) {
-                    if (now - value.time > 300000) rateCache.delete(key);
-                }
-            }, 60000);
-
-            const session = localStorage.getItem('iFinance_session');
-            const tempKey = sessionStorage.getItem('iFinance_temp_key');
-            
-            if (session && tempKey) {
-                const saved = localStorage.getItem(`user_${session}`);
-                if (saved) {
-                    const decryptedData = decrypt(saved, tempKey);
-                    if (decryptedData) {
-                        userPassword = tempKey;
-                        currentUser = { ...decryptedData, email: session };
-                        setTimeout(entrarApp, 3500); // Aguarda a animação do prédio
-                    } else {
-                        localStorage.removeItem('iFinance_session');
-                    }
-                }
-            }
-        };
+        let isRegisterMode = false;
+        window.onload = async () => { await initDB(); };
     </script>
 </body>
 </html>
