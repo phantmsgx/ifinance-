@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>iFinance Premium - Ultra Version</title>
+    <title>iFinance Premium - Ultra Version (Secure)</title>
     
+    <!-- Content Security Policy (CSP) para mitigar XSS -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://economia.awesomeapi.com.br;">
+
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
@@ -13,6 +16,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Biblioteca CryptoJS para Criptografia de Dados Locais -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     
     <style>
         /* CONFIGURAÇÕES TEMA DARK ULTRA */
@@ -236,7 +241,7 @@
                 </div>
 
                 <button onclick="prepararRendaMensal()" class="w-full bg-emerald-950/30 border border-emerald-900/50 text-emerald-500 p-4 rounded-[25px] flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-widest shadow-sm">
-                    <i class="fa-solid fa-calendar-check"></i> LANÇAR RENDA MENSAL
+                    <i class="fa-solid fa-hand-holding-dollar"></i> Lançar Renda Mensal
                 </button>
 
                 <div class="card-inner p-6">
@@ -361,6 +366,21 @@
         let currentUser = null;
         let rawValues = { amountDisplay: 0, calcValueDisplay: 0 };
         let ghostMode = false; 
+        let userPassword = ""; // Senha em memória para criptografia
+
+        // Funções de Criptografia
+        function encrypt(data, key) {
+            return CryptoJS.AES.encrypt(JSON.stringify(data), key).toString();
+        }
+
+        function decrypt(ciphertext, key) {
+            try {
+                const bytes = CryptoJS.AES.decrypt(ciphertext, key);
+                return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+            } catch (e) {
+                return null;
+            }
+        }
 
         function populateCurrencySelectors() {
             const from = document.getElementById('fromCurrency');
@@ -434,21 +454,26 @@
                     alert("Preencha seu nome.");
                     return;
                 }
-                const newUser = { name: name.toUpperCase(), pass, currency: document.getElementById('userCurrencyInput').value, transactions: [] };
-                localStorage.setItem(`user_${email}`, JSON.stringify(newUser));
+                // Senha agora é usada como chave, não guardada em texto plano no objeto
+                const newUser = { name: name.toUpperCase(), currency: document.getElementById('userCurrencyInput').value, transactions: [] };
+                userPassword = pass;
+                localStorage.setItem(`user_${email}`, encrypt(newUser, pass));
                 currentUser = { ...newUser, email };
+                sessionStorage.setItem('iFinance_temp_key', pass); // Persiste chave apenas na sessão atual
                 localStorage.setItem('iFinance_session', email);
                 entrarApp();
             } else {
                 const saved = localStorage.getItem(`user_${email}`);
                 if (saved) {
-                    const userData = JSON.parse(saved);
-                    if (userData.pass === pass) {
-                        currentUser = { ...userData, email };
+                    const decryptedData = decrypt(saved, pass);
+                    if (decryptedData) {
+                        userPassword = pass;
+                        currentUser = { ...decryptedData, email };
+                        sessionStorage.setItem('iFinance_temp_key', pass);
                         localStorage.setItem('iFinance_session', email);
                         entrarApp();
                     } else {
-                        alert("Senha incorreta.");
+                        alert("Senha incorreta ou erro na descriptografia.");
                     }
                 } else { 
                     alert("Conta não encontrada."); 
@@ -490,15 +515,26 @@
             document.getElementById('calcResultDisplay').innerText = formatCurrency(res, document.getElementById('toCurrency').value);
         }
 
-        function logout() { localStorage.removeItem('iFinance_session'); location.reload(); }
-        function save() { localStorage.setItem(`user_${currentUser.email}`, JSON.stringify(currentUser)); }
+        function logout() { 
+            localStorage.removeItem('iFinance_session'); 
+            sessionStorage.removeItem('iFinance_temp_key');
+            location.reload(); 
+        }
+
+        function save() { 
+            if (userPassword) {
+                const dataToSave = { ...currentUser };
+                delete dataToSave.email;
+                localStorage.setItem(`user_${currentUser.email}`, encrypt(dataToSave, userPassword)); 
+            }
+        }
 
         function repetirTransacao(text, amount) {
             if(confirm(`Deseja lançar "${text}" novamente?`)) {
                 currentUser.transactions.push({ 
                     id: Date.now(), 
-                    text: sanitize(text), 
-                    amount, 
+                    text: sanitize(text),
+                    amount: amount,
                     date: new Date().toLocaleDateString('pt-BR'),
                     monthYear: new Date().toLocaleDateString('pt-BR', {month: '2-digit', year: 'numeric'})
                 });
@@ -515,13 +551,41 @@
                 if (filter !== 'all' && t.monthYear !== filter) return;
 
                 if(t.amount > 0) inc += t.amount; else exp += Math.abs(t.amount);
+                
                 const li = document.createElement('li');
                 li.className = "flex justify-between items-center py-4 anim-fade";
                 
                 const blurClass = ghostMode ? 'blur-val' : '';
                 const cleanText = sanitize(t.text);
 
-                li.innerHTML = `<div class="flex items-center gap-3"><button onclick="repetirTransacao('${cleanText}', ${t.amount})" class="btn-repeat text-sm"><i class="fa-solid fa-rotate"></i></button><div><p class="font-black text-[10px] text-white">${cleanText}</p><p class="text-[7px] text-slate-500 uppercase">${t.date}</p></div></div><p class="font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}">${formatCurrency(t.amount)}</p>`;
+                // Construção segura do DOM para evitar XSS
+                const leftDiv = document.createElement('div');
+                leftDiv.className = "flex items-center gap-3";
+                
+                const repeatBtn = document.createElement('button');
+                repeatBtn.className = "btn-repeat text-sm";
+                repeatBtn.innerHTML = '<i class="fa-solid fa-rotate"></i>';
+                repeatBtn.onclick = () => repetirTransacao(t.text, t.amount);
+                
+                const textInfo = document.createElement('div');
+                const pTitle = document.createElement('p');
+                pTitle.className = "font-black text-[10px] text-white";
+                pTitle.textContent = cleanText;
+                const pDate = document.createElement('p');
+                pDate.className = "text-[7px] text-slate-500 uppercase";
+                pDate.textContent = t.date;
+                
+                textInfo.appendChild(pTitle);
+                textInfo.appendChild(pDate);
+                leftDiv.appendChild(repeatBtn);
+                leftDiv.appendChild(textInfo);
+                
+                const pAmount = document.createElement('p');
+                pAmount.className = `font-black text-[10px] ${t.amount > 0 ? 'text-emerald-500' : 'text-red-500'} ${blurClass}`;
+                pAmount.textContent = formatCurrency(t.amount);
+                
+                li.appendChild(leftDiv);
+                li.appendChild(pAmount);
                 list.appendChild(li);
             });
 
@@ -546,11 +610,19 @@
             const filter = document.getElementById('filterMonth');
             if(!filter) return;
             const currentSelected = filter.value;
-            filter.innerHTML = '<option value="all">TODOS OS MESES</option>';
+            filter.innerHTML = '';
+            
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = 'all';
+            defaultOpt.textContent = 'TODOS OS MESES';
+            filter.appendChild(defaultOpt);
+            
             const months = [...new Set(currentUser.transactions.map(t => t.monthYear))];
             months.sort().reverse().forEach(m => {
-                const opt = new Option(m, m);
-                filter.add(opt);
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = m;
+                filter.appendChild(opt);
             });
             filter.value = currentSelected || 'all';
         }
@@ -582,16 +654,43 @@
             const percentUsed = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
             const remaining = inc - exp;
             
-            // Usando textContent e manipulação segura de DOM para insights
             container.innerHTML = '';
             
             const card1 = document.createElement('div');
             card1.className = "card-inner p-6 insight-card premium-shadow";
-            card1.innerHTML = `<p class="text-[8px] font-black text-purple-500 uppercase mb-2">Saúde do Orçamento</p><h3 class="font-black text-sm mb-1 text-white">Você comprometeu ${percentUsed}% da sua renda.</h3><div class="w-full bg-zinc-900 h-2 rounded-full mt-3"><div class="bg-purple-600 h-full" style="width: ${Math.min(percentUsed, 100)}%"></div></div>`;
+            
+            const pTitle1 = document.createElement('p');
+            pTitle1.className = "text-[8px] font-black text-purple-500 uppercase mb-2";
+            pTitle1.textContent = "Saúde do Orçamento";
+            
+            const h3Title1 = document.createElement('h3');
+            h3Title1.className = "font-black text-sm mb-1 text-white";
+            h3Title1.textContent = `Você comprometeu ${percentUsed}% da sua renda.`;
+            
+            const progressContainer = document.createElement('div');
+            progressContainer.className = "w-full bg-zinc-900 h-2 rounded-full mt-3";
+            const progressBar = document.createElement('div');
+            progressBar.className = "bg-purple-600 h-full";
+            progressBar.style.width = `${Math.min(percentUsed, 100)}%`;
+            progressContainer.appendChild(progressBar);
+            
+            card1.appendChild(pTitle1);
+            card1.appendChild(h3Title1);
+            card1.appendChild(progressContainer);
             
             const card2 = document.createElement('div');
             card2.className = "card-inner p-6 insight-card premium-shadow border-l-emerald-500";
-            card2.innerHTML = `<p class="text-[8px] font-black text-emerald-500 uppercase mb-2">Disponibilidade Real</p><h3 class="font-black text-sm text-white">Seu saldo líquido: ${formatCurrency(remaining)}.</h3>`;
+            
+            const pTitle2 = document.createElement('p');
+            pTitle2.className = "text-[8px] font-black text-emerald-500 uppercase mb-2";
+            pTitle2.textContent = "Disponibilidade Real";
+            
+            const h3Title2 = document.createElement('h3');
+            h3Title2.className = "font-black text-sm text-white";
+            h3Title2.textContent = `Seu saldo líquido: ${formatCurrency(remaining)}.`;
+            
+            card2.appendChild(pTitle2);
+            card2.appendChild(h3Title2);
             
             container.appendChild(card1);
             container.appendChild(card2);
@@ -611,21 +710,41 @@
             restaurantesDB[country].forEach(r => {
                 const card = document.createElement('div');
                 card.className = "card-inner p-6 text-left hover:scale-[1.02] transition-transform";
-                card.innerHTML = `
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-2xl">${sanitize(r.icone)}</span>
-                        <span class="text-[8px] font-black bg-purple-900/30 text-purple-400 px-2 py-1 rounded-md uppercase">${sanitize(r.tipo)}</span>
-                    </div>
-                    <h4 class="font-black text-white text-sm uppercase">${sanitize(r.nome)}</h4>
-                    <p class="text-[9px] text-slate-500 mb-2 font-bold">${sanitize(r.cidade)}</p>
-                    <p class="text-[10px] text-slate-400 leading-tight">${sanitize(r.desc)}</p>
-                `;
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = "flex justify-between items-start mb-2";
+                const spanIcon = document.createElement('span');
+                spanIcon.className = "text-2xl";
+                spanIcon.textContent = r.icone;
+                const spanType = document.createElement('span');
+                spanType.className = "text-[8px] font-black bg-purple-900/30 text-purple-400 px-2 py-1 rounded-md uppercase";
+                spanType.textContent = r.tipo;
+                headerDiv.appendChild(spanIcon);
+                headerDiv.appendChild(spanType);
+                
+                const h4Name = document.createElement('h4');
+                h4Name.className = "font-black text-white text-sm uppercase";
+                h4Name.textContent = r.nome;
+                
+                const pCity = document.createElement('p');
+                pCity.className = "text-[9px] text-slate-500 mb-2 font-bold";
+                pCity.textContent = r.cidade;
+                
+                const pDesc = document.createElement('p');
+                pDesc.className = "text-[10px] text-slate-400 leading-tight";
+                pDesc.textContent = r.desc;
+                
+                card.appendChild(headerDiv);
+                card.appendChild(h4Name);
+                card.appendChild(pCity);
+                card.appendChild(pDesc);
                 container.appendChild(card);
             });
         }
 
         function addTransaction() {
-            const desc = sanitize(document.getElementById('desc').value.trim()) || 'LANÇAMENTO AVULSO';
+            const descInput = document.getElementById('desc');
+            const desc = sanitize(descInput.value.trim()) || 'LANÇAMENTO AVULSO';
             const amount = rawValues.amountDisplay;
             const type = document.getElementById('type').value;
 
@@ -642,7 +761,7 @@
             });
 
             save();
-            document.getElementById('desc').value = '';
+            descInput.value = '';
             document.getElementById('amountDisplay').value = '';
             rawValues.amountDisplay = 0;
             populateMonthFilter();
@@ -653,11 +772,9 @@
             const from = document.getElementById('fromCurrency').value;
             const to = document.getElementById('toCurrency').value;
             const amountFrom = rawValues.calcValueDisplay;
-            const resultText = document.getElementById('calcResultDisplay').innerText;
             
             if (amountFrom === 0) { alert("Insira um valor para converter."); return; }
             
-            // Lançar saída na moeda de origem
             currentUser.transactions.push({
                 id: Date.now(),
                 text: `CÂMBIO: SAÍDA ${from}`,
@@ -683,11 +800,19 @@
             }, 60000);
 
             const session = localStorage.getItem('iFinance_session');
-            if (session) {
+            const tempKey = sessionStorage.getItem('iFinance_temp_key');
+            
+            if (session && tempKey) {
                 const saved = localStorage.getItem(`user_${session}`);
                 if (saved) {
-                    currentUser = { ...JSON.parse(saved), email: session };
-                    setTimeout(entrarApp, 3500); // Aguarda a animação do prédio
+                    const decryptedData = decrypt(saved, tempKey);
+                    if (decryptedData) {
+                        userPassword = tempKey;
+                        currentUser = { ...decryptedData, email: session };
+                        setTimeout(entrarApp, 3500); // Aguarda a animação do prédio
+                    } else {
+                        localStorage.removeItem('iFinance_session');
+                    }
                 }
             }
         };
